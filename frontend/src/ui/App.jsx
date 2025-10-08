@@ -6,6 +6,8 @@ import L from 'leaflet'
 import { api } from '../lib/api'
 import { SvgIcon, iconForAlert } from '../lib/icons.jsx'
 import AdminGeofences from '../components/AdminGeofences'
+import Login from '../components/Login.jsx'
+import { getUserRole, isAdmin, logout } from '../lib/auth'
 
 export default function App(){
   const [alerts, setAlerts] = useState([])
