@@ -1,9 +1,0 @@
-#! db-dbdata-persistentVolumeClaim.yaml
-# Generated code, do not edit
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-    name: db-dbdata
-    namespace: aegis20
-spec:
-    storageClassName: "hostpath" # see docker/desktop-storage-provisioner

@@ -1,57 +1,23 @@
-// drop-in App.jsx (adds Admin tab, SSE, JWT bearer)
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+
+// src/ui/App.jsx
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { MapContainer, TileLayer, Polyline, CircleMarker, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet'
 import { api } from '../lib/api'
 import { SvgIcon, iconForAlert } from '../lib/icons.jsx'
-import { useSSE } from '../hooks/useSSE'
 import AdminGeofences from '../components/AdminGeofences'
-
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
 
 export default function App(){
   const [alerts, setAlerts] = useState([])
   const [assets, setAssets] = useState([])
   const [trail, setTrail] = useState([])
   const [assetId, setAssetId] = useState(null)
-  const [tab, setTab] = useState('ops')
+  const [tab, setTab] = useState('admin')
 
   const replayPoly = useMemo(()=> trail.filter(p=>p.lat&&p.lon).map(p=>[p.lat,p.lon]), [trail])
 
-  const refreshAssets = useCallback(async ()=>{
-    const as = await api.assets(); setAssets(as)
-    if(!assetId && as.length) setAssetId(as[0].id)
-  }, [assetId])
-
-  const refreshTrail = useCallback(async ()=>{
-    if(!assetId) return
-    const res = await api.trail(assetId); setTrail(res.points || [])
-  }, [assetId])
-
-  const refreshAlerts = useCallback(async ()=>{
-    const data = await api.alerts(); setAlerts(data)
-  }, [])
-
-  useEffect(() => { refreshAssets(); refreshAlerts() }, [])
-  useEffect(() => { refreshTrail() }, [assetId])
-  useEffect(() => {
-    const a = setInterval(refreshAlerts, 5000)
-    const b = setInterval(refreshAssets, 10000)
-    const c = setInterval(refreshTrail, 10000)
-    return () => { clearInterval(a); clearInterval(b); clearInterval(c) }
-  }, [refreshAlerts, refreshAssets, refreshTrail])
-
-  useSSE({
-    url: `${API_BASE}/events`,
-    onEvent: (ev) => {
-      if (ev?.type === 'alert' && ev.data) {
-        setAlerts(prev => {
-          const exists = prev.find(x => x.id === ev.data.id)
-          return exists ? prev : [ev.data, ...prev].slice(0, 300)
-        })
-      }
-    }
-  })
+  const refreshAssets = useCallback(async ()=>{ const as = await api.assets(); setAssets(as); if(!assetId && as.length) setAssetId(as[0].id) }, [assetId])
+  useEffect(()=>{ refreshAssets() }, [])
 
   return (<>
     <header style={{ padding:'1rem', background:'#e9eee9', borderBottom:'1px solid #d9e0d9', fontWeight:700 }}>
@@ -110,23 +76,12 @@ export default function App(){
             ))}
             {replayPoly.length>1 && <Polyline positions={replayPoly} />}
             {replayPoly.length>0 && (<CircleMarker center={replayPoly[replayPoly.length-1]} radius={6} pathOptions={{color:'#b5392f'}} />)}
-            {(alerts||[]).filter(a=>a.lat&&a.lon).map(a => (
-              <CircleMarker key={`alert-${a.id}`} center={[a.lat, a.lon]} radius={6}
-                pathOptions={{color: a.severity==='critical' ? '#b5392f' : '#b58900'}}>
-                <Popup><b>{a.rule}</b> — {a.asset_id}<br/>{new Date(a.ts).toLocaleString()}</Popup>
-              </CircleMarker>
-            ))}
           </MapContainer>
         </div>
       </div>
     ) : (
       <div className="wrap">
         <div className="card"><h2>Administration</h2><AdminGeofences/></div>
-        <div className="card" style={{padding:'.75rem'}}>
-          <MapContainer center={[62.3901, 17.3062]} zoom={11} id="map">
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap contributors' />
-          </MapContainer>
-        </div>
       </div>
     )}
   </>)
