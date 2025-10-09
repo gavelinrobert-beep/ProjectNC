@@ -4,511 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f74a7459-aac8-4509-b628-9df4df0e4ea2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bridge/base/api-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bridge/base/db-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bridge/overlays/desktop/db-dbdata-persistentVolumeClaim.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bridge/overlays/desktop/frontend-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bridge/overlays/desktop/kustomization.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/App.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.vite/deps/chunk-5WRI5ZAA.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.vite/deps/chunk-BBSAS6O5.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.vite/deps/chunk-TYILIMWK.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.vite/deps/chunk-TYILIMWK.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.vite/deps/react.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/code-frame/lib/index.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/compat-data/data/corejs2-built-ins.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/compat-data/data/plugins.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/compat-data/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/compat-data/plugin-bugfixes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/config-descriptors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/import.cjs.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/module-types.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/module-types.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/package.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/plugins.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/files/plugins.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/helpers/deep-array.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/pattern-to-regex.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/printer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/config/validation/options.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/gensync-utils/async.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/gensync-utils/functional.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/parse.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/parser/util/missing-plugin-helper.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/tools/build-external-helpers.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/transformation/block-hoist-plugin.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/transformation/file/babel-7-helpers.cjs.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/transformation/file/file.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/lib/transformation/util/clone-deep.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/core/src/transform-file-browser.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/buffer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/classes.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/deprecated.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/expressions.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/flow.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/index.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/jsx.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/modules.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/generators/typescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/node/whitespace.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/generator/lib/printer.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-compilation-targets/lib/utils.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-imports/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-imports/lib/import-builder.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-imports/lib/index.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-imports/lib/is-module.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-transforms/lib/dynamic-import.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-transforms/lib/get-module-name.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-transforms/lib/lazy-modules.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-transforms/lib/lazy-modules.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-module-transforms/lib/normalize-and-load-metadata.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-string-parser/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-validator-identifier/lib/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-validator-identifier/lib/keyword.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-validator-identifier/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helper-validator-option/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers-generated.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/applyDecoratedDescriptor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/applyDecoratedDescriptor.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/applyDecs2203.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/applyDecs2203R.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/arrayLikeToArray.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/arrayWithoutHoles.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/assertThisInitialized.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/asyncGeneratorDelegate.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/asyncToGenerator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/awaitAsyncGenerator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classApplyDescriptorDestructureSet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classApplyDescriptorGet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classPrivateFieldDestructureSet.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classPrivateFieldGet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classPrivateFieldSet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classPrivateSetter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classStaticPrivateFieldDestructureSet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/classStaticPrivateFieldSpecGet.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/createClass.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/createForOfIteratorHelperLoose.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/defaults.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/defineAccessor.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/defineProperty.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/get.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/initializerWarningHelper.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/interopRequireDefault.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/interopRequireWildcard.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/isNativeFunction.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/isNativeReflectConstruct.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/iterableToArray.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/iterableToArrayLimit.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/jsx.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/objectSpread2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/objectWithoutPropertiesLoose.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/readOnlyError.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/regeneratorAsyncGen.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/regeneratorKeys.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/set.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/setFunctionName.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/slicedToArray.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/superPropBase.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/superPropSet.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/toPrimitive.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/toPrimitive.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/tsRewriteRelativeImportExtensions.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/typeof.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/using.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/usingCtx.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/helpers/lib/helpers/wrapAsyncGenerator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/parser/lib/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/parser/lib/index.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/parser/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/template/lib/builder.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/template/lib/parse.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/cache.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/hub.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/comments.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/evaluation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/inference/inferer-reference.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/modification.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/removal.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/path/replacement.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/scope/lib/renamer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/types.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/lib/visitors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/traverse/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/asserts/generated/index.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/ast-types/generated/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/builders/flow/createFlowUnionType.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/builders/flow/createTypeAnnotationBasedOnTypeof.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/builders/flow/createTypeAnnotationBasedOnTypeof.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/builders/validateNode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/builders/validateNode.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/comments/addComment.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/comments/inheritInnerComments.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/comments/inheritLeadingComments.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/comments/inheritTrailingComments.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/comments/inheritsComments.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/converters/ensureBlock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/converters/toBindingIdentifierName.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/converters/toExpression.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/converters/valueToNode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/deprecated-aliases.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/experimental.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/flow.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/misc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/misc.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/typescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/definitions/typescript.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/index.js.flow" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/modifications/flow/removeTypeDuplicates.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/modifications/inherits.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/modifications/prependToMemberExpression.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/modifications/removePropertiesDeep.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/retrievers/getFunctionName.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/traverse/traverseFast.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/utils/inherit.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/utils/react/cleanJSXElementLiteralChild.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/buildMatchMemberExpression.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/generated/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/is.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isBlockScoped.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isImmutable.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isLet.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isPlaceholderType.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isReferenced.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isVar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/isVar.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/lib/validators/matchesPattern.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@babel/types/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/dist/gen-mapping.mjs.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/src/sourcemap-segment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/gen-mapping.d.mts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/sourcemap-segment.d.mts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/sourcemap-segment.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/types.d.cts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/types.d.mts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/gen-mapping/types/types.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/src/remapping.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/src/source-map.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/types/remapping.d.cts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/types/source-map-tree.d.cts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/types/source-map-tree.d.cts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/types/source-map.d.cts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/remapping/types/types.d.cts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/resolve-uri/dist/resolve-uri.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/resolve-uri/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/sourcemap-codec/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/sourcemap-codec/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/sourcemap-codec/types/scopes.d.cts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/sourcemap-codec/types/sourcemap-codec.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/src/sourcemap-segment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/src/types.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/by-source.d.cts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/by-source.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/flatten-map.d.mts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/flatten-map.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/resolve.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/sort.d.cts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/sort.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/strip-filename.d.mts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@jridgewell/trace-mapping/types/trace-mapping.d.mts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@react-leaflet/core/lib/component.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@react-leaflet/core/lib/control.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@react-leaflet/core/lib/grid-layer.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@react-leaflet/core/lib/media-overlay.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@rolldown/pluginutils/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@rollup/rollup-linux-x64-musl/rollup.linux-x64-musl.node" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@types/babel__core/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@types/babel__generator/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@types/babel__template/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@types/estree/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/@vitejs/plugin-react/dist/index.cjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/baseline-browser-mapping/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/browserslist/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/browsers.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/aac.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/abortcontroller.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/accelerometer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/array-flat.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/auxclick.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/avif.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/beacon.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/beforeafterprint.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/blobbuilder.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/brotli.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/canvas-blending.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/clipboard.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/colr-v1.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/colr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/constraint-validation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/contenteditable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/contentsecuritypolicy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/cookie-store-api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/createimagebitmap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/credential-management.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-color-adjust.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-color-function.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-cross-fade.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-default-pseudo.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-first-letter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-focus-visible.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-has.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-image-orientation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-lch-lab.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-not-sel-list.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-overflow-anchor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-overscroll-behavior.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-paint-api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-regions.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-relative-colors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-sel2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-subgrid.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-text-indent.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-text-spacing.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-textshadow.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css-width-stretch.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css3-colors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css3-cursors-newer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/css3-tabsize.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/currentcolor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/customevent.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/dataset.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/do-not-track.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/document-execcommand.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/documenthead.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/download.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/es6-number.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/flexbox-gap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/font-size-adjust.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/font-variant-alternates.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/fullscreen.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/gyroscope.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/hardwareconcurrency.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/hidden.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/html5semantic.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/imagecapture.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/imports.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/indeterminate-checkbox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/input-datetime.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/input-number.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/input-range.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/input-selection.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/intersectionobserver.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/jpegxr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/keyboardevent-code.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/keyboardevent-key.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/mdn-css-unicode-bidi-isolate-override.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/mdn-text-decoration-style.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/media-fragments.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/mediacapture-fromelement.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/mediasource.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/mp3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/multibackgrounds.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/netinfo.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/object-entries.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/ogv.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/page-transition-events.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/passkeys.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/path2d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/payment-request.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/permissions-api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/picture.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/progress.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/promise-finally.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/publickeypinning.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/readonly-attr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/rel-noopener.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/requestanimationframe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/screen-orientation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/spdy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/srcset.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/stream.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/svg-filters.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/svg-fonts.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/svg-html.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/svg-html5.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/svg-img.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/text-emphasis.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/text-stroke.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/typedarrays.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/upgradeinsecurerequests.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/url-scroll-to-text-fragment.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/user-select-none.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/wai-aria.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/wasm-multi-value.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/wasm-nontrapping-fptoint.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/wasm-threads.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/web-animation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/web-app-manifest.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/web-bluetooth.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/webgpu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/websockets.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/webvtt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/woff.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/features/xhtml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/AE.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/AG.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/AS.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/AX.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/BE.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/BH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/BJ.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/BO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/BT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/CH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/CO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/CY.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/ES.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/GE.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/GQ.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/HR.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/HT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/JP.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/KE.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/KG.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/LT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/LV.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MA.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MC.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MR.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/MY.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/NF.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/NP.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/NR.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/NZ.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/PG.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/PL.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/PS.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/SA.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/SI.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/SK.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/TD.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/TN.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/UG.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/US.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/VC.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/data/regions/VE.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/dist/lib/statuses.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/dist/unpacker/agents.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/dist/unpacker/browsers.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/caniuse-lite/dist/unpacker/feature.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/debug/src/browser.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/electron-to-chromium/full-chromium-versions.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/electron-to-chromium/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/esbuild/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/esbuild/install.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/escalade/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/escalade/sync/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/escalade/sync/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/escalade/sync/index.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/gensync/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/gensync/index.js.flow" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/gensync/test/.babelrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/gensync/test/index.test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/js-tokens/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/jsesc/man/jsesc.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/json5/dist/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/json5/lib/require.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/json5/lib/util.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/json5/lib/util.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/dist/images/marker-icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/dist/images/marker-shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/Leaflet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/control/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/core/Class.leafdoc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/core/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/dom/DomUtil.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/dom/PosAnimation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/geo/projection/Projection.LonLat.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/geometry/Point.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/geometry/Transformation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/images/layers.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/Popup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/marker/Icon.Default.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/marker/Marker.Drag.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/marker/Marker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/tile/TileLayer.WMS.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/tile/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/layer/vector/SVG.Util.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/map/Map.methodOptions.leafdoc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/map/handler/Map.DoubleClickZoom.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/leaflet/src/map/handler/Map.ScrollWheelZoom.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/loose-envify/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/lru-cache/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/nanoid/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/nanoid/async/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/nanoid/async/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/node-releases/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/picocolors/picocolors.browser.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/picocolors/picocolors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/at-rule.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/comment.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/declaration.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/document.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/input.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/lazy-result.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/list.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/no-work-result.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/parser.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/postcss.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/processor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/result.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/root.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/rule.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/stringifier.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/stringifier.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/warn-once.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/postcss/lib/warning.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-dom/cjs/react-dom.profiling.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-dom/client.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-dom/profiling.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-dom/server.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-leaflet/lib/FeatureGroup.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-leaflet/lib/Marker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-leaflet/lib/hooks.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react-refresh/babel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/cjs/react-jsx-dev-runtime.production.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/cjs/react.shared-subset.development.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/jsx-dev-runtime.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/jsx-runtime.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/react/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/rollup/LICENSE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/rollup/dist/shared/rollup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/scheduler/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/scheduler/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/scheduler/umd/scheduler.profiling.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/scheduler/unstable_post_task.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/semver/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/source-map-js/lib/mapping-list.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/source-map-js/lib/quick-sort.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/update-browserslist-db/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/client/env.mjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/node/chunks/dep-IQS-Za7F.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/node/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/node/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/node/runtime.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/dist/node/types.d-aGj9QkWt.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/index.d.cts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/types/import-meta.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/vite/types/importMeta.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/yallist/README.md" beforeDir="false" />
+    <list default="true" id="f74a7459-aac8-4509-b628-9df4df0e4ea2" name="Changes" comment="1.0">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README2.md" beforeDir="false" afterPath="$PROJECT_DIR$/README2.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/AdminGeofences.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AdminGeofences.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ui/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/aegis_postgres_bootstrap.sql" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -518,10 +24,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="33nFQMyBtdwnvclz0qnT5Zgql9A" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -530,6 +36,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.python -m venv .venv && source .venv/bin/activate.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -544,6 +51,36 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="python -m venv .venv &amp;&amp; source .venv/bin/activate" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="aegis2.0" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="venv" />
+      <option name="PARAMETERS" value=".venv &amp;&amp; source .venv/bin/activate" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.python -m venv .venv &amp;&amp; source .venv/bin/activate" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -559,11 +96,53 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759944913193</updated>
-      <workItem from="1759944915245" duration="3386000" />
+      <workItem from="1759944915245" duration="3661000" />
+      <workItem from="1760033096521" duration="6962000" />
     </task>
+    <task id="LOCAL−00001" summary="1.0">
+      <option name="closed" value="true" />
+      <created>1759959203444</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1759959203444</updated>
+    </task>
+    <task id="LOCAL−00002" summary="1.0">
+      <option name="closed" value="true" />
+      <created>1759959256102</created>
+      <option name="number" value="LOCAL−00002" />
+      <option name="presentableId" value="LOCAL−00002" />
+      <updated>1759959256102</updated>
+    </task>
+    <task id="LOCAL−00003" summary="login 'github/master'">
+      <option name="closed" value="true" />
+      <created>1760036817171</created>
+      <option name="number" value="LOCAL−00003" />
+      <option name="presentableId" value="LOCAL−00003" />
+      <updated>1760036817171</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="2.0" />
+    <MESSAGE value="1.0" />
+    <MESSAGE value="login 1.0" />
+    <MESSAGE value="Merge remote-tracking branch 'github/master'" />
+    <MESSAGE value="login 'github/master'" />
+    <option name="LAST_COMMIT_MESSAGE" value="login 'github/master'" />
   </component>
 </project>

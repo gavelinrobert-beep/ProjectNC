@@ -5,8 +5,7 @@ Detta paket innehåller backend (FastAPI), frontend (React/Leaflet), SQL-bootstr
 ## Snabbstart
 ```bash
 cd 
-docker compose down -v
-docker compose up --build
+docker compose build up 
 ```
 Öppna:
 - API: http://localhost:8000/docs
@@ -27,3 +26,6 @@ python aegis_mock_cli.py --post-url http://localhost:8000/alerts
 - `compose.yaml` – startar db, api, frontend
 - `.env.sample` – ändra portar/CORS
 - `tools/cli/` – litet script för att posta alerts
+docker compose build api --no-cache
+docker compose up -d
+- docker compose up --build

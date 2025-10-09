@@ -7,26 +7,40 @@
     <title>Project AEGIS</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-      body{ margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto; background:#f7f8f7; }
-      header{ padding:1rem; background:#e9eee9; border-bottom:1px solid #d9e0d9; font-weight:700 }
-      .wrap{ display:grid; grid-template-columns: 380px 1fr; gap:1rem; padding:1rem; }
-      .card{ background:white; border:1px solid #e6eae6; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.03); }
-      .card h2{ margin:0; padding: .75rem 1rem; border-bottom:1px solid #edf1ed; font-size:1rem;}
-      .content{ padding:.75rem 1rem; }
-      #map{ height: calc(100vh - 140px); width:100%; border-radius:12px; }
-      .list{ list-style:none; padding:0; margin:0; }
-      .list li{ display:flex; justify-content:space-between; padding:.45rem 0; border-bottom:1px dashed #eef2ee; }
-      .muted{ color:#677; }
-      .btn{ padding:.4rem .6rem; border-radius:.5rem; border:1px solid #335039; color:#335039; background:white; cursor:pointer;}
-      .map-toolbar { position: relative; z-index: 2000; }
-      .leaflet-container { z-index: 1; }
-      .leaflet-top, .leaflet-bottom { z-index: 500; }
-      .leaflet-pane { z-index: 200; }
-      .vertex-handle {
-        background:#fff; border:2px solid #b58900; border-radius:50%;
-        width:10px; height:10px; box-shadow:0 0 0 2px rgba(0,0,0,.15); pointer-events:auto;
-      }
-    </style>
+  :root{
+    --bg:#0c1210;         /* mörk grönsvart */
+    --panel:#121a17;
+    --border:#1e2a25;
+    --text:#d9d7cf;       /* sand / desert tan för text */
+    --muted:#96a39a;
+    --accent:#c2b79b;     /* desert tan accent */
+    --accent-strong:#b89b52;
+    --alert:#b5392f;
+    --ok:#3aa86f;
+  }
+  *{ box-sizing:border-box }
+  body{ margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto; background:var(--bg); color:var(--text); }
+  header{ padding:1rem; background:#0f1815; border-bottom:1px solid var(--border); font-weight:700 }
+  .wrap{ display:grid; grid-template-columns: 380px 1fr; gap:1rem; padding:1rem; }
+  .card{ background:var(--panel); border:1px solid var(--border); border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.35); }
+  .card h2{ margin:0; padding: .75rem 1rem; border-bottom:1px solid var(--border); font-size:1rem; color:var(--accent); }
+  .content{ padding:.75rem 1rem; }
+  #map{ height: calc(100vh - 140px); width:100%; border-radius:12px; }
+  .list{ list-style:none; padding:0; margin:0; }
+  .list li{ display:flex; justify-content:space-between; align-items:center; padding:.45rem 0; border-bottom:1px dashed var(--border); }
+  .muted{ color:var(--muted); }
+  .btn{ padding:.4rem .6rem; border-radius:.5rem; border:1px solid var(--accent); color:var(--text); background:transparent; cursor:pointer;}
+  .btn:hover{ background:rgba(194,183,155,0.1) }
+  .map-toolbar { position: relative; z-index: 2000; }
+  .leaflet-container { z-index: 1; }
+  .leaflet-top, .leaflet-bottom { z-index: 500; }
+  .leaflet-pane { z-index: 200; }
+  .vertex-handle {
+    background:#111; border:2px solid var(--accent-strong); border-radius:50%;
+    width:10px; height:10px; box-shadow:0 0 0 2px rgba(0,0,0,.35); pointer-events:auto;
+  }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   </head>
   <body>
     <header>PROJECT AEGIS — Real‑Time Logistics</header>
