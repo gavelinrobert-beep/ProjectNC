@@ -127,7 +127,7 @@ export default function AdminGeofences(){
   )
 
   return (
-    <div className="content" style={{ display:'grid', gridTemplateColumns:'380px 1fr', gap:12 }}>
+    <div className="content" style={{ display:'grid', gridTemplateColumns:'780px 1fr', gap:12 }}>
       <div className="card" style={{ border:'none', boxShadow:'none' }}>
         <h3>Geofences (Admin)</h3>
 

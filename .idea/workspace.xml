@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f74a7459-aac8-4509-b628-9df4df0e4ea2" name="Changes" comment="1.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README2.md" beforeDir="false" afterPath="$PROJECT_DIR$/README2.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/AdminGeofences.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AdminGeofences.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/ui/App.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +89,7 @@
       <option name="presentableId" value="Default" />
       <updated>1759944913193</updated>
       <workItem from="1759944915245" duration="3661000" />
-      <workItem from="1760033096521" duration="6962000" />
+      <workItem from="1760033096521" duration="9956000" />
     </task>
     <task id="LOCAL−00001" summary="1.0">
       <option name="closed" value="true" />
@@ -120,7 +112,14 @@
       <option name="presentableId" value="LOCAL−00003" />
       <updated>1760036817171</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL−00004" summary="1.0">
+      <option name="closed" value="true" />
+      <created>1760043911742</created>
+      <option name="number" value="LOCAL−00004" />
+      <option name="presentableId" value="LOCAL−00004" />
+      <updated>1760043911742</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,10 +138,13 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2.0" />
-    <MESSAGE value="1.0" />
     <MESSAGE value="login 1.0" />
     <MESSAGE value="Merge remote-tracking branch 'github/master'" />
     <MESSAGE value="login 'github/master'" />
-    <option name="LAST_COMMIT_MESSAGE" value="login 'github/master'" />
+    <MESSAGE value="1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.0" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/aegis2_0$python__m_venv__venv____source__venv_bin_activate.coverage" NAME="python -m venv .venv &amp;&amp; source .venv/bin/activate Coverage Results" MODIFIED="1760043773592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
