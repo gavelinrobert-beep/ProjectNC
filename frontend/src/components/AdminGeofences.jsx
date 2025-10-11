@@ -1,206 +1,111 @@
+
 // src/components/AdminGeofences.jsx
-import React, { useEffect, useMemo, useState } from 'react'
-import { api } from '../lib/api'
-import { isAdmin } from '../lib/auth'
-import GeofenceMapEditor from './GeofenceMapEditor'
+import React, { useEffect, useState, useCallback } from 'react';
+import { api } from '../lib/api';
+import { isAdmin } from '../lib/auth';
+import GeofenceMapEditor from './GeofenceMapEditor';
 
-export default function AdminGeofences(){
-  const [items, setItems] = useState([])
-  const [form, setForm] = useState({
-    id: '',
-    name: '',
-    polygon: '[[62.39,17.30],[62.39,17.34],[62.36,17.34],[62.36,17.30]]'
-  })
-  const [draftPoints, setDraftPoints] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+const IconButton = ({ icon, label, ...props }) => (
+  <button {...props} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <i className={`fas fa-${icon}`} />
+    {label}
+  </button>
+);
 
-  async function refresh(){
+export default function AdminGeofences() {
+  const [geofences, setGeofences] = useState([]);
+  const [mode, setMode] = useState('view'); // view, draw, edit, delete
+  const [selectedGeofence, setSelectedGeofence] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const refreshGeofences = useCallback(async () => {
     try {
-      const list = await api.geofences()
-      setItems(list)
+      setLoading(true);
+      const list = await api.geofences();
+      setGeofences(list);
+      setError('');
     } catch (e) {
-      console.error(e)
-      setError('Kunde inte hämta geofences')
+      console.error(e);
+      setError('Kunde inte hämta geofences');
+    } finally {
+      setLoading(false);
     }
-  }
-  useEffect(()=>{ refresh() }, [])
+  }, []);
 
-  function parsePoly(s){
-    const p = JSON.parse(s)
-    if (!Array.isArray(p) || !Array.isArray(p[0]) || p[0].length !== 2) {
-      throw new Error('Polygon måste vara [[lat,lon], ...]')
+  useEffect(() => {
+    refreshGeofences();
+  }, [refreshGeofences]);
+
+  const handleSave = async (geofenceData) => {
+    if (!isAdmin()) {
+      setError('Endast administratörer kan spara geofences.');
+      return;
     }
-    return p
-  }
-
-  // håll textarea i sync när användaren ritar
-  function onDraftChange(points){
-    setDraftPoints(points)
-    try { setForm(f => ({ ...f, polygon: JSON.stringify(points) })) } catch {}
-  }
-
-  // auto-parse om användaren ändrar i textarea
-  useEffect(()=>{
+    setLoading(true);
+    setError('');
     try {
-      const p = parsePoly(form.polygon)
-      setDraftPoints(p)
-      setError('')
-    } catch {
-      /* ignorera, vi visar fel först när man försöker spara */
-    }
-  }, [form.polygon])
-
-  async function onCreate(e){
-    e.preventDefault()
-    setError('')
-    if (!isAdmin()) { setError('Kräver admin'); return }
-    if (!form.name?.trim()) { setError('Namn krävs'); return }
-    if ((draftPoints||[]).length < 3) { setError('Minst tre punkter krävs'); return }
-
-    setLoading(true)
-    try{
-      const body = {
-        id: form.id || undefined,
-        name: form.name.trim(),
-        polygon: draftPoints
+      if (geofenceData.id) {
+        await api.updateGeofence(geofenceData.id, geofenceData);
+      } else {
+        await api.createGeofence(geofenceData);
       }
-      await api.createGeofence(body)
-      await refresh()
-      // lämna polygon kvar som ritad, nollställ id/namn
-      setForm({ id:'', name:'', polygon: JSON.stringify(draftPoints) })
-    }catch(err){
-      console.error(err)
-      setError(String(err.message || err))
+      await refreshGeofences();
+      setMode('view');
+      setSelectedGeofence(null);
+    } catch (err) {
+      console.error(err);
+      setError(String(err.message || err));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  async function onUpdate(id){
-    setError('')
-    if (!isAdmin()) { setError('Kräver admin'); return }
-    if (!id) { setError('Välj ett geofence att uppdatera'); return }
-    if ((draftPoints||[]).length < 3) { setError('Minst tre punkter krävs'); return }
+  const handleDelete = async (geofenceId) => {
+    if (!isAdmin()) {
+      setError('Endast administratörer kan radera geofences.');
+      return;
+    }
+    if (!window.confirm(`Är du säker på att du vill radera geofence ${geofenceId}?`)) return;
 
-    setLoading(true)
-    try{
-      await api.updateGeofence(id, {
-        name: (form.name?.trim() || id),
-        polygon: draftPoints
-      })
-      await refresh()
-    }catch(err){
-      console.error(err)
-      setError(String(err.message || err))
+    setLoading(true);
+    setError('');
+    try {
+      await api.deleteGeofence(geofenceId);
+      await refreshGeofences();
+      setMode('view');
+      setSelectedGeofence(null);
+    } catch (err) {
+      console.error(err);
+      setError(String(err.message || err));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  async function onDelete(id){
-    if (!isAdmin()) { setError('Kräver admin'); return }
-    if (!id) return
-    if (!confirm(`Ta bort geofence ${id}?`)) return
-
-    setLoading(true)
-    try{
-      await api.deleteGeofence(id)
-      await refresh()
-      if (form.id === id) setForm(f => ({ ...f, id:'', name:'' }))
-    }catch(err){
-      console.error(err)
-      setError(String(err.message || err))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  function startEdit(g){
-    setForm({ id: g.id, name: g.name, polygon: JSON.stringify(g.polygon) })
-    setDraftPoints(Array.isArray(g.polygon) ? g.polygon : [])
-  }
-
-  const parsedItems = useMemo(
-    () => (items||[]).map(g => ({ ...g, polygon: Array.isArray(g.polygon) ? g.polygon : [] })),
-    [items]
-  )
+  };
 
   return (
-    <div className="content" style={{ display:'grid', gridTemplateColumns:'780px 1fr', gap:12 }}>
-      <div className="card" style={{ border:'none', boxShadow:'none' }}>
-        <h3>Geofences (Admin)</h3>
+    <div className="content" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
+      <div className="card" style={{ border: 'none', boxShadow: 'none' }}>
+        <h3>Geofence Editor (Admin)</h3>
+        {error && <div style={{ color: '#b5392f', margin: '8px 0' }}>{error}</div>}
 
-        {error && <div style={{ color:'#b5392f', margin:'8px 0' }}>{error}</div>}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <IconButton icon="eye" label="View" onClick={() => setMode('view')} disabled={mode === 'view'} />
+          <IconButton icon="draw-polygon" label="Draw" onClick={() => setMode('draw')} disabled={mode === 'draw'} />
+          <IconButton icon="edit" label="Edit" onClick={() => setMode('edit')} disabled={mode === 'edit'} />
+          <IconButton icon="trash" label="Delete" onClick={() => setMode('delete')} disabled={mode === 'delete'} />
+        </div>
 
-        <form onSubmit={onCreate} style={{ display:'grid', gap:8 }}>
-          <input
-            placeholder="id (valfritt)"
-            value={form.id}
-            onChange={e=>setForm({ ...form, id: e.target.value })}
-          />
-          <input
-            placeholder="name"
-            required
-            value={form.name}
-            onChange={e=>setForm({ ...form, name: e.target.value })}
-          />
-          <label className="muted" style={{ fontSize:12 }}>
-            Polygon (JSON: [[lat,lon], ...]). Du kan rita direkt på kartan.
-          </label>
-          <textarea
-            rows={6}
-            value={form.polygon}
-            onChange={e=>setForm({ ...form, polygon: e.target.value })}
-          />
-          <div style={{ display:'flex', gap:8 }}>
-            <button
-              className="btn"
-              type="submit"
-              disabled={loading || !isAdmin() || !form.name?.trim() || (draftPoints||[]).length < 3}
-              title={isAdmin() ? '' : 'Kräver admin'}
-            >
-              Skapa
-            </button>
-            {form.id && (
-              <button
-                className="btn"
-                type="button"
-                onClick={()=>onUpdate(form.id)}
-                disabled={loading || !isAdmin() || (draftPoints||[]).length < 3}
-                title={isAdmin() ? '' : 'Kräver admin'}
-              >
-                Spara ändring
-              </button>
-            )}
-          </div>
-        </form>
-
-        <div style={{ marginTop:12 }} className="muted">Befintliga</div>
-        <ul className="list">
-          {parsedItems.map(g => (
-            <li key={g.id}>
-              <span><b>{g.id}</b> — {g.name}</span>
-              {isAdmin() && (
-                <span style={{ display:'flex', gap:8 }}>
-                  <button className="btn" onClick={()=>startEdit(g)}>Redigera</button>
-                  <button className="btn" onClick={()=>onDelete(g.id)}>Radera</button>
-                </span>
-              )}
-            </li>
-          ))}
-          {parsedItems.length === 0 && (
-            <li className="muted">Inga geofences ännu</li>
-          )}
-        </ul>
+        <GeofenceMapEditor
+          geofences={geofences}
+          mode={mode}
+          selectedGeofence={selectedGeofence}
+          onSelectGeofence={setSelectedGeofence}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          loading={loading}
+        />
       </div>
-
-      <GeofenceMapEditor
-        geofences={parsedItems}
-        draft={draftPoints}
-        setDraft={onDraftChange}
-        showExisting
-      />
     </div>
-  )
+  );
 }

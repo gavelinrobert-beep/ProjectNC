@@ -6,9 +6,7 @@ const KEY_ROLE  = 'aegis_role'
 export function setIdToken(token){ token ? localStorage.setItem(KEY_TOKEN, token) : localStorage.removeItem(KEY_TOKEN) }
 export function getIdToken(){ return localStorage.getItem(KEY_TOKEN) }
 export function authHeader(){
-  const t = getIdToken()
-  // fallback till dev-token om ingen token (kan tas bort när ni vill hårdkräva login)
-  const tok = t || 'dev-token'
+  const tok = getIdToken()
   return tok ? { Authorization: `Bearer ${tok}` } : {}
 }
 

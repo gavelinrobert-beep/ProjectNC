@@ -1,14 +1,29 @@
+import { useState, useEffect } from 'react';
 
-import { useEffect } from 'react'
-export function useSSE({ url, onEvent, enabled=true }) {
+export const useSSE = (url, initialValue) => {
+  const [data, setData] = useState(initialValue);
+
   useEffect(() => {
-    if (!enabled) return
-    let es
-    try {
-      es = new EventSource(url, { withCredentials: false })
-      es.onmessage = (ev) => { try { onEvent?.(JSON.parse(ev.data)) } catch {} }
-      es.onerror = () => {}
-    } catch {}
-    return () => { try { es && es.close() } catch {} }
-  }, [url, enabled, onEvent])
-}
+    const eventSource = new EventSource(url);
+
+    eventSource.onmessage = (event) => {
+      try {
+        const parsedData = JSON.parse(event.data);
+        setData(parsedData);
+      } catch (error) {
+        console.error('SSE JSON parsing error:', error);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      // Don't close on error, EventSource will attempt to reconnect.
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [url]);
+
+  return data;
+};

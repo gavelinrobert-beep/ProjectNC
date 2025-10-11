@@ -27,3 +27,7 @@ python aegis_mock_cli.py --post-url http://localhost:8000/alerts
 - `compose.yaml` – startar db, api, frontend
 - `.env.sample` – ändra portar/CORS
 - `tools/cli/` – litet script för att posta alerts
+
+admin login
+Email: admin@aegis.local
+Password: admin123
