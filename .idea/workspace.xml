@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegis/backend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AdminGeofences.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/GeofenceMapEditor.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/icons.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" />
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="3.0">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README2.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/AdminGeofences.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/GeofenceMapEditor.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/hooks/useSSE.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/hooks/useSSE.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/icons.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/AdminGeofences.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AdminGeofences.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +18,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "gavelinrobert-beep"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/gavelinrobert-beep/aegis2.0.git",
+    "accountId": "f859e8a4-cad8-4670-87dd-56eea2fe649a"
+  }
+}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "customColor": "",
   "associatedIndex": 6
@@ -53,6 +43,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
@@ -80,11 +71,23 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760478782848</updated>
-      <workItem from="1760478785017" duration="314000" />
+      <workItem from="1760478785017" duration="1287000" />
     </task>
+    <task id="LOCAL−00001" summary="3.0">
+      <option name="closed" value="true" />
+      <created>1760479110869</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1760479110869</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="3.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="3.0" />
   </component>
 </project>
