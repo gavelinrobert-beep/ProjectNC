@@ -1,4 +1,3 @@
-
 services:
   db:
     image: postgres:16-alpine
@@ -7,7 +6,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - aegis_dbdata_v16:/var/lib/postgresql/data   # <- NY volym, ren datakatalog
+      - aegis_dbdata_v16:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -15,12 +14,13 @@ services:
       retries: 10
     ports:
       - "5432:5432"
-
   api:
     build: ./backend
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - CORS_ORIGINS=${CORS_ORIGINS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXP_MIN=240
     depends_on:
       db:
         condition: service_healthy
@@ -28,21 +28,17 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/app:/app/app
-
   frontend:
     build: ./frontend
     environment:
       - VITE_API_BASE=${VITE_API_BASE}
-    # Kör npm install vid start för att säkerställa node_modules finns
     command: sh -lc "npm install && npm run dev -- --host 0.0.0.0"
     ports:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-      - /app/node_modules                         # <- anonym volym för att inte raderas av bind mount
+      - /app/node_modules
     depends_on:
       - api
-
 volumes:
-  aegis_dbdata_v16:  # <- NY!
-
+  aegis_dbdata_v16:
