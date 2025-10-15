@@ -1,0 +1,9 @@
+{
+  "name": "Project AEGIS",
+  "short_name": "AEGIS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1815",
+  "theme_color": "#0f1815",
+  "icons": []
+}
