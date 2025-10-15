@@ -12,10 +12,14 @@ export default function AdminGeofences() {
 
   async function refresh() {
     try {
-      setItems(await api.geofences())
+      console.log('[AdminGeofences] Fetching geofences...')
+      const geofences = await api.geofences();
+      console.log('[AdminGeofences] Geofences received:', geofences);
+      setItems(geofences || []);
     } catch (e) {
-      console.error(e)
+      console.error('[AdminGeofences] Error fetching geofences:', e);
       setError('Kunde inte hämta geofences')
+      setItems([])
     }
   }
 
@@ -31,18 +35,25 @@ export default function AdminGeofences() {
   async function onCreate(e) {
     e.preventDefault()
     setError('')
-    if (!isAdmin()) { setError('Kräver admin'); return }
+    alert('onCreate called!') // Debug: show alert when function is called
+    if (!isAdmin()) {
+      setError('Kräver admin (isAdmin() returned false)');
+      alert('isAdmin() returned false!') // Debug: show alert if admin check fails
+      return
+    }
     if (!form.name?.trim()) { setError('Namn krävs'); return }
     if ((draftPoints || []).length < 3) { setError('Minst tre punkter krävs'); return }
     setLoading(true)
     try {
       const body = { id: form.id || undefined, name: form.name.trim(), polygon: draftPoints }
-      await api.createGeofence(body)
+      const response = await api.createGeofence(body)
+      alert('Geofence created! Response: ' + JSON.stringify(response)) // Debug: show alert on success
       await refresh()
       setForm({ id: '', name: '', polygon: JSON.stringify(draftPoints) })
     } catch (err) {
       console.error(err)
       setError(String(err.message || err))
+      alert('Error: ' + String(err.message || err)) // Debug: show alert on error
     } finally {
       setLoading(false)
     }
@@ -90,12 +101,26 @@ export default function AdminGeofences() {
   const parsedItems = useMemo(() =>
     (items || []).map(g => ({
       ...g,
-      polygon: Array.isArray(g.polygon) ? g.polygon : []
+      id: String(g.id),
+      polygon: Array.isArray(g.polygon)
+        ? g.polygon
+        : (typeof g.polygon === 'string'
+            ? JSON.parse(g.polygon)
+            : [])
     }))
     , [items])
 
+  // Debug logs to help diagnose frontend state
+  console.log('AdminGeofences items:', items)
+  console.log('AdminGeofences parsedItems:', parsedItems)
+
   return (
     <div className='content' style={{ display: 'grid', gridTemplateColumns: '440px minmax(760px,1fr)', gap: 12, alignItems: 'start' }}>
+      {/* Debug output for items and parsedItems, always visible at the top */}
+      <pre style={{background:'#222',color:'#fff',fontSize:12,overflow:'auto',maxHeight:120,border:'2px solid #b5392f',marginBottom:8,padding:8}}>
+items: {JSON.stringify(items,null,2)}
+parsedItems: {JSON.stringify(parsedItems,null,2)}
+</pre>
       <div className='card' style={{ border: 'none', boxShadow: 'none' }}>
         <h3>Geofences (Admin)</h3>
         {error && <div style={{ color: '#b5392f', margin: '8px 0' }}>{error}</div>}
