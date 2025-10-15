@@ -21,6 +21,7 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXP_MIN=240
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
     depends_on:
       db:
         condition: service_healthy

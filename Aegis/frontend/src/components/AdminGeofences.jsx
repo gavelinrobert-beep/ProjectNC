@@ -1,156 +1,308 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { MapContainer, TileLayer, Polygon, FeatureGroup } from 'react-leaflet'
+import { EditControl } from 'react-leaflet-draw'
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-draw/dist/leaflet.draw.css'
 import { api } from '../lib/api'
-import { isAdmin } from '../lib/auth'
-import GeofenceMapEditor from './GeofenceMapEditor'
+import BasesAdmin from './BasesAdmin'
+
+const defaultCenter = [62.3901, 17.3062]
 
 export default function AdminGeofences() {
-  const [items, setItems] = useState([])
-  const [form, setForm] = useState({ id: '', name: '', polygon: '[]' })
-  const [draftPoints, setDraftPoints] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [geofences, setGeofences] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [newGeofenceName, setNewGeofenceName] = useState('')
+  const [newGeofencePoints, setNewGeofencePoints] = useState([])
+  const [adminTab, setAdminTab] = useState('geofences')
 
-  async function refresh() {
-    try {
-      console.log('[AdminGeofences] Fetching geofences...')
-      const geofences = await api.geofences();
-      console.log('[AdminGeofences] Geofences received:', geofences);
-      setItems(geofences || []);
-    } catch (e) {
-      console.error('[AdminGeofences] Error fetching geofences:', e);
-      setError('Kunde inte hämta geofences')
-      setItems([])
-    }
+  useEffect(() => {
+    fetchGeofences()
+  }, [])
+
+  const fetchGeofences = () => {
+    api.geofences()
+      .then(data => {
+        const parsed = (data || []).map(g => {
+          let polygon = g.polygon
+          if (typeof polygon === 'string') {
+            try { polygon = JSON.parse(polygon) } catch { polygon = [] }
+          }
+          if (!Array.isArray(polygon)) polygon = []
+          return { ...g, polygon }
+        })
+        setGeofences(parsed)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('[AdminGeofences] Error fetching geofences:', err)
+        setLoading(false)
+      })
   }
 
-  useEffect(() => { refresh() }, [])
-
-  function onDraftChange(points) {
-    setDraftPoints(points || [])
-    try {
-      setForm(f => ({ ...f, polygon: JSON.stringify(points || []) }))
-    } catch { }
-  }
-
-  async function onCreate(e) {
-    e.preventDefault()
-    setError('')
-    alert('onCreate called!') // Debug: show alert when function is called
-    if (!isAdmin()) {
-      setError('Kräver admin (isAdmin() returned false)');
-      alert('isAdmin() returned false!') // Debug: show alert if admin check fails
+  const handleCreateGeofence = () => {
+    if (!newGeofenceName.trim()) {
+      alert('Please enter a geofence name')
       return
     }
-    if (!form.name?.trim()) { setError('Namn krävs'); return }
-    if ((draftPoints || []).length < 3) { setError('Minst tre punkter krävs'); return }
-    setLoading(true)
-    try {
-      const body = { id: form.id || undefined, name: form.name.trim(), polygon: draftPoints }
-      const response = await api.createGeofence(body)
-      alert('Geofence created! Response: ' + JSON.stringify(response)) // Debug: show alert on success
-      await refresh()
-      setForm({ id: '', name: '', polygon: JSON.stringify(draftPoints) })
-    } catch (err) {
-      console.error(err)
-      setError(String(err.message || err))
-      alert('Error: ' + String(err.message || err)) // Debug: show alert on error
-    } finally {
-      setLoading(false)
+    if (newGeofencePoints.length < 3) {
+      alert('A geofence needs at least 3 points')
+      return
+    }
+
+    const payload = {
+      id: `geofence-${Date.now()}`,
+      name: newGeofenceName,
+      polygon: newGeofencePoints
+    }
+
+    fetch('http://localhost:8000/geofences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(() => {
+        alert('Geofence created!')
+        setNewGeofenceName('')
+        setNewGeofencePoints([])
+        fetchGeofences()
+      })
+      .catch(err => {
+        console.error('[AdminGeofences] Error creating geofence:', err)
+        alert('Error creating geofence')
+      })
+  }
+
+  const handleDeleteGeofence = (id) => {
+    if (!confirm(`Delete geofence ${id}?`)) return
+
+    fetch(`http://localhost:8000/geofences/${id}`, {
+      method: 'DELETE'
+    })
+      .then(() => {
+        alert('Geofence deleted')
+        fetchGeofences()
+      })
+      .catch(err => {
+        console.error('[AdminGeofences] Error deleting geofence:', err)
+        alert('Error deleting geofence')
+      })
+  }
+
+  const addPoint = () => {
+    const lat = parseFloat(prompt('Enter latitude:'))
+    const lon = parseFloat(prompt('Enter longitude:'))
+    if (!isNaN(lat) && !isNaN(lon)) {
+      setNewGeofencePoints([...newGeofencePoints, [lat, lon]])
     }
   }
 
-  async function onUpdate(id) {
-    setError('')
-    if (!isAdmin()) { setError('Kräver admin'); return }
-    if (!id) { setError('Välj geofence'); return }
-    if ((draftPoints || []).length < 3) { setError('Minst tre punkter krävs'); return }
-    setLoading(true)
-    try {
-      await api.updateGeofence(id, { name: (form.name?.trim() || id), polygon: draftPoints })
-      await refresh()
-    } catch (err) {
-      console.error(err)
-      setError(String(err.message || err))
-    } finally {
-      setLoading(false)
+  const removePoint = (index) => {
+    setNewGeofencePoints(newGeofencePoints.filter((_, i) => i !== index))
+  }
+
+  const handleCreated = (e) => {
+    const { layerType, layer } = e
+    if (layerType === 'polygon') {
+      const coords = layer.getLatLngs()[0].map(ll => [ll.lat, ll.lng])
+      setNewGeofencePoints(coords)
     }
   }
 
-  async function onDelete(id) {
-    if (!isAdmin()) { setError('Kräver admin'); return }
-    if (!id) return;
-    if (!confirm(`Ta bort geofence ${id}?`)) return;
-    setLoading(true)
-    try {
-      await api.deleteGeofence(id)
-      await refresh()
-      if (form.id === id) setForm(f => ({ ...f, id: '', name: '' }))
-    } catch (err) {
-      console.error(err)
-      setError(String(err.message || err))
-    } finally {
-      setLoading(false)
-    }
+  if (loading) {
+    return (
+      <div className='content'>
+        <h3>Administration</h3>
+        <div style={{ padding: 12, background: '#d9b945', color: '#000', marginTop: 12 }}>
+          Laddar...
+        </div>
+      </div>
+    )
   }
-
-  function startEdit(g) {
-    setForm({ id: g.id, name: g.name, polygon: JSON.stringify(g.polygon || []) })
-    setDraftPoints(Array.isArray(g.polygon) ? g.polygon : [])
-  }
-
-  const parsedItems = useMemo(() =>
-    (items || []).map(g => ({
-      ...g,
-      id: String(g.id),
-      polygon: Array.isArray(g.polygon)
-        ? g.polygon
-        : (typeof g.polygon === 'string'
-            ? JSON.parse(g.polygon)
-            : [])
-    }))
-    , [items])
-
-  // Debug logs to help diagnose frontend state
-  console.log('AdminGeofences items:', items)
-  console.log('AdminGeofences parsedItems:', parsedItems)
 
   return (
-    <div className='content' style={{ display: 'grid', gridTemplateColumns: '440px minmax(760px,1fr)', gap: 12, alignItems: 'start' }}>
-      {/* Debug output for items and parsedItems, always visible at the top */}
-      <pre style={{background:'#222',color:'#fff',fontSize:12,overflow:'auto',maxHeight:120,border:'2px solid #b5392f',marginBottom:8,padding:8}}>
-items: {JSON.stringify(items,null,2)}
-parsedItems: {JSON.stringify(parsedItems,null,2)}
-</pre>
-      <div className='card' style={{ border: 'none', boxShadow: 'none' }}>
-        <h3>Geofences (Admin)</h3>
-        {error && <div style={{ color: '#b5392f', margin: '8px 0' }}>{error}</div>}
-        <form onSubmit={onCreate} style={{ display: 'grid', gap: 8, maxWidth: 440 }}>
-          <input placeholder='id (valfritt)' value={form.id} onChange={e => setForm({ ...form, id: e.target.value })} />
-          <input placeholder='name' required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-          <label className='muted' style={{ fontSize: 12 }}>Polygon (ritas på kartan eller skriv JSON [[lat,lon],...]).</label>
-          <textarea rows={6} value={form.polygon} onChange={e => setForm({ ...form, polygon: e.target.value })} />
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className='btn' type='submit' disabled={loading || !isAdmin() || !form.name?.trim() || (draftPoints || []).length < 3}>Skapa</button>
-            {form.id && <button className='btn' type='button' onClick={() => onUpdate(form.id)} disabled={loading || !isAdmin() || (draftPoints || []).length < 3}>Spara ändring</button>}
-          </div>
-        </form>
-        <div style={{ marginTop: 12 }} className='muted'>Befintliga</div>
-        <ul className='list'>
-          {parsedItems.map(g => (
-            <li key={g.id}>
-              <span><b>{g.id}</b> — {g.name}</span>
-              {isAdmin() && (
-                <span style={{ display: 'flex', gap: 8 }}>
-                  <button className='btn' onClick={() => startEdit(g)}>Redigera</button>
-                  <button className='btn' onClick={() => onDelete(g.id)}>Radera</button>
-                </span>
-              )}
-            </li>
-          ))}
-          {parsedItems.length === 0 && <li className='muted'>Inga geofences ännu</li>}
-        </ul>
+    <div className='content'>
+      <h3>Administration</h3>
+
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        <button
+          className='btn'
+          onClick={() => setAdminTab('geofences')}
+          style={{
+            backgroundColor: adminTab === 'geofences' ? '#3aa86f' : undefined,
+            color: adminTab === 'geofences' ? '#fff' : undefined
+          }}
+        >
+          📐 Geofences
+        </button>
+        <button
+          className='btn'
+          onClick={() => setAdminTab('bases')}
+          style={{
+            backgroundColor: adminTab === 'bases' ? '#3aa86f' : undefined,
+            color: adminTab === 'bases' ? '#fff' : undefined
+          }}
+        >
+          🏢 Baser
+        </button>
       </div>
-      <GeofenceMapEditor geofences={parsedItems} draft={draftPoints} setDraft={onDraftChange} showExisting />
+
+      {/* Tab Content */}
+      {adminTab === 'geofences' ? (
+        <>
+          {/* Geofence Creation */}
+          <div className='card' style={{ marginBottom: 12 }}>
+            <h4>Skapa Ny Geofence</h4>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: 'block', marginBottom: 4, fontSize: 13 }}>
+                Geofence Name:
+              </label>
+              <input
+                type='text'
+                placeholder='e.g. Stockholm Area'
+                value={newGeofenceName}
+                onChange={e => setNewGeofenceName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  background: '#222',
+                  border: '1px solid #333',
+                  borderRadius: 4,
+                  color: '#fff'
+                }}
+              />
+            </div>
+
+            {/* Map with Drawing Controls */}
+            <div style={{ height: '400px', width: '100%', marginBottom: 12, borderRadius: 8, overflow: 'hidden' }}>
+              <MapContainer
+                center={defaultCenter}
+                zoom={6}
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                  attribution='&copy; OpenStreetMap contributors'
+                />
+
+                <FeatureGroup>
+                  <EditControl
+                    position='topright'
+                    onCreated={handleCreated}
+                    draw={{
+                      rectangle: false,
+                      circle: false,
+                      circlemarker: false,
+                      marker: false,
+                      polyline: false,
+                      polygon: {
+                        allowIntersection: false,
+                        shapeOptions: {
+                          color: '#b89b52',
+                          fillOpacity: 0.3
+                        }
+                      }
+                    }}
+                    edit={{
+                      edit: false,
+                      remove: false
+                    }}
+                  />
+                </FeatureGroup>
+
+                {/* Show existing geofences */}
+                {geofences.map(g => (
+                  Array.isArray(g.polygon) && g.polygon.length >= 3 && (
+                    <Polygon
+                      key={g.id}
+                      positions={g.polygon}
+                      pathOptions={{ color: '#b89b52', fillOpacity: 0.2, weight: 2 }}
+                    />
+                  )
+                ))}
+
+                {/* Show new geofence being created */}
+                {newGeofencePoints.length >= 3 && (
+                  <Polygon
+                    positions={newGeofencePoints}
+                    pathOptions={{ color: '#3aa86f', fillOpacity: 0.3, weight: 2 }}
+                  />
+                )}
+              </MapContainer>
+            </div>
+
+            {/* Manual Point Entry (backup option) */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <h5 style={{ margin: 0 }}>Points ({newGeofencePoints.length})</h5>
+                <button className='btn' onClick={addPoint} style={{ fontSize: 12, padding: '6px 12px' }}>
+                  Add Point Manually
+                </button>
+              </div>
+              {newGeofencePoints.length > 0 && (
+                <ul className='list' style={{ maxHeight: 150, overflowY: 'auto' }}>
+                  {newGeofencePoints.map((pt, i) => (
+                    <li key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12, fontFamily: 'monospace' }}>
+                        [{pt[0].toFixed(6)}, {pt[1].toFixed(6)}]
+                      </span>
+                      <button
+                        className='btn'
+                        onClick={() => removePoint(i)}
+                        style={{ fontSize: 11, padding: '4px 8px', background: '#b5392f' }}
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <button
+              className='btn'
+              onClick={handleCreateGeofence}
+              style={{ width: '100%', background: '#3aa86f' }}
+              disabled={newGeofencePoints.length < 3 || !newGeofenceName.trim()}
+            >
+              Create Geofence
+            </button>
+          </div>
+
+          {/* Existing Geofences */}
+          <div className='card'>
+            <h4>Existing Geofences ({geofences.length})</h4>
+            {geofences.length === 0 ? (
+              <div style={{ padding: 12, color: '#999', textAlign: 'center' }}>
+                No geofences yet. Create one above!
+              </div>
+            ) : (
+              <ul className='list'>
+                {geofences.map(g => (
+                  <li key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{g.name}</div>
+                      <div className='muted' style={{ fontSize: 11 }}>
+                        ID: {g.id} • {(g.polygon || []).length} points
+                      </div>
+                    </div>
+                    <button
+                      className='btn'
+                      onClick={() => handleDeleteGeofence(g.id)}
+                      style={{ fontSize: 11, padding: '6px 12px', background: '#b5392f' }}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </>
+      ) : (
+        <BasesAdmin />
+      )}
     </div>
   )
 }

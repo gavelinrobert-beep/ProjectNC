@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 pyjwt==2.8.0
 passlib==1.7.4
 reportlab==3.6.13
+aiohttp

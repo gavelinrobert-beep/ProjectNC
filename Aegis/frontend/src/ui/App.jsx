@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Dashboard from '../pages/dashboard';
 import AdminGeofences from '../components/AdminGeofences';
 import Operations from '../components/Operations';
 import Login from '../components/Login';
@@ -7,7 +8,7 @@ import { isAdmin, setIdToken, setUserRole } from '../lib/auth';
 
 export default function App() {
   const [role, setRole] = useState(isAdmin() ? 'admin' : '');
-  const [activeTab, setActiveTab] = useState('operations');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   function handleLogout() {
     setIdToken('');
@@ -25,13 +26,23 @@ export default function App() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             className='btn'
+            onClick={() => setActiveTab('dashboard')}
+            style={{
+              backgroundColor: activeTab === 'dashboard' ? '#3aa86f' : undefined,
+              color: activeTab === 'dashboard' ? '#fff' : undefined
+            }}
+          >
+            📊 Dashboard
+          </button>
+          <button
+            className='btn'
             onClick={() => setActiveTab('operations')}
             style={{
               backgroundColor: activeTab === 'operations' ? '#3aa86f' : undefined,
               color: activeTab === 'operations' ? '#fff' : undefined
             }}
           >
-            Operationer
+            🗺️ Operationer
           </button>
           <button
             className='btn'
@@ -41,7 +52,7 @@ export default function App() {
               color: activeTab === 'administration' ? '#fff' : undefined
             }}
           >
-            Administration
+            ⚙️ Administration
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -50,7 +61,9 @@ export default function App() {
         </div>
       </div>
 
-      {activeTab === 'operations' ? <Operations /> : <AdminGeofences />}
+      {activeTab === 'dashboard' && <Dashboard />}
+      {activeTab === 'operations' && <Operations />}
+      {activeTab === 'administration' && <AdminGeofences />}
     </div>
   );
 }
