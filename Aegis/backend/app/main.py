@@ -1,4 +1,4 @@
-import os, json, asyncio, math, io, csv
+﻿import os, json, asyncio, math, io, csv
 from datetime import datetime, timedelta, UTC
 from typing import List, Optional
 import random
@@ -56,6 +56,21 @@ class BaseIn(BaseModel):
     name: str
     type: str = Field(..., description="logistics, military, airfield, storage")
     lat: float
+
+
+class AssetIn(BaseModel):
+    id: Optional[str] = None
+    type: str = Field(..., description="vehicle, uav, truck, helicopter, plane")
+    lat: float
+    lon: float
+    route: str = "stationary"
+    route_index: float = 0.0
+    speed: float = 0.0
+    status: str = Field(..., description="mobile, parked, airborne")
+    battery: Optional[float] = None
+    battery_drain: float = 0.0
+    has_battery: bool = False
+    fuel_type: str = Field(..., description="electric, diesel, aviation, jet, gasoline")
     lon: float
     capacity: Optional[int] = None
     assets_stored: Optional[List[str]] = None
@@ -86,55 +101,55 @@ ALARM_TYPES = {
         "name": "Geofence Entry",
         "color": "#d9b945",
         "severity": "medium",
-        "icon": "⚠️"
+        "icon": "âš ï¸"
     },
     "geofence_exit": {
         "name": "Geofence Exit",
         "color": "#e24a4a",
         "severity": "high",
-        "icon": "🚨"
+        "icon": "ðŸš¨"
     },
     "low_battery": {
         "name": "Low Battery",
         "color": "#ff9800",
         "severity": "medium",
-        "icon": "🔋"
+        "icon": "ðŸ”‹"
     },
     "critical_battery": {
         "name": "Critical Battery",
         "color": "#b5392f",
         "severity": "critical",
-        "icon": "⚡"
+        "icon": "âš¡"
     },
     "communication_lost": {
         "name": "Communication Lost",
         "color": "#9c27b0",
         "severity": "critical",
-        "icon": "📡"
+        "icon": "ðŸ“¡"
     },
     "speed_violation": {
         "name": "Speed Violation",
         "color": "#ff5722",
         "severity": "high",
-        "icon": "⚡"
+        "icon": "âš¡"
     },
     "unauthorized_movement": {
         "name": "Unauthorized Movement",
         "color": "#b5392f",
         "severity": "critical",
-        "icon": "🔒"
+        "icon": "ðŸ”’"
     },
     "maintenance_required": {
         "name": "Maintenance Required",
         "color": "#2196f3",
         "severity": "low",
-        "icon": "🔧"
+        "icon": "ðŸ”§"
     },
     "system_normal": {
         "name": "System Normal",
         "color": "#3aa86f",
         "severity": "info",
-        "icon": "✅"
+        "icon": "âœ…"
     }
 }
 
@@ -196,7 +211,7 @@ BASES = [
     },
     {
         "id": "base-malmo-depot",
-        "name": "Malmö Equipment Depot",
+        "name": "MalmÃ¶ Equipment Depot",
         "type": "storage",
         "lat": 55.600,
         "lon": 12.995,
@@ -603,7 +618,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Malmö
+    # MalmÃ¶
     {
         "id": "malmo-patrol-01",
         "type": "vehicle",
@@ -701,7 +716,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Linköping area (2 assets)
+    # LinkÃ¶ping area (2 assets)
     {
         "id": "linkoping-military-01",
         "type": "vehicle",
@@ -735,7 +750,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Örebro area (2 assets)
+    # Ã–rebro area (2 assets)
     {
         "id": "orebro-logistics-01",
         "type": "truck",
@@ -769,7 +784,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Västerås area (2 assets)
+    # VÃ¤sterÃ¥s area (2 assets)
     {
         "id": "vasteras-heli-01",
         "type": "helicopter",
@@ -803,7 +818,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Jönköping area (2 assets)
+    # JÃ¶nkÃ¶ping area (2 assets)
     {
         "id": "jonkoping-patrol-01",
         "type": "vehicle",
@@ -837,7 +852,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Gävle area (3 assets)
+    # GÃ¤vle area (3 assets)
     {
         "id": "gavle-patrol-01",
         "type": "vehicle",
@@ -887,7 +902,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Umeå area (2 assets)
+    # UmeÃ¥ area (2 assets)
     {
         "id": "umea-patrol-01",
         "type": "vehicle",
@@ -921,7 +936,7 @@ ASSETS = [
         "last_alarm_tick": 0
     },
 
-    # Luleå area (2 assets)
+    # LuleÃ¥ area (2 assets)
     {
         "id": "lulea-patrol-01",
         "type": "vehicle",
@@ -1055,6 +1070,42 @@ async def on_startup():
           description TEXT
         );
         """)
+        # Create assets table
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS assets (
+          id TEXT PRIMARY KEY,
+          type TEXT NOT NULL,
+          lat FLOAT NOT NULL,
+          lon FLOAT NOT NULL,
+          route TEXT DEFAULT 'stationary',
+          route_index FLOAT DEFAULT 0.0,
+          speed FLOAT DEFAULT 0.0,
+          status TEXT DEFAULT 'parked',
+          battery FLOAT,
+          battery_drain FLOAT DEFAULT 0.0,
+          has_battery BOOLEAN DEFAULT FALSE,
+          fuel_type TEXT DEFAULT 'diesel',
+          in_geofence BOOLEAN DEFAULT FALSE,
+          last_alarm_tick INT DEFAULT 0
+        );
+        """)
+
+        # Migrate hardcoded assets to database if table is empty
+        asset_count = await conn.fetchval("SELECT COUNT(*) FROM assets")
+        if asset_count == 0:
+            print("[STARTUP] Migrating hardcoded assets to database...")
+            for asset in ASSETS:
+                await conn.execute("""
+                    INSERT INTO assets(id, type, lat, lon, route, route_index, speed, status, 
+                                     battery, battery_drain, has_battery, fuel_type, in_geofence, last_alarm_tick)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                """, asset['id'], asset['type'], asset['lat'], asset['lon'], asset['route'],
+                     asset['route_index'], asset['speed'], asset['status'], asset.get('battery'),
+                     asset['battery_drain'], asset['has_battery'], asset['fuel_type'],
+                     asset['in_geofence'], asset['last_alarm_tick'])
+            print(f"[STARTUP] Migrated {len(ASSETS)} assets to database")
+        else:
+            print(f"[STARTUP] Assets table already has {asset_count} entries")
         # Insert default bases if table is empty
         count = await conn.fetchval("SELECT COUNT(*) FROM bases")
         if count == 0:
@@ -1235,14 +1286,14 @@ async def alerts_pdf():
     width, height = A4
     y = height - 40
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(40, y, "Project AEGIS — Larmrapport")
+    c.drawString(40, y, "Project AEGIS â€” Larmrapport")
     y -= 20
     c.setFont("Helvetica", 10)
     c.drawString(40, y, datetime.now(UTC).strftime("Genererad: %Y-%m-%d %H:%M UTC"))
     y -= 20
     c.setFont("Helvetica-Bold", 10)
     c.drawString(40, y, "ID")
-    c.drawString(90, y, "Tillgång")
+    c.drawString(90, y, "TillgÃ¥ng")
     c.drawString(170, y, "Geofence")
     c.drawString(260, y, "Regel")
     c.drawString(420, y, "Status")
@@ -1517,3 +1568,109 @@ async def get_base_forecast(base_id: str):
             raise HTTPException(status_code=503, detail="Weather service unavailable")
 
         return forecast
+
+
+# ============================================
+# ASSETS ENDPOINTS
+# ============================================
+
+@app.post("/assets", dependencies=[Depends(require_admin)])
+async def create_asset(body: AssetIn):
+    pool = await get_pool()
+    asset_id = body.id or f"asset-{body.type}-{int(datetime.now(UTC).timestamp())}"
+    
+    new_asset = {
+        "id": asset_id,
+        "type": body.type,
+        "lat": body.lat,
+        "lon": body.lon,
+        "route": body.route,
+        "route_index": body.route_index,
+        "speed": body.speed,
+        "status": body.status,
+        "battery": body.battery,
+        "battery_drain": body.battery_drain,
+        "has_battery": body.has_battery,
+        "fuel_type": body.fuel_type,
+        "in_geofence": False,
+        "last_alarm_tick": 0
+    }
+    
+    ASSETS.append(new_asset)
+    
+    async with pool.acquire() as conn:
+        try:
+            await conn.execute("""
+                    INSERT INTO assets(id, type, lat, lon, route, route_index, speed, status, 
+                                     battery, battery_drain, has_battery, fuel_type, in_geofence, last_alarm_tick)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                """, asset_id, body.type, body.lat, body.lon, body.route, body.route_index,
+                 body.speed, body.status, body.battery, body.battery_drain, body.has_battery,
+                 body.fuel_type, False, 0)
+        except asyncpg.UniqueViolationError:
+            raise HTTPException(status_code=409, detail="Asset with this ID already exists")
+    
+    return {"id": asset_id, "type": body.type, "status": body.status}
+
+
+@app.put("/assets/{asset_id}", dependencies=[Depends(require_admin)])
+async def update_asset(asset_id: str, body: AssetIn):
+    pool = await get_pool()
+    
+    asset_found = False
+    for asset in ASSETS:
+        if asset["id"] == asset_id:
+            asset["type"] = body.type
+            asset["lat"] = body.lat
+            asset["lon"] = body.lon
+            asset["route"] = body.route
+            asset["route_index"] = body.route_index
+            asset["speed"] = body.speed
+            asset["status"] = body.status
+            asset["battery"] = body.battery
+            asset["battery_drain"] = body.battery_drain
+            asset["has_battery"] = body.has_battery
+            asset["fuel_type"] = body.fuel_type
+            asset_found = True
+            break
+    
+    if not asset_found:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    
+    async with pool.acquire() as conn:
+        res = await conn.execute("""
+            UPDATE assets 
+            SET type=$1, lat=$2, lon=$3, route=$4, route_index=$5, speed=$6, status=$7,
+                battery=$8, battery_drain=$9, has_battery=$10, fuel_type=$11
+            WHERE id=$12
+        """, body.type, body.lat, body.lon, body.route, body.route_index, body.speed,
+             body.status, body.battery, body.battery_drain, body.has_battery, body.fuel_type, asset_id)
+        
+        if res.endswith("0"):
+            await conn.execute("""
+                    INSERT INTO assets(id, type, lat, lon, route, route_index, speed, status, 
+                                     battery, battery_drain, has_battery, fuel_type, in_geofence, last_alarm_tick)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                """, asset_id, body.type, body.lat, body.lon, body.route, body.route_index,
+                 body.speed, body.status, body.battery, body.battery_drain, body.has_battery,
+                 body.fuel_type, False, 0)
+    
+    return {"id": asset_id, "status": "updated"}
+
+
+@app.delete("/assets/{asset_id}", dependencies=[Depends(require_admin)])
+async def delete_asset(asset_id: str):
+    pool = await get_pool()
+    
+    global ASSETS
+    original_length = len(ASSETS)
+    ASSETS = [a for a in ASSETS if a["id"] != asset_id]
+    
+    if len(ASSETS) == original_length:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    
+    async with pool.acquire() as conn:
+        await conn.execute("DELETE FROM assets WHERE id=$1", asset_id)
+    
+    return {"ok": True}
+

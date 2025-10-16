@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { api } from '../lib/api'
 import BasesAdmin from './BasesAdmin'
-import AssetsAdmin from './AssetsAdmin'
 
 const defaultCenter = [62.3901, 17.3062]
 
@@ -139,16 +138,6 @@ export default function AdminGeofences() {
           }}
         >
           🏢 Baser
-        </button>
-        <button
-          className='btn'
-          onClick={() => setAdminTab('assets')}
-          style={{
-            backgroundColor: adminTab === 'assets' ? '#3aa86f' : undefined,
-            color: adminTab === 'assets' ? '#fff' : undefined
-          }}
-        >
-          📦 Tillgångar
         </button>
       </div>
 
@@ -304,10 +293,8 @@ export default function AdminGeofences() {
             )}
           </div>
         </>
-      ) : adminTab === 'bases' ? (
-        <BasesAdmin />
       ) : (
-        <AssetsAdmin />
+        <BasesAdmin />
       )}
     </div>
   )
