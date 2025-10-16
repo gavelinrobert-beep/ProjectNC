@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="3.0">
-      <change afterPath="$PROJECT_DIR$/Aegis/backend/app/weather.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AlertsPanel.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetDetailModal.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/BasesAdmin.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/AdminGeofences.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AdminGeofences.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/Operations.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/Operations.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/hooks/useSSE.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/hooks/useSSE.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,26 +37,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.python -m venv .venv && source .venv/bin/activate.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.python -m venv .venv &amp;&amp; source .venv/bin/activate.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="pip install reportlab" />
@@ -125,7 +109,9 @@
       <updated>1760478782848</updated>
       <workItem from="1760478785017" duration="2990000" />
       <workItem from="1760525249612" duration="1778000" />
-      <workItem from="1760527072229" duration="26134000" />
+      <workItem from="1760527072229" duration="26458000" />
+      <workItem from="1760596102270" duration="653000" />
+      <workItem from="1760634817391" duration="959000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />
@@ -170,7 +156,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/Aegis/frontend/src/components/AssetDetailModal.jsx</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
