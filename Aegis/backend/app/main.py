@@ -3,7 +3,7 @@ Entry point for the Aegis backend (refactor branch).
 
 - Initializes FastAPI and CORS from config.
 - On startup: create DB pool, run DB init, and start simulation_loop as a background task.
-- Includes routers (weather + streams). Add other routers similarly.
+- Includes routers (weather, streams, auth, assets, bases, geofences, alerts).
 """
 import asyncio
 
@@ -20,7 +20,6 @@ from .routes.assets import router as assets_router
 from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
 from .routes.alerts import router as alerts_router
-from .routes.streams import router as streams_router
 
 app = FastAPI(title="Aegis API (refactor)")
 
@@ -32,19 +31,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers. Add other route modules (auth, assets, bases, alerts, geofences) the same way.
+# Include routers
 app.include_router(weather_router)
 app.include_router(streams_router)
-
+app.include_router(auth_router)
+app.include_router(assets_router)
+app.include_router(bases_router)
+app.include_router(geofences_router)
+app.include_router(alerts_router)
 
 @app.on_event("startup")
 async def on_startup():
     # Create and store pool on app.state so other modules can reuse or access it.
     pool = await get_pool(app)
-    await init_database(pool)
+    try:
+        await init_database(pool)
+    except Exception as e:
+        # Log DB init error but continue; tables will be created if DB becomes available
+        print(f"[STARTUP] init_database failed: {e}")
     # Start simulation in background
     asyncio.create_task(simulation_loop())
-
 
 @app.get("/health")
 async def health():
