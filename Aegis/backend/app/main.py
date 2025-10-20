@@ -15,6 +15,12 @@ from .database import get_pool, init_database
 from .simulation import simulation_loop
 from .routes.weather import router as weather_router
 from .routes.streams import router as streams_router
+from .routes.auth import router as auth_router
+from .routes.assets import router as assets_router
+from .routes.bases import router as bases_router
+from .routes.geofences import router as geofences_router
+from .routes.alerts import router as alerts_router
+from .routes.streams import router as streams_router
 
 app = FastAPI(title="Aegis API (refactor)")
 
