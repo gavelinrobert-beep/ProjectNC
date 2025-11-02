@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Dashboard from '../pages/dashboard';
 import AdminGeofences from '../components/AdminGeofences';
 import Operations from '../components/Operations';
+import AlertsPanel from '../components/AlertsPanel';
 import Login from '../components/Login';
 import { isAdmin, setIdToken, setUserRole } from '../lib/auth';
 
@@ -46,6 +47,16 @@ export default function App() {
           </button>
           <button
             className='btn'
+            onClick={() => setActiveTab('alerts')}
+            style={{
+              backgroundColor: activeTab === 'alerts' ? '#3aa86f' : undefined,
+              color: activeTab === 'alerts' ? '#fff' : undefined
+            }}
+          >
+            🚨 Larm
+          </button>
+          <button
+            className='btn'
             onClick={() => setActiveTab('administration')}
             style={{
               backgroundColor: activeTab === 'administration' ? '#3aa86f' : undefined,
@@ -63,6 +74,7 @@ export default function App() {
 
       {activeTab === 'dashboard' && <Dashboard />}
       {activeTab === 'operations' && <Operations />}
+      {activeTab === 'alerts' && <AlertsPanel />}
       {activeTab === 'administration' && <AdminGeofences />}
     </div>
   );

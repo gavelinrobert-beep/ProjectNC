@@ -8,7 +8,7 @@ from fastapi import Depends, Header, HTTPException
 from passlib.context import CryptContext
 from .config import JWT_SECRET, JWT_EXP_MIN
 
-pwd = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
+pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Example users (you may want to replace with database calls)
 USERS = {
@@ -32,8 +32,7 @@ def decode_token(token: str) -> dict:
 def bearer_role(authorization: str = Header(None)) -> str:
     if authorization and authorization.lower().startswith("bearer "):
         tok = authorization.split(" ", 1)[1].strip()
-        if tok == "dev-token":
-            return "admin"
+        # REMOVE: if tok == "dev-token": return "admin"
         try:
             payload = decode_token(tok)
             return payload.get("role", "user")

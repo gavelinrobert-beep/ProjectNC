@@ -22,7 +22,7 @@ async def init_database(pool):
         );
         """)
         await conn.execute("""
-        CREATE TABLE IF NOT EXISTS alarms (
+        CREATE TABLE IF NOT EXISTS alerts (
           id SERIAL PRIMARY KEY,
           asset_id TEXT NOT NULL,
           geofence_id TEXT,

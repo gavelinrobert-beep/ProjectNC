@@ -5,8 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="3.0">
+      <change afterPath="$PROJECT_DIR$/Aegis/asset_endpoints.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/AdminGeofences_fixed.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/AdminGeofences_with_assets.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/AssetsAdmin.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/AssetsAdmin_CRUD.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/BasesAdmin_fixed.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/api_updated.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/alarms.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/alarms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/weather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend_assets_crud.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetsAdmin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetsAdmin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/BasesAdmin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/BasesAdmin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/main_backup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/main_backup_20251016_214917.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/main_backup_before_assets_crud.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/main_current.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +87,12 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\Downloads\aegis2.0\Aegis" />
+      <recent name="C:\Users\Admin\Downloads\aegis2.0\Aegis\backend\app" />
+    </key>
+  </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="pip install reportlab" />
@@ -111,7 +147,13 @@
       <workItem from="1760525249612" duration="1778000" />
       <workItem from="1760527072229" duration="26458000" />
       <workItem from="1760596102270" duration="653000" />
-      <workItem from="1760634817391" duration="959000" />
+      <workItem from="1760634817391" duration="8255000" />
+      <workItem from="1760732368822" duration="4896000" />
+      <workItem from="1760808790996" duration="6524000" />
+      <workItem from="1760981985004" duration="1174000" />
+      <workItem from="1761425423927" duration="5979000" />
+      <workItem from="1761853517691" duration="3612000" />
+      <workItem from="1762122714083" duration="1269000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />

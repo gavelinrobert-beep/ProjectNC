@@ -16,7 +16,36 @@ ALARM_TYPES = {
         "severity": "high",
         "icon": "🚨"
     },
-    # ... (copy all alarm types)
+    "low_battery": {
+        "name": "Low Battery",
+        "color": "#d9b945",
+        "severity": "medium",
+        "icon": "🔋"
+    },
+    "critical_battery": {
+        "name": "Critical Battery",
+        "color": "#e24a4a",
+        "severity": "high",
+        "icon": "⚡"
+    },
+    "communication_lost": {
+        "name": "Communication Lost",
+        "color": "#e24a4a",
+        "severity": "high",
+        "icon": "📡"
+    },
+    "maintenance_required": {
+        "name": "Maintenance Required",
+        "color": "#d9b945",
+        "severity": "medium",
+        "icon": "🔧"
+    },
+    "system_normal": {
+        "name": "System Normal",
+        "color": "#3aa86f",
+        "severity": "low",
+        "icon": "✅"
+    }
 }
 
 # Bases (add all entries from your original BASES)

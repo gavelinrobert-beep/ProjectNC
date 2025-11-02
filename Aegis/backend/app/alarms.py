@@ -13,7 +13,7 @@ async def create_alarm(conn, asset_id: str, alarm_type: str, geofence_id: str = 
 
     try:
         rec = await conn.fetchrow("""
-            INSERT INTO alarms(asset_id, geofence_id, rule)
+            INSERT INTO alerts(asset_id, geofence_id, rule)
             VALUES($1,$2,$3)
             RETURNING id, asset_id, geofence_id, rule, acknowledged, ts
         """, asset_id, geofence_id, rule)

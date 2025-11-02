@@ -1,0 +1,53 @@
+
+@app.post("/assets", dependencies=[Depends(require_admin)])
+async def create_asset(body: AssetIn):
+    pool = await get_pool()
+    asset_id = body.id or str(uuid.uuid4())
+    
+    async with pool.acquire() as conn:
+        try:
+            await conn.execute("""
+                INSERT INTO assets(id, type, lat, lon, route, route_index, speed, status, 
+                                 battery, battery_drain, has_battery, fuel_type, locked, heading)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+            """, asset_id, body.type, body.lat, body.lon, body.route, body.route_index,
+                 body.speed, body.status, body.battery, body.battery_drain, body.has_battery,
+                 body.fuel_type, False, 0)
+        except Exception as e:
+            raise HTTPException(status_code=409, detail=f"Asset creation failed: {str(e)}")
+    
+    return {"id": asset_id, "status": "created"}
+
+
+@app.put("/assets/{asset_id}", dependencies=[Depends(require_admin)])
+async def update_asset(asset_id: str, body: AssetIn):
+    pool = await get_pool()
+    
+    async with pool.acquire() as conn:
+        result = await conn.execute("""
+            UPDATE assets 
+            SET type=$2, lat=$3, lon=$4, route=$5, route_index=$6, speed=$7, 
+                status=$8, battery=$9, battery_drain=$10, has_battery=$11, fuel_type=$12
+            WHERE id=$1
+        """, asset_id, body.type, body.lat, body.lon, body.route, body.route_index,
+             body.speed, body.status, body.battery, body.battery_drain, body.has_battery,
+             body.fuel_type)
+        
+        if result == "UPDATE 0":
+            raise HTTPException(status_code=404, detail="Asset not found")
+    
+    return {"id": asset_id, "status": "updated"}
+
+
+@app.delete("/assets/{asset_id}", dependencies=[Depends(require_admin)])
+async def delete_asset(asset_id: str):
+    pool = await get_pool()
+    
+    async with pool.acquire() as conn:
+        result = await conn.execute("DELETE FROM assets WHERE id=$1", asset_id)
+        
+        if result == "DELETE 0":
+            raise HTTPException(status_code=404, detail="Asset not found")
+    
+    return {"ok": True}
+

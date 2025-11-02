@@ -17,7 +17,7 @@ router = APIRouter(prefix="", tags=["alerts"])
 async def list_alerts(limit: int = 100):
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alarms ORDER BY ts DESC LIMIT $1", limit)
+        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT $1", limit)
         out = []
         for r in rows:
             out.append({
@@ -35,7 +35,7 @@ async def list_alerts(limit: int = 100):
 async def alerts_csv():
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alarms ORDER BY ts DESC LIMIT 1000")
+        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT 1000")
         stream = io.StringIO()
         writer = csv.writer(stream)
         writer.writerow(["id", "asset_id", "geofence_id", "rule", "acknowledged", "ts"])
@@ -50,7 +50,7 @@ async def alerts_pdf():
     # Minimal PDF-like response: if you want a real PDF, install reportlab and generate properly.
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alarms ORDER BY ts DESC LIMIT 200")
+        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT 200")
         text_lines = ["Alerts report", "=================", ""]
         for r in rows:
             ts = r["ts"].isoformat() if r["ts"] is not None else ""
@@ -64,7 +64,7 @@ async def alerts_pdf():
 async def ack_alert(aid: int):
     pool = await get_pool()
     async with pool.acquire() as conn:
-        res = await conn.execute("UPDATE alarms SET acknowledged = TRUE WHERE id = $1", aid)
+        res = await conn.execute("UPDATE alerts SET acknowledged = TRUE WHERE id = $1", aid)
         if not res or "0" in res:
             raise HTTPException(status_code=404, detail="Alert not found")
     return {"ok": True}

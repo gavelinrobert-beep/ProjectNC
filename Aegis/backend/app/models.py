@@ -1,14 +1,28 @@
 """
 Pydantic models for API request/response schemas.
 """
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from pydantic import BaseModel, Field, validator
+from typing import List, Optional, Literal
 
 
 class GeofenceIn(BaseModel):
     id: Optional[str] = None
     name: str
     polygon: List[List[float]] = Field(..., description="[[lat,lon], ...]")
+
+    @validator('polygon')
+    def validate_polygon(cls, v):
+        if len(v) < 3:
+            raise ValueError('Polygon must have at least 3 points')
+        for point in v:
+            if len(point) != 2:
+                raise ValueError('Each point must have [lat, lon]')
+            lat, lon = point
+            if not -90 <= lat <= 90:
+                raise ValueError(f'Invalid latitude: {lat}')
+            if not -180 <= lon <= 180:
+                raise ValueError(f'Invalid longitude: {lon}')
+        return v
 
 
 class BaseIn(BaseModel):
@@ -29,11 +43,11 @@ class AssetIn(BaseModel):
     route: str = "stationary"
     route_index: float = 0.0
     speed: float = 0.0
-    status: str = Field(..., description="mobile, parked, airborne")
+    status: Literal["mobile", "parked", "airborne"]  # ← Use Literal
     battery: Optional[float] = None
     battery_drain: float = 0.0
     has_battery: bool = False
-    fuel_type: str = Field(..., description="electric, diesel, aviation, jet, gasoline")
+    fuel_type: Literal["electric", "diesel", "aviation", "jet", "gasoline"]  # ← Use Literal
     capacity: Optional[int] = None
     assets_stored: Optional[List[str]] = None
 

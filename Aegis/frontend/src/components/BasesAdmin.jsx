@@ -1,28 +1,46 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import L from 'leaflet'
 import { api } from '../lib/api'
+import 'leaflet/dist/leaflet.css'
 
-const BASE_TYPES = ['military', 'airfield', 'logistics', 'storage']
+// Fix Leaflet default icon
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+})
 
-const BASE_COLORS = {
-  military: '#b5392f',
-  airfield: '#4a90e2',
-  logistics: '#d9b945',
-  storage: '#9c27b0'
+// Custom icon for new base marker
+const newBaseIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
+
+// Component to handle map clicks
+function MapClickHandler({ onLocationSelect, enabled }) {
+  useMapEvents({
+    click(e) {
+      if (enabled) {
+        onLocationSelect(e.latlng)
+      }
+    },
+  })
+  return null
 }
 
 export default function BasesAdmin() {
   const [bases, setBases] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [formData, setFormData] = useState({
-    id: '',
-    name: '',
-    type: 'storage',
-    lat: 59.3293,
-    lon: 18.0686,
-    capacity: 50,
-    description: ''
-  })
+  const [form, setForm] = useState({ name: '', type: 'logistics', lat: '', lon: '', capacity: 0 })
   const [editing, setEditing] = useState(null)
+  const [mapClickMode, setMapClickMode] = useState(false)
+  const [tempMarker, setTempMarker] = useState(null)
+  const mapRef = useRef()
 
   useEffect(() => {
     fetchBases()
@@ -30,355 +48,269 @@ export default function BasesAdmin() {
 
   const fetchBases = () => {
     api.bases()
-      .then(data => {
-        setBases(data || [])
-        setLoading(false)
-      })
+      .then(setBases)
       .catch(err => {
         console.error('Error fetching bases:', err)
-        setLoading(false)
+        alert('Failed to load bases')
       })
   }
 
-  const handleSubmit = (e) => {
+  const handleLocationSelect = (latlng) => {
+    setForm(prev => ({
+      ...prev,
+      lat: latlng.lat.toFixed(6),
+      lon: latlng.lng.toFixed(6)
+    }))
+    setTempMarker(latlng)
+    setMapClickMode(false)
+    alert(`Location selected: ${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`)
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
+    
     const baseData = {
-      ...formData,
-      lat: parseFloat(formData.lat),
-      lon: parseFloat(formData.lon),
-      capacity: parseInt(formData.capacity)
+      name: form.name,
+      type: form.type,
+      lat: parseFloat(form.lat),
+      lon: parseFloat(form.lon),
+      capacity: parseInt(form.capacity) || 0,
     }
 
-    if (editing) {
-      // Note: Update not implemented in backend yet
-      alert('Update functionality not available yet')
-    } else {
-      // Create new base using api helper with auth
-      api.createBase(baseData)
-        .then(() => {
-          alert('Base created!')
-          resetForm()
-          fetchBases()
-        })
-        .catch(err => {
-          console.error('Error creating base:', err)
-          alert('Error creating base: ' + err.message)
-        })
-    }
-  }
-
-  const handleEdit = (base) => {
-    setFormData({
-      id: base.id,
-      name: base.name,
-      type: base.type,
-      lat: base.lat,
-      lon: base.lon,
-      capacity: base.capacity,
-      description: base.description || ''
-    })
-    setEditing(base.id)
-  }
-
-  const handleDelete = (baseId) => {
-    if (!confirm(`Are you sure you want to delete base ${baseId}?`)) return
-
-    // Use api helper with auth
-    api.deleteBase(baseId)
-      .then(() => {
-        alert('Base deleted!')
+    try {
+      if (editing) {
+        alert('Update functionality not available yet')
+      } else {
+        await api.createBase(baseData)
+        alert('Base created!')
+        resetForm()
         fetchBases()
-      })
-      .catch(err => {
-        console.error('Error deleting base:', err)
-        alert('Error deleting base: ' + err.message)
-      })
+      }
+    } catch (err) {
+      console.error('Error creating base:', err)
+      alert(`Error: ${err.message}`)
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this base?')) return
+    try {
+      await api.deleteBase(id)
+      alert('Base deleted!')
+      fetchBases()
+    } catch (err) {
+      console.error('Error deleting base:', err)
+      alert(`Error: ${err.message}`)
+    }
   }
 
   const resetForm = () => {
-    setFormData({
-      id: '',
-      name: '',
-      type: 'storage',
-      lat: 59.3293,
-      lon: 18.0686,
-      capacity: 50,
-      description: ''
-    })
+    setForm({ name: '', type: 'logistics', lat: '', lon: '', capacity: 0 })
     setEditing(null)
+    setTempMarker(null)
+    setMapClickMode(false)
   }
 
-  if (loading) {
-    return <div style={{ padding: 12, background: '#d9b945', color: '#000' }}>Laddar baser...</div>
+  const enableMapClickMode = () => {
+    setMapClickMode(true)
+    alert('Click anywhere on the map to select location!')
   }
+
+  const centerMap = [62.0, 15.0]
 
   return (
-    <div>
-      <h3>Bashantering</h3>
+    <div style={{ padding: 20 }}>
+      <h2>Bases Administration</h2>
 
-      {/* Statistics */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-        gap: 12,
-        marginBottom: 16
-      }}>
-        <div className='card' style={{ background: '#1a1a1a', border: '1px solid #333' }}>
-          <div style={{ fontSize: 24, fontWeight: 'bold', color: '#4a90e2' }}>
-            {bases.length}
-          </div>
-          <div style={{ fontSize: 11, color: '#999' }}>Totalt Baser</div>
-        </div>
-
-        {BASE_TYPES.map(type => {
-          const count = bases.filter(b => b.type === type).length
-          if (count === 0) return null
-          return (
-            <div key={type} className='card' style={{ background: '#1a1a1a', border: '1px solid #333' }}>
-              <div style={{ fontSize: 24, fontWeight: 'bold', color: BASE_COLORS[type] }}>
-                {count}
-              </div>
-              <div style={{ fontSize: 11, color: '#999', textTransform: 'capitalize' }}>{type}</div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Form */}
-      <div className='card' style={{ marginBottom: 16 }}>
-        <h4 style={{ marginTop: 0 }}>
-          {editing ? `Redigera Bas: ${editing}` : 'Skapa Ny Bas'}
-        </h4>
-        <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Bas ID *
-              </label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+        {/* Form */}
+        <div className="card">
+          <h3>{editing ? 'Edit Base' : 'Create New Base'}</h3>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: 12 }}>
+              <label>Name</label>
               <input
-                type='text'
                 required
-                disabled={editing !== null}
-                value={formData.id}
-                onChange={e => setFormData({ ...formData, id: e.target.value })}
-                placeholder='base-stockholm-01'
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
+                value={form.name}
+                onChange={e => setForm({...form, name: e.target.value})}
+                placeholder="Base name"
+                style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
               />
             </div>
 
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Namn *
-              </label>
-              <input
-                type='text'
-                required
-                value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                placeholder='Stockholm Base 01'
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Typ *
-              </label>
+            <div style={{ marginBottom: 12 }}>
+              <label>Type</label>
               <select
-                value={formData.type}
-                onChange={e => setFormData({ ...formData, type: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
+                value={form.type}
+                onChange={e => setForm({...form, type: e.target.value})}
+                style={{ width: '100%', padding: 8 }}
               >
-                {BASE_TYPES.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
+                <option value="logistics">Logistics</option>
+                <option value="military">Military</option>
+                <option value="airfield">Airfield</option>
+                <option value="storage">Storage</option>
               </select>
             </div>
 
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Kapacitet *
-              </label>
-              <input
-                type='number'
-                required
-                value={formData.capacity}
-                onChange={e => setFormData({ ...formData, capacity: e.target.value })}
-                min='1'
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
-              />
+            <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label>Latitude</label>
+                <input
+                  required
+                  type="number"
+                  step="any"
+                  value={form.lat}
+                  onChange={e => setForm({...form, lat: e.target.value})}
+                  placeholder="59.3293"
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+              <div>
+                <label>Longitude</label>
+                <input
+                  required
+                  type="number"
+                  step="any"
+                  value={form.lon}
+                  onChange={e => setForm({...form, lon: e.target.value})}
+                  placeholder="18.0686"
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
             </div>
 
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Latitud *
-              </label>
-              <input
-                type='number'
-                required
-                step='0.000001'
-                value={formData.lat}
-                onChange={e => setFormData({ ...formData, lat: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-                Longitud *
-              </label>
-              <input
-                type='number'
-                required
-                step='0.000001'
-                value={formData.lon}
-                onChange={e => setFormData({ ...formData, lon: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  background: '#222',
-                  border: '1px solid #333',
-                  borderRadius: 4,
-                  color: '#fff'
-                }}
-              />
-            </div>
-          </div>
-
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ fontSize: 12, color: '#999', display: 'block', marginBottom: 4 }}>
-              Beskrivning
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
-              placeholder='Optional description...'
-              rows={3}
+            <button
+              type="button"
+              onClick={enableMapClickMode}
               style={{
                 width: '100%',
-                padding: '8px 12px',
-                background: '#222',
-                border: '1px solid #333',
-                borderRadius: 4,
+                padding: 10,
+                marginBottom: 12,
+                background: mapClickMode ? '#f39c12' : '#3498db',
                 color: '#fff',
-                resize: 'vertical'
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontWeight: 'bold'
               }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type='submit' className='btn' style={{ background: '#3aa86f' }}>
-              {editing ? 'Uppdatera Bas' : 'Skapa Bas'}
+            >
+              {mapClickMode ? '📍 Click on map to select location...' : '🗺️ Pick Location from Map'}
             </button>
-            {editing && (
-              <button type='button' className='btn' onClick={resetForm}>
-                Avbryt
+
+            <div style={{ marginBottom: 12 }}>
+              <label>Capacity</label>
+              <input
+                type="number"
+                value={form.capacity}
+                onChange={e => setForm({...form, capacity: e.target.value})}
+                placeholder="0"
+                style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="submit" className="btn" style={{ flex: 1 }}>
+                {editing ? 'Update' : 'Create'} Base
               </button>
+              {editing && (
+                <button type="button" onClick={resetForm} className="btn" style={{ background: '#95a5a6' }}>
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Map for location picking */}
+        <div className="card">
+          <h3>Location Picker</h3>
+          <div style={{ height: 400, border: '2px solid #3498db', borderRadius: 4, overflow: 'hidden' }}>
+            <MapContainer
+              center={centerMap}
+              zoom={5}
+              style={{ height: '100%', width: '100%' }}
+              ref={mapRef}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; OpenStreetMap contributors'
+              />
+              <MapClickHandler onLocationSelect={handleLocationSelect} enabled={mapClickMode} />
+              
+              {/* Existing bases */}
+              {bases.map(base => (
+                <Marker key={base.id} position={[base.lat, base.lon]}>
+                  <Popup>
+                    <strong>{base.name}</strong><br />
+                    Type: {base.type}<br />
+                    Capacity: {base.capacity}
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* Temporary marker for new location */}
+              {tempMarker && (
+                <Marker position={[tempMarker.lat, tempMarker.lng]} icon={newBaseIcon}>
+                  <Popup>
+                    <strong>New Base Location</strong><br />
+                    Lat: {tempMarker.lat.toFixed(6)}<br />
+                    Lon: {tempMarker.lng.toFixed(6)}
+                  </Popup>
+                </Marker>
+              )}
+            </MapContainer>
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: '#7f8c8d' }}>
+            {mapClickMode ? (
+              <span style={{ color: '#f39c12', fontWeight: 'bold' }}>
+                ⚡ Map click mode active - Click anywhere to select location
+              </span>
+            ) : (
+              <span>Click "Pick Location from Map" button, then click on map</span>
             )}
           </div>
-        </form>
+        </div>
       </div>
 
       {/* Bases List */}
-      <div className='card'>
-        <h4 style={{ marginTop: 0 }}>Alla Baser ({bases.length})</h4>
-        {bases.length === 0 ? (
-          <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
-            Inga baser ännu. Skapa en ovan!
-          </div>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid #333' }}>
-                  <th style={{ textAlign: 'left', padding: 8, color: '#999' }}>Typ</th>
-                  <th style={{ textAlign: 'left', padding: 8, color: '#999' }}>ID</th>
-                  <th style={{ textAlign: 'left', padding: 8, color: '#999' }}>Namn</th>
-                  <th style={{ textAlign: 'right', padding: 8, color: '#999' }}>Kapacitet</th>
-                  <th style={{ textAlign: 'right', padding: 8, color: '#999' }}>Position</th>
-                  <th style={{ textAlign: 'center', padding: 8, color: '#999' }}>Åtgärder</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bases.map(base => (
-                  <tr key={base.id} style={{ borderBottom: '1px solid #333' }}>
-                    <td style={{ padding: 8 }}>
-                      <span style={{
-                        display: 'inline-block',
-                        width: 12,
-                        height: 12,
-                        borderRadius: '50%',
-                        background: BASE_COLORS[base.type] || '#666',
-                        marginRight: 6
-                      }} />
-                      {base.type}
-                    </td>
-                    <td style={{ padding: 8, fontFamily: 'monospace', fontSize: 11 }}>
-                      {base.id}
-                    </td>
-                    <td style={{ padding: 8 }}>{base.name}</td>
-                    <td style={{ padding: 8, textAlign: 'right' }}>{base.capacity}</td>
-                    <td style={{ padding: 8, textAlign: 'right', fontFamily: 'monospace', fontSize: 11 }}>
-                      {base.lat.toFixed(4)}, {base.lon.toFixed(4)}
-                    </td>
-                    <td style={{ padding: 8, textAlign: 'center' }}>
-                      <button
-                        className='btn'
-                        onClick={() => handleEdit(base)}
-                        style={{ fontSize: 11, padding: '4px 8px', marginRight: 4 }}
-                      >
-                        Redigera
-                      </button>
-                      <button
-                        className='btn'
-                        onClick={() => handleDelete(base.id)}
-                        style={{ fontSize: 11, padding: '4px 8px', background: '#b5392f' }}
-                      >
-                        Radera
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <div className="card">
+        <h3>Existing Bases ({bases.length})</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #444' }}>
+              <th style={{ padding: 8, textAlign: 'left' }}>Name</th>
+              <th style={{ padding: 8, textAlign: 'left' }}>Type</th>
+              <th style={{ padding: 8, textAlign: 'left' }}>Location</th>
+              <th style={{ padding: 8, textAlign: 'left' }}>Capacity</th>
+              <th style={{ padding: 8, textAlign: 'left' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bases.map(base => (
+              <tr key={base.id} style={{ borderBottom: '1px solid #333' }}>
+                <td style={{ padding: 8 }}>{base.name}</td>
+                <td style={{ padding: 8 }}>{base.type}</td>
+                <td style={{ padding: 8, fontSize: 11 }}>{base.lat.toFixed(4)}, {base.lon.toFixed(4)}</td>
+                <td style={{ padding: 8 }}>{base.capacity}</td>
+                <td style={{ padding: 8 }}>
+                  <button
+                    onClick={() => handleDelete(base.id)}
+                    style={{
+                      padding: '4px 8px',
+                      background: '#e74c3c',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )

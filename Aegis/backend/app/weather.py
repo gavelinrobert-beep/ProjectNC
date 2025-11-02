@@ -1,44 +1,50 @@
 """
-Weather endpoints (uses Aegis/backend/app/weather.py).
+Weather API integration module.
 """
-from fastapi import APIRouter, HTTPException
-from ..database import get_pool
-from .. import weather as weather_module
-
-router = APIRouter(prefix="", tags=["weather"])
+import httpx
+from .config import OPENWEATHER_API_KEY
 
 
-@router.get("/weather/{base_id}")
-async def get_base_weather(base_id: str):
-    pool = await get_pool()
-    async with pool.acquire() as conn:
-        base = await conn.fetchrow("SELECT lat, lon FROM bases WHERE id = $1", base_id)
-        if not base:
-            raise HTTPException(status_code=404, detail="Base not found")
+async def get_weather(lat: float, lon: float):
+    """Fetch current weather from OpenWeatherMap API."""
+    if not OPENWEATHER_API_KEY:
+        # Return mock data if no API key
+        return {
+            "temperature": 15.5,
+            "condition": "Cloudy",
+            "humidity": 65,
+            "wind_speed": 12,
+            "description": "Partly cloudy"
+        }
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"https://api.openweathermap.org/data/2.5/weather",
+                params={
+                    "lat": lat,
+                    "lon": lon,
+                    "appid": OPENWEATHER_API_KEY,
+                    "units": "metric"
+                },
+                timeout=5.0
+            )
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    "temperature": data["main"]["temp"],
+                    "condition": data["weather"][0]["main"],
+                    "humidity": data["main"]["humidity"],
+                    "wind_speed": data["wind"]["speed"],
+                    "description": data["weather"][0]["description"]
+                }
+    except Exception as e:
+        print(f"[WEATHER] Error fetching weather: {e}")
+    
+    return None
 
-    weather = await weather_module.get_weather(base["lat"], base["lon"])
-    if not weather:
-        raise HTTPException(status_code=503, detail="Weather service unavailable")
-    return weather
 
-
-@router.get("/weather/location/{lat}/{lon}")
-async def get_location_weather(lat: float, lon: float):
-    weather = await weather_module.get_weather(lat, lon)
-    if not weather:
-        raise HTTPException(status_code=503, detail="Weather service unavailable")
-    return weather
-
-
-@router.get("/forecast/{base_id}")
-async def get_base_forecast(base_id: str):
-    pool = await get_pool()
-    async with pool.acquire() as conn:
-        base = await conn.fetchrow("SELECT lat, lon FROM bases WHERE id = $1", base_id)
-        if not base:
-            raise HTTPException(status_code=404, detail="Base not found")
-
-    forecast = await weather_module.get_forecast(base["lat"], base["lon"])
-    if not forecast:
-        raise HTTPException(status_code=503, detail="Weather service unavailable")
-    return forecast
+async def get_forecast(lat: float, lon: float):
+    """Fetch weather forecast."""
+    # Similar implementation to get_weather but for forecast endpoint
+    return None

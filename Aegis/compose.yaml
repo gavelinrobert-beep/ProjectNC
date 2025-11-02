@@ -14,14 +14,17 @@ services:
       retries: 10
     ports:
       - "5432:5432"
+    networks:
+      - aegis-network
+
   api:
     build: ./backend
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - CORS_ORIGINS=${CORS_ORIGINS}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXP_MIN=240
-      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@db:5432/postgres}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      JWT_EXP_MIN: 240
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
     depends_on:
       db:
         condition: service_healthy
@@ -29,10 +32,14 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/app:/app/app
+    networks:
+      - aegis-network
+    restart: unless-stopped
+
   frontend:
     build: ./frontend
     environment:
-      - VITE_API_BASE=${VITE_API_BASE}
+      VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8000}
     command: sh -lc "npm install && npm run dev -- --host 0.0.0.0"
     ports:
       - "5173:5173"
@@ -41,5 +48,13 @@ services:
       - /app/node_modules
     depends_on:
       - api
+    networks:
+      - aegis-network
+    restart: unless-stopped
+
 volumes:
   aegis_dbdata_v16:
+
+networks:
+  aegis-network:
+    driver: bridge
