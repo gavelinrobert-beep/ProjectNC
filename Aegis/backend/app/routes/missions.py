@@ -12,7 +12,7 @@ from ..models import MissionIn, MissionOut
 from ..auth import require_admin
 from ..database import get_pool
 
-router = APIRouter(prefix="/missions", tags=["missions"])
+router = APIRouter(prefix="/api/missions", tags=["missions"])
 
 
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

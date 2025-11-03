@@ -3,7 +3,7 @@ import time
 from fastapi import APIRouter, HTTPException, Request
 import httpx
 
-router = APIRouter(prefix="", tags=["weather"])
+router = APIRouter(prefix="/api", tags=["weather"])
 
 OPENWEATHER_KEY = os.getenv("OPENWEATHER_API_KEY") or ""
 OW_URL = "https://api.openweathermap.org/data/2.5/weather"

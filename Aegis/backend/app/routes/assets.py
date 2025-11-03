@@ -9,7 +9,7 @@ from ..models import AssetIn
 from ..auth import require_admin
 from ..database import get_pool
 
-router = APIRouter(prefix="", tags=["assets"])
+router = APIRouter(prefix="/api", tags=["assets"])
 
 
 @router.get("/assets", response_model=List[dict])

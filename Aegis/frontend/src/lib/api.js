@@ -33,43 +33,43 @@ async function send(method, path, body) {
 
 export const api = {
   // Authentication
-  login: (e, p) => send('POST', '/login', { email: e, password: p }),
+  login: (e, p) => send('POST', '/api/login', { email: e, password: p }),
 
   // Alerts
-  alerts: () => send('GET', '/alerts'),
-  alertsCsv: () => fetch(API_BASE + '/alerts.csv', { headers: authHeader() }).then(r => r.text()),
-  alertsPdf: () => fetch(API_BASE + '/alerts.pdf', { headers: authHeader() }),
-  ackAlert: (id) => send('PUT', `/alerts/${id}/ack`),
+  alerts: () => send('GET', '/api/alerts'),
+  alertsCsv: () => fetch(API_BASE + '/api/alerts.csv', { headers: authHeader() }).then(r => r.text()),
+  alertsPdf: () => fetch(API_BASE + '/api/alerts.pdf', { headers: authHeader() }),
+  ackAlert: (id) => send('PUT', `/api/alerts/${id}/ack`),
 
   // Assets
-  assets: () => send('GET', '/assets'),
-  createAsset: (a) => send('POST', '/assets', a),
-  updateAsset: (id, a) => send('PUT', `/assets/${id}`, a),
-  deleteAsset: (id) => send('DELETE', `/assets/${id}`),
+  assets: () => send('GET', '/api/assets'),
+  createAsset: (a) => send('POST', '/api/assets', a),
+  updateAsset: (id, a) => send('PUT', `/api/assets/${id}`, a),
+  deleteAsset: (id) => send('DELETE', `/api/assets/${id}`),
 
   // Bases
-  bases: () => send('GET', '/bases'),
-  createBase: (b) => send('POST', '/bases', b),
-  deleteBase: (id) => send('DELETE', `/bases/${id}`),
+  bases: () => send('GET', '/api/bases'),
+  createBase: (b) => send('POST', '/api/bases', b),
+  deleteBase: (id) => send('DELETE', `/api/bases/${id}`),
 
   // Geofences
-  geofences: () => send('GET', '/geofences'),
-  createGeofence: (g) => send('POST', '/geofences', g),
-  updateGeofence: (id, g) => send('PUT', `/geofences/${id}`, g),
-  deleteGeofence: (id) => send('DELETE', `/geofences/${id}`),
+  geofences: () => send('GET', '/api/geofences'),
+  createGeofence: (g) => send('POST', '/api/geofences', g),
+  updateGeofence: (id, g) => send('PUT', `/api/geofences/${id}`, g),
+  deleteGeofence: (id) => send('DELETE', `/api/geofences/${id}`),
 
   // Weather
-  weather: (lat, lon) => send('GET', `/weather?lat=${lat}&lon=${lon}`),
-  weatherByBase: (baseId) => send('GET', `/weather/${baseId}`),
+  weather: (lat, lon) => send('GET', `/api/weather?lat=${lat}&lon=${lon}`),
+  weatherByBase: (baseId) => send('GET', `/api/weather/${baseId}`),
 
-  // Missions (NEW)
-  missions: () => send('GET', '/missions'),
-  mission: (id) => send('GET', `/missions/${id}`),
-  createMission: (data) => send('POST', '/missions', data),
-  updateMission: (id, data) => send('PUT', `/missions/${id}`, data),
-  deleteMission: (id) => send('DELETE', `/missions/${id}`),
-  startMission: (id) => send('POST', `/missions/${id}/start`),
-  completeMission: (id) => send('POST', `/missions/${id}/complete`),
+  // Missions
+  missions: () => send('GET', '/api/missions'),
+  mission: (id) => send('GET', `/api/missions/${id}`),
+  createMission: (data) => send('POST', '/api/missions', data),
+  updateMission: (id, data) => send('PUT', `/api/missions/${id}`, data),
+  deleteMission: (id) => send('DELETE', `/api/missions/${id}`),
+  startMission: (id) => send('POST', `/api/missions/${id}/start`),
+  completeMission: (id) => send('POST', `/api/missions/${id}/complete`),
 }
 
 export default api

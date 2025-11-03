@@ -9,7 +9,7 @@ from ..models import GeofenceIn
 from ..auth import require_admin
 from ..database import get_pool
 
-router = APIRouter(prefix="", tags=["geofences"])
+router = APIRouter(prefix="/api", tags=["geofences"])
 
 
 @router.get("/geofences", response_model=List[dict])

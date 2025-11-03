@@ -10,7 +10,7 @@ from typing import List
 from ..database import get_pool
 from ..auth import require_admin
 
-router = APIRouter(prefix="", tags=["alerts"])
+router = APIRouter(prefix="/api", tags=["alerts"])
 
 
 @router.get("/alerts", response_model=List[dict])

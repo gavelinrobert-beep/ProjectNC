@@ -7,7 +7,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from ..simulation import ASSET_SUBS, ALERT_SUBS
 
-router = APIRouter(prefix="", tags=["streams"])
+router = APIRouter(prefix="/api", tags=["streams"])
 
 
 @router.get("/stream/assets")

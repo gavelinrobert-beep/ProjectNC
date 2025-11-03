@@ -1,0 +1,27 @@
+﻿INSERT INTO bases (id, name, type, lat, lon, description) VALUES
+('base-f7-satenas', 'F 7 Satenäs', 'airfield', 58.4264, 12.7144, 'Swedish Air Force Wing - JAS 39 Gripen fighter jets'),
+('base-f17-ronneby', 'F 17 Ronneby', 'airfield', 56.2667, 15.2650, 'Swedish Air Force Wing - Fighter and transport operations'),
+('base-f21-lulea', 'F 21 Luleå', 'airfield', 65.5439, 22.1219, 'Swedish Air Force Wing - Northern air defense'),
+('base-malmen', 'Malmen Air Base', 'airfield', 58.4025, 15.5258, 'Swedish Air Force - Training and helicopter operations'),
+('base-uppsala', 'Uppsala Garrison', 'airfield', 59.8967, 17.5936, 'Swedish Air Force - Helicopter wing'),
+('base-p4-skovde', 'P 4 Skövde', 'military', 58.3908, 13.8456, 'Swedish Army - Armored Regiment'),
+('base-p10-strangnas', 'P 10 Strängnäs', 'military', 59.3742, 17.0342, 'Swedish Army - South Scanian Regiment'),
+('base-i19-boden', 'I 19 Boden', 'military', 65.8250, 21.6889, 'Swedish Army - Norrbotten Regiment'),
+('base-a9-kristinehamn', 'A 9 Kristinehamn', 'military', 59.3097, 14.1083, 'Swedish Army - Artillery Regiment'),
+('base-k3-karlsborg', 'K 3 Karlsborg', 'military', 58.5364, 14.5056, 'Swedish Army - Life Regiment Hussars'),
+('base-ing2-eksjo', 'Ing 2 Eksjö', 'military', 57.6608, 14.9706, 'Swedish Army - Engineer Regiment'),
+('base-revingehed', 'Revingehed', 'military', 55.7333, 13.4167, 'Swedish Army - Combat training center'),
+('base-karlskrona', 'Karlskrona Naval Base', 'military', 56.1612, 15.5869, 'Swedish Navy HQ - Main naval base'),
+('base-muskobasen', 'Muskö Naval Base', 'military', 58.9833, 17.9667, 'Swedish Navy - Underground submarine base'),
+('base-berga', 'Berga Naval Base', 'military', 59.2142, 18.4586, 'Swedish Navy - Stockholm archipelago'),
+('base-sof-karlsborg', 'SOG Karlsborg', 'military', 58.5364, 14.5056, 'Swedish Special Operations Group'),
+('base-amf1-enkoping', 'Amf 1 Enköping', 'military', 59.6356, 17.0778, 'Swedish Amphibious Regiment'),
+('base-trosso', 'Trössö Logistics', 'logistics', 56.1667, 15.5833, 'Swedish Armed Forces - Logistics center'),
+('base-fmv-stockholm', 'FMV Stockholm', 'logistics', 59.3293, 18.0686, 'Swedish Defence Materiel Administration'),
+('base-arboga', 'Arboga Depot', 'storage', 59.3936, 15.8397, 'Swedish Armed Forces - Storage facility'),
+('base-p18-gotland', 'P 18 Visby', 'military', 57.6348, 18.2948, 'Swedish Army - Gotland Regiment'),
+('base-visby-airport', 'Visby Airport', 'airfield', 57.6628, 18.3464, 'Dual-use military airfield on Gotland'),
+('base-a8-boden', 'A 8 Boden', 'military', 65.8250, 21.6889, 'Swedish Army - Artillery Regiment'),
+('base-vidsel', 'Vidsel Test Range', 'military', 65.8783, 20.1503, 'Weapons testing facility')
+ON CONFLICT (id) DO UPDATE 
+SET name = EXCLUDED.name, type = EXCLUDED.type, lat = EXCLUDED.lat, lon = EXCLUDED.lon, description = EXCLUDED.description;

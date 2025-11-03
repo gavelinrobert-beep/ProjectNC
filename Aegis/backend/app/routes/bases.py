@@ -10,7 +10,7 @@ from ..models import BaseIn
 from ..auth import require_admin
 from ..database import get_pool
 
-router = APIRouter(prefix="", tags=["bases"])
+router = APIRouter(prefix="/api", tags=["bases"])
 
 
 @router.get("/bases", response_model=List[dict])

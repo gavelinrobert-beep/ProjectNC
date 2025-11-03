@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from ..models import LoginIn, LoginOut
 from ..auth import USERS, make_token, pwd
 
-router = APIRouter(prefix="", tags=["auth"])
+router = APIRouter(prefix="/api", tags=["auth"])
 
 
 @router.post("/login", response_model=LoginOut)
