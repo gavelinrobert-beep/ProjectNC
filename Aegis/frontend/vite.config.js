@@ -10,9 +10,10 @@ export default defineConfig({
       usePolling: true
     },
     headers: {
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
       'Pragma': 'no-cache',
-      'Expires': '0'
+      'Expires': '0',
+      'Surrogate-Control': 'no-store'
     }
   },
   build: {
@@ -20,7 +21,8 @@ export default defineConfig({
       output: {
         entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
+        assetFileNames: 'assets/[name].[hash].[ext]',
+        manualChunks: undefined
       }
     }
   }

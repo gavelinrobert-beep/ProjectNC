@@ -31,6 +31,44 @@ const BASE_COLORS = {
   storage: '#9c27b0'
 }
 
+// Weather popup component
+function BaseWeatherPopup({ base, baseWeather, loadBaseWeather }) {
+  const bw = baseWeather[base.id] || { loading: false, err: null, data: null }
+
+  return (
+    <div style={{ minWidth: 220 }}>
+      <strong>🏭 {base.name}</strong><br />
+      <span className='muted'>Type: {base.type}</span><br />
+      <span className='muted'>Capacity: {base.capacity}</span><br />
+      <span className='muted'>Stored: {base.assets_stored?.length || 0} assets</span><br />
+      {base.description && <span style={{fontSize: 11, display: 'block', marginTop: 4}}>{base.description}</span>}
+      <hr style={{ margin: '8px 0', border: 'none', borderTop: '1px solid #333' }} />
+
+      {bw.loading ? (
+        <div>Laddar väder…</div>
+      ) : bw.err ? (
+        <div style={{ color: 'red' }}>
+          Fel vid laddning av väder<br />
+          <button onClick={() => loadBaseWeather(base)} style={{ marginTop: 6, padding: '4px 8px' }}>Försök igen</button>
+        </div>
+      ) : bw.data ? (
+        <div style={{ fontSize: 13 }}>
+          <strong>{bw.data.condition}</strong> — {bw.data.description}<br />
+          Temp: {bw.data.temperature} °C (känns som {bw.data.feels_like})<br />
+          Luftfuktighet: {bw.data.humidity}%<br />
+          Vind: {bw.data.wind_speed} m/s
+        </div>
+      ) : (
+        <div>
+          <button onClick={() => loadBaseWeather(base)} style={{ padding: '6px 8px', marginTop: 4 }}>
+            Visa väder
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Operations() {
   const [geofences, setGeofences] = useState([])
   const [assets, setAssets] = useState([])
@@ -38,6 +76,36 @@ export default function Operations() {
   const [alerts, setAlerts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedAsset, setSelectedAsset] = useState(null)
+  const [baseWeather, setBaseWeather] = useState({}) // { [baseId]: {loading, err, data} }
+
+  // Load weather for a base
+  async function loadBaseWeather(base) {
+    const id = base.id
+    // avoid duplicate loads
+    if (baseWeather[id] && baseWeather[id].loading) return
+
+    setBaseWeather(prev => ({ ...prev, [id]: { loading: true, err: null, data: null } }))
+    try {
+      let data = null
+      // try dedicated endpoint first
+      if (api.weatherByBase) {
+        try {
+          data = await api.weatherByBase(base.id)
+          console.log('weatherByBase result', data)
+        } catch (e) {
+          console.warn('weatherByBase failed, will try coords', e)
+        }
+      }
+      if (!data) {
+        data = await api.weather(base.lat, base.lon)
+        console.log('weather by coords result', data)
+      }
+      setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err: null, data } }))
+    } catch (err) {
+      console.error('Failed loading weather for base', base, err)
+      setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err: err, data: null } }))
+    }
+  }
 
   // Fetch geofences
   useEffect(() => {
@@ -139,7 +207,7 @@ export default function Operations() {
             )
           ))}
 
-          {/* Render bases as markers */}
+          {/* Render bases as markers with weather */}
           {bases.map(base => {
             console.log('[Operations] Rendering base:', base.id, base.lat, base.lon)
             const icon = L.divIcon({
@@ -150,13 +218,19 @@ export default function Operations() {
             })
 
             return (
-              <Marker key={base.id} position={[base.lat, base.lon]} icon={icon}>
+              <Marker
+                key={base.id}
+                position={[base.lat, base.lon]}
+                icon={icon}
+                eventHandlers={{
+                  popupopen: () => {
+                    console.log('popup opened for base', base.id);
+                    loadBaseWeather(base);
+                  }
+                }}
+              >
                 <Popup>
-                  <b>{base.name}</b><br />
-                  <span className='muted'>Type: {base.type}</span><br />
-                  <span className='muted'>Capacity: {base.capacity}</span><br />
-                  <span className='muted'>Stored: {base.assets_stored?.length || 0} assets</span><br />
-                  {base.description && <span style={{fontSize: 11, display: 'block', marginTop: 4}}>{base.description}</span>}
+                  <BaseWeatherPopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} />
                 </Popup>
               </Marker>
             )

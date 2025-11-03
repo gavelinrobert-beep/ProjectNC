@@ -21,6 +21,40 @@ function getBatteryColor(battery) {
   return '#3aa86f'
 }
 
+// Weather popup component
+function BaseWeatherPopup({ base, baseWeather, loadBaseWeather }) {
+  const bw = baseWeather[base.id] || { loading: false, err: null, data: null }
+
+  return (
+    <div style={{ minWidth: 220 }}>
+      <strong>🏭 {base.name}</strong><br />
+      <span className='muted'>{base.type}</span><br /><br />
+
+      {bw.loading ? (
+        <div>Laddar väder…</div>
+      ) : bw.err ? (
+        <div style={{ color: 'red' }}>
+          Fel vid laddning av väder<br />
+          <button onClick={() => loadBaseWeather(base)} style={{ marginTop: 6, padding: '4px 8px' }}>Försök igen</button>
+        </div>
+      ) : bw.data ? (
+        <div style={{ fontSize: 13 }}>
+          <strong>{bw.data.condition}</strong> — {bw.data.description}<br />
+          Temp: {bw.data.temperature} °C (känns som {bw.data.feels_like})<br />
+          Luftfuktighet: {bw.data.humidity}%<br />
+          Vind: {bw.data.wind_speed} m/s
+        </div>
+      ) : (
+        <div>
+          <button onClick={() => loadBaseWeather(base)} style={{ padding: '6px 8px' }}>
+            Visa väder
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const [assets, setAssets] = useState([])
   const [bases, setBases] = useState([])
@@ -28,6 +62,36 @@ export default function Dashboard() {
   const [geofences, setGeofences] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedAsset, setSelectedAsset] = useState(null)
+  const [baseWeather, setBaseWeather] = useState({}) // { [baseId]: {loading, err, data} }
+
+  // Load weather for a base
+  async function loadBaseWeather(base) {
+    const id = base.id
+    // avoid duplicate loads
+    if (baseWeather[id] && baseWeather[id].loading) return
+
+    setBaseWeather(prev => ({ ...prev, [id]: { loading: true, err: null, data: null } }))
+    try {
+      let data = null
+      // try dedicated endpoint first
+      if (api.weatherByBase) {
+        try {
+          data = await api.weatherByBase(base.id)
+          console.log('weatherByBase result', data)
+        } catch (e) {
+          console.warn('weatherByBase failed, will try coords', e)
+        }
+      }
+      if (!data) {
+        data = await api.weather(base.lat, base.lon)
+        console.log('weather by coords result', data)
+      }
+      setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err: null, data } }))
+    } catch (err) {
+      console.error('Failed loading weather for base', base, err)
+      setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err: err, data: null } }))
+    }
+  }
 
   // Fetch all data
   useEffect(() => {
@@ -199,7 +263,7 @@ export default function Dashboard() {
                 attribution='&copy; OpenStreetMap contributors'
               />
 
-              {/* Bases */}
+              {/* Bases with weather */}
               {bases.map(base => {
                 const icon = L.divIcon({
                   className: 'base-marker',
@@ -209,10 +273,19 @@ export default function Dashboard() {
                 })
 
                 return (
-                  <Marker key={base.id} position={[base.lat, base.lon]} icon={icon}>
+                  <Marker
+                    key={base.id}
+                    position={[base.lat, base.lon]}
+                    icon={icon}
+                    eventHandlers={{
+                      popupopen: () => {
+                        console.log('popup opened for base', base.id);
+                        loadBaseWeather(base);
+                      }
+                    }}
+                  >
                     <Popup>
-                      <b>{base.name}</b><br />
-                      <span className='muted'>{base.type}</span>
+                      <BaseWeatherPopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} />
                     </Popup>
                   </Marker>
                 )

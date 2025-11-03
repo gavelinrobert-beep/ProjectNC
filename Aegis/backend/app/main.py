@@ -21,6 +21,7 @@ from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
 from .routes.alerts import router as alerts_router
 from .routes.health import router as health_router
+from .routes.missions import router as missions_router
 app = FastAPI(title="Aegis API (refactor)")
 
 app.add_middleware(
@@ -40,6 +41,7 @@ app.include_router(bases_router)
 app.include_router(geofences_router)
 app.include_router(alerts_router)
 app.include_router(health_router)
+app.include_router(missions_router)
 @app.on_event("startup")
 async def on_startup():
     # Create and store pool on app.state so other modules can reuse or access it.

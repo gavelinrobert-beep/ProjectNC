@@ -61,3 +61,22 @@ async def init_database(pool):
           last_alarm_tick INT DEFAULT 0
         );
         """)
+        # NEW: Missions table
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS missions (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          asset_id TEXT,
+          waypoints JSONB NOT NULL,
+          status TEXT DEFAULT 'planned',
+          priority TEXT DEFAULT 'medium',
+          estimated_duration_minutes INT,
+          estimated_fuel_consumption FLOAT,
+          total_distance_km FLOAT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          started_at TIMESTAMPTZ,
+          completed_at TIMESTAMPTZ,
+          FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE SET NULL
+        );
+        """)
