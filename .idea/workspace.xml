@@ -4,25 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="3.0">
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Add missions management endpoints and weather integration; enhance health check and asset CRUD">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/bases.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/bases.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetDetailModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetDetailModal.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetsAdmin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/AssetsAdmin.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/Operations.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/Operations.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/components/MissionPlanner.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/components/MissionPlanner.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="SQL File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -164,7 +171,14 @@
       <option name="presentableId" value="LOCAL−00004" />
       <updated>1760534331087</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL−00005" summary="Add missions management endpoints and weather integration; enhance health check and asset CRUD">
+      <option name="closed" value="true" />
+      <created>1762171415166</created>
+      <option name="number" value="LOCAL−00005" />
+      <option name="presentableId" value="LOCAL−00005" />
+      <updated>1762171415166</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +186,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="3.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="3.0" />
+    <MESSAGE value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

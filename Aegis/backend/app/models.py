@@ -45,13 +45,27 @@ class AssetIn(BaseModel):
     route: str = "stationary"
     route_index: float = 0.0
     speed: float = 0.0
-    status: Literal["mobile", "parked", "airborne"]
+    status: Literal["mobile", "parked", "airborne", "returning", "refueling", "maintenance"]
     battery: Optional[float] = None
     battery_drain: float = 0.0
     has_battery: bool = False
     fuel_type: Literal["electric", "diesel", "aviation", "jet", "gasoline"]
     capacity: Optional[int] = None
     assets_stored: Optional[List[str]] = None
+
+    # NEW: Fuel Management Fields
+    fuel_level: Optional[float] = Field(default=100.0, ge=0, le=100, description="Current fuel percentage")
+    fuel_capacity: Optional[float] = Field(default=1000.0, description="Fuel tank capacity in liters")
+    fuel_consumption_rate: Optional[float] = Field(default=1.0, description="Liters per km")
+
+    # NEW: Maintenance Fields
+    operating_hours: Optional[float] = Field(default=0.0, description="Total hours in operation")
+    maintenance_hours: Optional[float] = Field(default=100.0, description="Hours until maintenance required")
+    last_maintenance: Optional[str] = None
+    maintenance_status: Optional[Literal["operational", "needs_maintenance", "under_maintenance"]] = "operational"
+
+    # NEW: Home Base
+    home_base_id: Optional[str] = None
 
 
 class LoginIn(BaseModel):
@@ -64,12 +78,12 @@ class LoginOut(BaseModel):
     role: str
 
 
-# NEW: Mission models
+# Mission models
 class Waypoint(BaseModel):
     lat: float
     lon: float
     name: Optional[str] = None
-    action: Optional[str] = None  # e.g., "pickup", "dropoff", "refuel", "patrol"
+    action: Optional[str] = None
 
 
 class MissionIn(BaseModel):
@@ -98,12 +112,7 @@ class MissionOut(BaseModel):
     name: str
     description: Optional[str]
     asset_id: Optional[str]
-    waypoints: List[dict]
+    waypoints: List[Waypoint]
     status: str
     priority: str
-    estimated_duration_minutes: Optional[int]
-    estimated_fuel_consumption: Optional[float]
-    total_distance_km: Optional[float]
-    created_at: datetime
-    started_at: Optional[datetime]
-    completed_at: Optional[datetime]
+    created_at: Optional[datetime]

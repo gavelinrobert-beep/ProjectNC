@@ -22,6 +22,32 @@ const newAssetIcon = new L.Icon({
   shadowSize: [41, 41]
 })
 
+// Realistic military asset types
+const ASSET_TYPES = [
+  // Ground Vehicles
+  { value: 'truck', label: '🚚 Lastbil (Cargo Truck)', category: 'ground' },
+  { value: 'armored_vehicle', label: '🛡️ Pansarfordon (Armored Vehicle)', category: 'ground' },
+  { value: 'supply_vehicle', label: '📦 Förrådsfordon (Supply Vehicle)', category: 'ground' },
+  { value: 'fuel_truck', label: '⛽ Bränsletank (Fuel Truck)', category: 'ground' },
+  { value: 'ambulance', label: '🚑 Ambulans (Ambulance)', category: 'ground' },
+  { value: 'command_vehicle', label: '🎖️ Ledningsfordon (Command Vehicle)', category: 'ground' },
+
+  // Aircraft
+  { value: 'cargo_plane', label: '✈️ Transportplan (Cargo Plane)', category: 'air' },
+  { value: 'fighter_jet', label: '🛩️ Stridsflygplan (Fighter Jet)', category: 'air' },
+  { value: 'helicopter', label: '🚁 Helikopter (Helicopter)', category: 'air' },
+  { value: 'transport_helicopter', label: '🚁 Transporthelikopter (Transport Helicopter)', category: 'air' },
+  { value: 'reconnaissance_plane', label: '🔭 Spaningsplan (Reconnaissance Plane)', category: 'air' },
+  { value: 'uav', label: '🛸 Drönare (UAV/Drone)', category: 'air' },
+
+  // Naval
+  { value: 'patrol_boat', label: '⛴️ Patrullbåt (Patrol Boat)', category: 'naval' },
+  { value: 'corvette', label: '🚢 Korvett (Corvette)', category: 'naval' },
+  { value: 'submarine', label: '🔱 Ubåt (Submarine)', category: 'naval' },
+  { value: 'supply_ship', label: '🚢 Försörjningsfartyg (Supply Ship)', category: 'naval' },
+  { value: 'landing_craft', label: '⚓ Landstigning (Landing Craft)', category: 'naval' }
+]
+
 // Component to handle map clicks
 function MapClickHandler({ onLocationSelect, enabled }) {
   useMapEvents({
@@ -75,11 +101,9 @@ export default function AssetsAdmin() {
     type: 'truck',
     lat: '',
     lon: '',
-    // route must be a string for backend validation
     route: '',
     route_index: 0,
     speed: 50,
-    // allowed statuses: 'mobile', 'parked', 'airborne'
     status: 'mobile',
     battery: 100,
     battery_drain: 1,
@@ -89,7 +113,7 @@ export default function AssetsAdmin() {
   const [editing, setEditing] = useState(null)
   const [mapClickMode, setMapClickMode] = useState(false)
   const [tempMarker, setTempMarker] = useState(null)
-  const [baseWeather, setBaseWeather] = useState({}) // { [baseId]: {loading, err, data} }
+  const [baseWeather, setBaseWeather] = useState({})
   const mapRef = useRef()
 
   useEffect(() => {
@@ -112,27 +136,22 @@ export default function AssetsAdmin() {
       .catch(err => console.error('Error fetching bases:', err))
   }
 
-  // Load weather for a base (stores result in parent state)
   async function loadBaseWeather(base) {
     const id = base.id
-    // avoid duplicate loads
     if (baseWeather[id] && baseWeather[id].loading) return
 
     setBaseWeather(prev => ({ ...prev, [id]: { loading: true, err: null, data: null } }))
     try {
       let data = null
-      // try dedicated endpoint first
       if (api.weatherByBase) {
         try {
           data = await api.weatherByBase(base.id)
-          console.log('weatherByBase result', data)
         } catch (e) {
           console.warn('weatherByBase failed, will try coords', e)
         }
       }
       if (!data) {
         data = await api.weather(base.lat, base.lon)
-        console.log('weather by coords result', data)
       }
       setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err: null, data } }))
     } catch (err) {
@@ -153,20 +172,17 @@ export default function AssetsAdmin() {
   }
 
   const normalizeStatus = (s) => {
-    // Map legacy/UX values to backend allowed literals
     if (!s) return 'mobile'
     const v = s.toString().toLowerCase()
     if (['mobile', 'moving'].includes(v)) return 'mobile'
     if (['parked', 'idle', 'stationary'].includes(v)) return 'parked'
     if (['airborne', 'air'].includes(v)) return 'airborne'
-    // fallback
     return 'mobile'
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Normalize route -> string (backend expects a string)
     let routeValue = form.route
     if (Array.isArray(routeValue)) {
       routeValue = routeValue.join(', ')
@@ -202,7 +218,6 @@ export default function AssetsAdmin() {
       fetchAssets()
     } catch (err) {
       console.error('Error saving asset:', err)
-      // show server JSON error if present
       if (err && err.detail) {
         alert(`Error: ${JSON.stringify(err.detail)}`)
       } else {
@@ -247,18 +262,6 @@ export default function AssetsAdmin() {
     alert('Click anywhere on the map to select location!')
   }
 
-  const getAssetIcon = (type) => {
-    const colors = {
-      truck: 'blue',
-      drone: 'green',
-      helicopter: 'red',
-      boat: 'violet',
-      tank: 'grey',
-      apc: 'orange'
-    }
-    return colors[type] || 'blue'
-  }
-
   const centerMap = [62.0, 15.0]
 
   return (
@@ -266,23 +269,32 @@ export default function AssetsAdmin() {
       <h2>Assets Administration</h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
-        {/* Form */}
         <div className="card">
           <h3>{editing ? 'Edit Asset' : 'Create New Asset'}</h3>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 12 }}>
-              <label>Type</label>
+              <label>Fordonstyp / Asset Type *</label>
               <select
                 value={form.type}
                 onChange={e => setForm({...form, type: e.target.value})}
                 style={{ width: '100%', padding: 8 }}
+                required
               >
-                <option value="truck">🚚 Truck</option>
-                <option value="drone">🚁 Drone</option>
-                <option value="helicopter">🚁 Helicopter</option>
-                <option value="boat">⛵ Boat</option>
-                <option value="tank">🎖️ Tank</option>
-                <option value="apc">🎖️ APC</option>
+                <optgroup label="🚗 Markfordon (Ground Vehicles)">
+                  {ASSET_TYPES.filter(t => t.category === 'ground').map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="✈️ Flygplan (Aircraft)">
+                  {ASSET_TYPES.filter(t => t.category === 'air').map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="⚓ Fartyg (Naval)">
+                  {ASSET_TYPES.filter(t => t.category === 'naval').map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </optgroup>
               </select>
             </div>
 
@@ -348,7 +360,6 @@ export default function AssetsAdmin() {
                   onChange={e => setForm({...form, status: e.target.value})}
                   style={{ width: '100%', padding: 8 }}
                 >
-                  {/* show UX-friendly options but use allowed backend values */}
                   <option value="mobile">Mobile</option>
                   <option value="parked">Parked</option>
                   <option value="airborne">Airborne</option>
@@ -407,7 +418,6 @@ export default function AssetsAdmin() {
           </form>
         </div>
 
-        {/* Map for location picking */}
         <div className="card">
           <h3>Location Picker</h3>
           <div style={{ height: 500, border: '2px solid #3498db', borderRadius: 4, overflow: 'hidden' }}>
@@ -423,28 +433,22 @@ export default function AssetsAdmin() {
               />
               <MapClickHandler onLocationSelect={handleLocationSelect} enabled={mapClickMode} />
 
-              {/* Existing bases (gray markers) */}
-              {bases.map(base => {
-                const bw = baseWeather[base.id] || { loading: false, err: null, data: null }
-                return (
-                  <Marker
-                    key={`base-${base.id}`}
-                    position={[base.lat, base.lon]}
-                    eventHandlers={{
-                      popupopen: () => {
-                        console.log('popup opened for base', base.id);
-                        loadBaseWeather(base);
-                      }
-                    }}
-                  >
-                    <Popup>
-                      <BaseWeatherPopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} />
-                    </Popup>
-                  </Marker>
-                )
-              })}
+              {bases.map(base => (
+                <Marker
+                  key={`base-${base.id}`}
+                  position={[base.lat, base.lon]}
+                  eventHandlers={{
+                    popupopen: () => {
+                      loadBaseWeather(base);
+                    }
+                  }}
+                >
+                  <Popup>
+                    <BaseWeatherPopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} />
+                  </Popup>
+                </Marker>
+              ))}
 
-              {/* Existing assets */}
               {assets.map(asset => (
                 <Marker key={`asset-${asset.id}`} position={[asset.lat, asset.lon]}>
                   <Popup>
@@ -456,7 +460,6 @@ export default function AssetsAdmin() {
                 </Marker>
               ))}
 
-              {/* Temporary marker for new location */}
               {tempMarker && (
                 <Marker position={[tempMarker.lat, tempMarker.lng]} icon={newAssetIcon}>
                   <Popup>
@@ -483,7 +486,6 @@ export default function AssetsAdmin() {
         </div>
       </div>
 
-      {/* Assets List */}
       <div className="card">
         <h3>Existing Assets ({assets.length})</h3>
         <div style={{ maxHeight: 400, overflowY: 'auto' }}>
