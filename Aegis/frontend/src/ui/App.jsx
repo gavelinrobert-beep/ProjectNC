@@ -3,7 +3,7 @@ import Dashboard from '../pages/dashboard';
 import AdminGeofences from '../components/AdminGeofences';
 import Operations from '../components/Operations';
 import AlertsPanel from '../components/AlertsPanel';
-import MissionPlanner from '../components/MissionPlanner';
+import MissionManager from '../components/MissionManager';
 import Login from '../components/Login';
 import { isAdmin, setIdToken, setUserRole } from '../lib/auth';
 
@@ -113,7 +113,7 @@ export default function App() {
 
       {activeTab === 'dashboard' && <Dashboard />}
       {activeTab === 'operations' && <Operations />}
-      {activeTab === 'missions' && <MissionPlanner />}
+      {activeTab === 'missions' && <MissionManager />}
       {activeTab === 'alerts' && <AlertsPanel />}
       {activeTab === 'administration' && <AdminGeofences />}
     </div>

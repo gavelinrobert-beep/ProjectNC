@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Allt är svart">
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Add inventory management features: implement inventory endpoints, create inventory widget, and enhance UI with new styles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/ui/App.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +132,7 @@
       <workItem from="1761425423927" duration="5979000" />
       <workItem from="1761853517691" duration="3612000" />
       <workItem from="1762122714083" duration="1269000" />
-      <workItem from="1762241266406" duration="17131000" />
+      <workItem from="1762241266406" duration="22542000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />
@@ -191,7 +190,14 @@
       <option name="presentableId" value="LOCAL−00008" />
       <updated>1762259277676</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL−00009" summary="Add inventory management features: implement inventory endpoints, create inventory widget, and enhance UI with new styles">
+      <option name="closed" value="true" />
+      <created>1762261730978</created>
+      <option name="number" value="LOCAL−00009" />
+      <option name="presentableId" value="LOCAL−00009" />
+      <updated>1762261730978</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +208,8 @@
     <MESSAGE value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
     <MESSAGE value="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather" />
     <MESSAGE value="Allt är svart" />
-    <option name="LAST_COMMIT_MESSAGE" value="Allt är svart" />
+    <MESSAGE value="Add inventory management features: implement inventory endpoints, create inventory widget, and enhance UI with new styles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add inventory management features: implement inventory endpoints, create inventory widget, and enhance UI with new styles" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
