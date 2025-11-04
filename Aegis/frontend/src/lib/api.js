@@ -84,7 +84,7 @@ export const fetchInventoryItems = async (filters = {}) => {
   return response.json();
 };
 
-export const getInventoryItem = async (itemId) => {
+export const fetchInventoryItem = async (itemId) => {
   const url = `${API_BASE}/api/inventory/items/${itemId}`;
   console.log('[API] GET', url);
   const response = await fetch(url, { headers: authHeader() });

@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather">
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Allt är svart">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +133,7 @@
       <workItem from="1761425423927" duration="5979000" />
       <workItem from="1761853517691" duration="3612000" />
       <workItem from="1762122714083" duration="1269000" />
-      <workItem from="1762241266406" duration="14824000" />
+      <workItem from="1762241266406" duration="17131000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />
@@ -191,7 +184,14 @@
       <option name="presentableId" value="LOCAL−00007" />
       <updated>1762209298785</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL−00008" summary="Allt är svart">
+      <option name="closed" value="true" />
+      <created>1762259277676</created>
+      <option name="number" value="LOCAL−00008" />
+      <option name="presentableId" value="LOCAL−00008" />
+      <updated>1762259277676</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,7 +201,8 @@
     <MESSAGE value="3.0" />
     <MESSAGE value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
     <MESSAGE value="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather" />
+    <MESSAGE value="Allt är svart" />
+    <option name="LAST_COMMIT_MESSAGE" value="Allt är svart" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
