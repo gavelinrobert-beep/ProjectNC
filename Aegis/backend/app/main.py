@@ -22,7 +22,7 @@ from .routes.geofences import router as geofences_router
 from .routes.alerts import router as alerts_router
 from .routes.health import router as health_router
 from .routes.missions import router as missions_router
-
+from .routes.inventory import router as inventory_router
 app = FastAPI(title="Aegis API (refactor)")
 
 app.add_middleware(
@@ -43,6 +43,7 @@ app.include_router(geofences_router)
 app.include_router(alerts_router)
 app.include_router(health_router)
 app.include_router(missions_router)
+app.include_router(inventory_router)
 
 @app.on_event("startup")
 async def on_startup():

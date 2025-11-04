@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Literal
 from datetime import datetime
 
-
 class GeofenceIn(BaseModel):
     id: Optional[str] = None
     name: str
@@ -116,3 +115,68 @@ class MissionOut(BaseModel):
     status: str
     priority: str
     created_at: Optional[datetime]
+
+    # Inventory models
+
+
+class InventoryItemIn(BaseModel):
+    id: Optional[str] = None
+    name: str
+    type: str = Field(..., description="fuel, ammunition, medical, food, spare_parts, equipment")
+    category: str = Field(..., description="consumable, equipment, ammunition, medical, etc.")
+    quantity: float = Field(..., ge=0)
+    unit: str = Field(..., description="liters, kg, units, boxes, etc.")
+    weight_per_unit: Optional[float] = Field(None, ge=0, description="Weight in kg")
+    volume_per_unit: Optional[float] = Field(None, ge=0, description="Volume in cubic meters")
+    location_type: Literal["base", "asset"] = "base"
+    location_id: str
+    min_stock_level: Optional[float] = Field(default=0, ge=0)
+    max_stock_level: Optional[float] = None
+    expiration_date: Optional[str] = None
+    description: Optional[str] = None
+
+
+class InventoryItemOut(BaseModel):
+    id: str
+    name: str
+    type: str
+    category: str
+    quantity: float
+    unit: str
+    weight_per_unit: Optional[float]
+    volume_per_unit: Optional[float]
+    location_type: str
+    location_id: str
+    min_stock_level: float
+    max_stock_level: Optional[float]
+    expiration_date: Optional[str]
+    description: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+
+class InventoryTransactionIn(BaseModel):
+    item_id: str
+    transaction_type: Literal["add", "remove", "transfer", "consume", "restock"]
+    quantity: float = Field(..., gt=0)
+    from_location_type: Optional[Literal["base", "asset"]] = None
+    from_location_id: Optional[str] = None
+    to_location_type: Optional[Literal["base", "asset"]] = None
+    to_location_id: Optional[str] = None
+    asset_id: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class InventoryTransactionOut(BaseModel):
+    id: int
+    item_id: str
+    transaction_type: str
+    quantity: float
+    from_location_type: Optional[str]
+    from_location_id: Optional[str]
+    to_location_type: Optional[str]
+    to_location_id: Optional[str]
+    asset_id: Optional[str]
+    user_email: Optional[str]
+    notes: Optional[str]
+    timestamp: datetime

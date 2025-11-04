@@ -4,18 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Add missions management endpoints and weather integration; enhance health check and asset CRUD">
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/bases.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/bases.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/geofences.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/geofences.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/health.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/streams.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/streams.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/weather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,27 +52,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.python -m venv .venv && source .venv/bin/activate.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PyCharm 2025.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.python -m venv .venv &amp;&amp; source .venv/bin/activate.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PyCharm 2025.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Admin\Downloads\aegis2.0\Aegis" />
@@ -142,6 +140,7 @@
       <workItem from="1761425423927" duration="5979000" />
       <workItem from="1761853517691" duration="3612000" />
       <workItem from="1762122714083" duration="1269000" />
+      <workItem from="1762241266406" duration="14824000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />
@@ -185,7 +184,14 @@
       <option name="presentableId" value="LOCAL−00006" />
       <updated>1762202978033</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL−00007" summary="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather">
+      <option name="closed" value="true" />
+      <created>1762209298785</created>
+      <option name="number" value="LOCAL−00007" />
+      <option name="presentableId" value="LOCAL−00007" />
+      <updated>1762209298785</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,7 +200,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="3.0" />
     <MESSAGE value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add missions management endpoints and weather integration; enhance health check and asset CRUD" />
+    <MESSAGE value="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update API routes to include '/api' prefix for alerts, assets, auth, bases, geofences, health, missions, streams, and weather" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -206,7 +213,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/Aegis/frontend/src/components/Operations.jsx</url>
           <line>1</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

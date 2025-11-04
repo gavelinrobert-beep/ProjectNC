@@ -264,6 +264,110 @@ async def init_database(pool):
                                completed_at TIMESTAMPTZ
                                );
                            """)
+        await conn.execute("""
+                           CREATE TABLE IF NOT EXISTS inventory_items
+                           (
+                               id
+                               TEXT
+                               PRIMARY
+                               KEY,
+                               name
+                               TEXT
+                               NOT
+                               NULL,
+                               type
+                               TEXT
+                               NOT
+                               NULL,
+                               category
+                               TEXT
+                               NOT
+                               NULL,
+                               quantity
+                               FLOAT
+                               NOT
+                               NULL
+                               DEFAULT
+                               0,
+                               unit
+                               TEXT
+                               NOT
+                               NULL,
+                               weight_per_unit
+                               FLOAT,
+                               volume_per_unit
+                               FLOAT,
+                               location_type
+                               TEXT
+                               NOT
+                               NULL,
+                               location_id
+                               TEXT
+                               NOT
+                               NULL,
+                               min_stock_level
+                               FLOAT
+                               DEFAULT
+                               0,
+                               max_stock_level
+                               FLOAT,
+                               expiration_date
+                               TIMESTAMPTZ,
+                               description
+                               TEXT,
+                               created_at
+                               TIMESTAMPTZ
+                               DEFAULT
+                               NOW
+                           (
+                           ),
+                               updated_at TIMESTAMPTZ DEFAULT NOW
+                           (
+                           )
+                               );
+                           """)
+
+        await conn.execute("""
+                           CREATE TABLE IF NOT EXISTS inventory_transactions
+                           (
+                               id
+                               SERIAL
+                               PRIMARY
+                               KEY,
+                               item_id
+                               TEXT
+                               NOT
+                               NULL,
+                               transaction_type
+                               TEXT
+                               NOT
+                               NULL,
+                               quantity
+                               FLOAT
+                               NOT
+                               NULL,
+                               from_location_type
+                               TEXT,
+                               from_location_id
+                               TEXT,
+                               to_location_type
+                               TEXT,
+                               to_location_id
+                               TEXT,
+                               asset_id
+                               TEXT,
+                               user_email
+                               TEXT,
+                               notes
+                               TEXT,
+                               timestamp
+                               TIMESTAMPTZ
+                               DEFAULT
+                               NOW
+                           (
+                           )
+                               );
+                           """)
 
         print("[DATABASE] All tables initialized successfully")
 

@@ -43,3 +43,16 @@ def bearer_role(authorization: str = Header(None)) -> str:
 def require_admin(role: str = Depends(bearer_role)) -> None:
     if role != "admin":
         raise HTTPException(status_code=403, detail="Admin required")
+
+
+async def get_current_user(authorization: str = Header(None)) -> str:
+    """Get current user email from token (optional, returns 'system' if not authenticated)"""
+    if not authorization:
+        return "system"
+
+    try:
+        token = authorization.replace("Bearer ", "")
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return payload.get("email", "system")
+    except Exception:
+        return "system"
