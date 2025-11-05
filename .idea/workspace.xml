@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Add Mission Manager component and refactor mission planning; implement transfer mission functionality and enhance UI">
+    <list default="true" id="d4111bc3-17f3-4670-8209-8415f3594559" name="Changes" comment="Enhance mission management: update asset status and route during mission start and completion; add transfer mission fields to models">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/missions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/alerts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/routes/inventory.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/routes/inventory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/backend/app/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/backend/app/simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Aegis/frontend/src/pages/dashboard.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +137,7 @@
       <workItem from="1761853517691" duration="3612000" />
       <workItem from="1762122714083" duration="1269000" />
       <workItem from="1762241266406" duration="31209000" />
-      <workItem from="1762332269546" duration="962000" />
+      <workItem from="1762332269546" duration="17111000" />
     </task>
     <task id="LOCAL−00001" summary="3.0">
       <option name="closed" value="true" />
@@ -206,7 +209,14 @@
       <option name="presentableId" value="LOCAL−00010" />
       <updated>1762286031100</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL−00011" summary="Enhance mission management: update asset status and route during mission start and completion; add transfer mission fields to models">
+      <option name="closed" value="true" />
+      <created>1762334047360</created>
+      <option name="number" value="LOCAL−00011" />
+      <option name="presentableId" value="LOCAL−00011" />
+      <updated>1762334047360</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -219,7 +229,8 @@
     <MESSAGE value="Allt är svart" />
     <MESSAGE value="Add inventory management features: implement inventory endpoints, create inventory widget, and enhance UI with new styles" />
     <MESSAGE value="Add Mission Manager component and refactor mission planning; implement transfer mission functionality and enhance UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Mission Manager component and refactor mission planning; implement transfer mission functionality and enhance UI" />
+    <MESSAGE value="Enhance mission management: update asset status and route during mission start and completion; add transfer mission fields to models" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance mission management: update asset status and route during mission start and completion; add transfer mission fields to models" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -234,6 +234,37 @@ async def simulation_loop():
 
                 target_lat, target_lon = waypoints[route_index]
                 current_lat, current_lon = asset['lat'], asset['lon']
+                # Check for critical conditions
+                if asset['fuel_level'] and asset['fuel_level'] < 10 and asset['status'] in ['mobile', 'airborne']:
+                    # Create critical low fuel alert
+                    await conn.execute("""
+                                       INSERT INTO alerts (rule, asset_id, severity, message, acknowledged)
+                                       VALUES ($1, $2, 'critical', $3, false) ON CONFLICT (asset_id, rule) DO
+                                       UPDATE SET ts = NOW()
+                                       """, 'Low Fuel Critical', asset['id'],
+                                       f"Fuel at {asset['fuel_level']:.1f}% - RTB recommended")
+
+                    # Auto-RTB if fuel < 5%
+                    if asset['fuel_level'] < 5:
+                        # Find nearest base
+                        nearest_base = await conn.fetchrow("""
+                                                           SELECT id, lat, lon
+                                                           FROM bases
+                                                           ORDER BY (lat - $1)^2 + (lon - $2)^2
+                                                               LIMIT 1
+                                                           """, asset['lat'], asset['lon'])
+
+                        if nearest_base:
+                            # Set asset to return to base
+                            route = f"{asset['lat']},{asset['lon']} {nearest_base['lat']},{nearest_base['lon']}"
+                            await conn.execute("""
+                                               UPDATE assets
+                                               SET status      = 'returning',
+                                                   route       = $1,
+                                                   route_index = 0
+                                               WHERE id = $2
+                                               """, route, asset['id'])
+                            print(f"[AUTO-RTB] {asset['id']} returning to {nearest_base['id']} (fuel critical)")
 
                 # Calculate movement
                 distance = calculate_distance(current_lat, current_lon, target_lat, target_lon)

@@ -17,7 +17,11 @@ router = APIRouter(prefix="/api", tags=["alerts"])
 async def list_alerts(limit: int = 100):
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT $1", limit)
+        # FIXED: Added severity and message columns
+        rows = await conn.fetch(
+            "SELECT id, asset_id, geofence_id, rule, acknowledged, ts, severity, message FROM alerts ORDER BY ts DESC LIMIT $1",
+            limit
+        )
         out = []
         for r in rows:
             out.append({
@@ -26,7 +30,9 @@ async def list_alerts(limit: int = 100):
                 "geofence_id": r["geofence_id"],
                 "rule": r["rule"],
                 "acknowledged": r["acknowledged"],
-                "ts": r["ts"].isoformat() if r["ts"] is not None else None
+                "ts": r["ts"].isoformat() if r["ts"] is not None else None,
+                "severity": r.get("severity", "warning"),  # ADDED
+                "message": r.get("message", "")  # ADDED
             })
         return out
 
@@ -35,12 +41,16 @@ async def list_alerts(limit: int = 100):
 async def alerts_csv():
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT 1000")
+        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts, severity, message FROM alerts ORDER BY ts DESC LIMIT 1000")
         stream = io.StringIO()
         writer = csv.writer(stream)
-        writer.writerow(["id", "asset_id", "geofence_id", "rule", "acknowledged", "ts"])
+        writer.writerow(["id", "asset_id", "geofence_id", "rule", "acknowledged", "ts", "severity", "message"])
         for r in rows:
-            writer.writerow([r["id"], r["asset_id"], r["geofence_id"], r["rule"], r["acknowledged"], r["ts"].isoformat() if r["ts"] is not None else ""])
+            writer.writerow([
+                r["id"], r["asset_id"], r["geofence_id"], r["rule"],
+                r["acknowledged"], r["ts"].isoformat() if r["ts"] is not None else "",
+                r.get("severity", "warning"), r.get("message", "")
+            ])
         stream.seek(0)
         return StreamingResponse(iter([stream.read()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=alerts.csv"})
 
@@ -50,11 +60,13 @@ async def alerts_pdf():
     # Minimal PDF-like response: if you want a real PDF, install reportlab and generate properly.
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts FROM alerts ORDER BY ts DESC LIMIT 200")
+        rows = await conn.fetch("SELECT id, asset_id, geofence_id, rule, acknowledged, ts, severity, message FROM alerts ORDER BY ts DESC LIMIT 200")
         text_lines = ["Alerts report", "=================", ""]
         for r in rows:
             ts = r["ts"].isoformat() if r["ts"] is not None else ""
-            text_lines.append(f"{r['id']} | {r['asset_id']} | {r['geofence_id']} | {r['rule']} | ack={r['acknowledged']} | {ts}")
+            severity = r.get("severity", "warning")
+            message = r.get("message", "")
+            text_lines.append(f"{r['id']} | {r['asset_id']} | {r['geofence_id']} | {r['rule']} | ack={r['acknowledged']} | {severity} | {message} | {ts}")
         content = "\n".join(text_lines).encode("utf-8")
         # Return as application/pdf for compatibility; this is plain text inside PDF MIME.
         return Response(content, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=alerts.pdf"})

@@ -10,8 +10,7 @@ docker compose up
 ```
 Öppna:
 - API: http://localhost:8000/docs
-- Frontend: http://localhost:5173/
-
+d
 
 ```
 
