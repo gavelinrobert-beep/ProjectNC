@@ -106,6 +106,7 @@ async def create_mission(payload: MissionIn, request: Request):
 
     # Get asset speed if asset is assigned
     asset_speed = 50.0  # default speed
+    asset = None
     pool = await get_pool(request.app)
 
     async with pool.acquire() as conn:
@@ -154,6 +155,24 @@ async def create_mission(payload: MissionIn, request: Request):
             destination_base_id,
             json.dumps(transfer_items) if transfer_items else None
         )
+
+        # UPDATE ASSET STATUS AND ROUTE
+        if payload.asset_id and payload.status == 'active':
+            # Build route string from waypoints
+            route_str = ' '.join([f"{wp['lat']},{wp['lon']}" for wp in waypoints_data])
+
+            # Determine asset status based on asset type
+            asset_type = asset['type'] if asset else 'truck'
+            air_types = ['plane', 'helicopter', 'cargo_plane', 'fighter_jet', 'transport_helicopter', 'reconnaissance_plane', 'uav']
+            new_status = 'airborne' if asset_type in air_types else 'mobile'
+
+            await conn.execute("""
+                UPDATE assets 
+                SET status = $1, route = $2, route_index = 0
+                WHERE id = $3
+            """, new_status, route_str, payload.asset_id)
+
+            print(f"[MISSION] Started mission {mission_id}: Asset {payload.asset_id} set to {new_status} with route: {route_str}")
 
         # Fetch and return the created mission
         row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
@@ -277,6 +296,27 @@ async def start_mission(mission_id: str, request: Request):
             WHERE id = $1
         """, mission_id)
 
+        # Update asset status if mission has an assigned asset
+        if mission['asset_id']:
+            # Get asset type
+            asset = await conn.fetchrow("SELECT type FROM assets WHERE id = $1", mission['asset_id'])
+            if asset:
+                asset_type = asset['type']
+                air_types = ['plane', 'helicopter', 'cargo_plane', 'fighter_jet', 'transport_helicopter', 'reconnaissance_plane', 'uav']
+                new_status = 'airborne' if asset_type in air_types else 'mobile'
+
+                # Get waypoints and build route
+                waypoints = json.loads(mission['waypoints']) if isinstance(mission['waypoints'], str) else mission['waypoints']
+                route_str = ' '.join([f"{wp['lat']},{wp['lon']}" for wp in waypoints])
+
+                await conn.execute("""
+                    UPDATE assets 
+                    SET status = $1, route = $2, route_index = 0
+                    WHERE id = $3
+                """, new_status, route_str, mission['asset_id'])
+
+                print(f"[MISSION] Started mission {mission_id}: Asset {mission['asset_id']} set to {new_status}")
+
         row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
         result = dict(row)
         result['waypoints'] = json.loads(result['waypoints']) if isinstance(result['waypoints'], str) else result['waypoints']
@@ -303,6 +343,14 @@ async def complete_mission(mission_id: str, request: Request):
             UPDATE missions SET status = 'completed', completed_at = NOW()
             WHERE id = $1
         """, mission_id)
+
+        # Set asset to parked
+        if mission['asset_id']:
+            await conn.execute("""
+                UPDATE assets 
+                SET status = 'parked', route = 'stationary', route_index = 0
+                WHERE id = $1
+            """, mission['asset_id'])
 
         # If this is a transfer mission, process inventory transfers
         if mission['mission_type'] == 'transfer' and mission['transfer_items']:

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Literal
 from datetime import datetime
 
+
 class GeofenceIn(BaseModel):
     id: Optional[str] = None
     name: str
@@ -94,6 +95,12 @@ class MissionIn(BaseModel):
     status: Literal["planned", "active", "completed", "cancelled"] = "planned"
     priority: Literal["low", "medium", "high", "critical"] = "medium"
 
+    # Transfer mission fields
+    mission_type: Optional[Literal["patrol", "transfer", "reconnaissance", "supply"]] = "patrol"
+    source_base_id: Optional[str] = None
+    destination_base_id: Optional[str] = None
+    transfer_items: Optional[List[dict]] = None
+
     @validator('waypoints')
     def validate_waypoints(cls, v):
         if len(v) < 2:
@@ -116,9 +123,14 @@ class MissionOut(BaseModel):
     priority: str
     created_at: Optional[datetime]
 
-    # Inventory models
+    # Transfer mission fields
+    mission_type: Optional[str] = "patrol"
+    source_base_id: Optional[str] = None
+    destination_base_id: Optional[str] = None
+    transfer_items: Optional[List[dict]] = None
 
 
+# Inventory models
 class InventoryItemIn(BaseModel):
     id: Optional[str] = None
     name: str
