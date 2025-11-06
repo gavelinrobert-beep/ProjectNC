@@ -1,10 +1,12 @@
+// Aegis/frontend/src/components/AlertBanner.jsx
 import React from 'react'
 
-const BRAND = {
-  danger: '#FF4444',
-  warning: '#FFA500',
-  info: '#00BFFF',
-  success: '#00FF88',
+// NATO Standard Alert Colors
+const ALERT_COLORS = {
+  critical: '#D32F2F',    // NATO Red
+  warning: '#F57C00',     // NATO Amber
+  info: '#1976D2',        // NATO Blue
+  success: '#388E3C',     // NATO Green
 }
 
 const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
@@ -20,49 +22,75 @@ const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
       left: 0,
       right: 0,
       zIndex: 9999,
-      pointerEvents: 'none'
+      pointerEvents: 'none',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
-      {/* Critical Alerts - RED BANNER */}
+      {/* Critical Alerts - Highest Priority */}
       {criticalAlerts.map((alert, idx) => (
         <div
           key={alert.id || idx}
           style={{
-            background: `linear-gradient(90deg, ${BRAND.danger} 0%, #cc0000 100%)`,
+            background: ALERT_COLORS.critical,
             color: '#fff',
-            padding: '12px 20px',
+            padding: '14px 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            boxShadow: '0 4px 12px rgba(255, 68, 68, 0.5)',
-            animation: 'alertPulse 2s ease-in-out infinite',
-            borderBottom: '2px solid #fff',
-            pointerEvents: 'auto'
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+            borderLeft: '4px solid #fff',
+            animation: 'criticalPulse 2s ease-in-out infinite',
+            pointerEvents: 'auto',
+            fontWeight: 500
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 24, animation: 'alertBlink 1s ease-in-out infinite' }}>🚨</span>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: 14, marginBottom: 2 }}>
-                CRITICAL ALERT: {alert.rule || alert.type}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: 1 }}>
+            <div style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#fff',
+              animation: 'indicatorPulse 1.5s ease-in-out infinite'
+            }} />
+            <div style={{ flex: 1 }}>
+              <div style={{
+                fontWeight: 600,
+                fontSize: 13,
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+                textTransform: 'uppercase'
+              }}>
+                CRITICAL: {alert.rule || alert.type}
               </div>
-              <div style={{ fontSize: 11, opacity: 0.9 }}>
-                {alert.asset_id} • {alert.message || 'Immediate action required'} • {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+              <div style={{
+                fontSize: 12,
+                opacity: 0.95,
+                lineHeight: 1.4
+              }}>
+                {alert.asset_id} • {alert.message || 'Immediate action required'}
+                <span style={{ marginLeft: 12, opacity: 0.8 }}>
+                  {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+                </span>
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginLeft: 16 }}>
             <button
               onClick={() => onAcknowledge && onAcknowledge(alert)}
               style={{
                 background: '#fff',
-                color: BRAND.danger,
+                color: ALERT_COLORS.critical,
                 border: 'none',
-                padding: '6px 12px',
-                borderRadius: 4,
-                fontWeight: 'bold',
+                padding: '8px 16px',
+                borderRadius: 3,
+                fontWeight: 600,
                 fontSize: 11,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                transition: 'all 0.2s'
               }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
             >
               ACKNOWLEDGE
             </button>
@@ -71,59 +99,94 @@ const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
               style={{
                 background: 'transparent',
                 color: '#fff',
-                border: '1px solid #fff',
-                padding: '6px 12px',
-                borderRadius: 4,
-                fontSize: 11,
-                cursor: 'pointer'
+                border: '1px solid rgba(255, 255, 255, 0.6)',
+                padding: '8px 12px',
+                borderRadius: 3,
+                fontSize: 16,
+                lineHeight: 1,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'
+                e.currentTarget.style.borderColor = '#fff'
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)'
               }}
             >
-              ✕
+              ×
             </button>
           </div>
         </div>
       ))}
 
-      {/* Warning Alerts - ORANGE BANNER */}
-      {warningAlerts.slice(0, 2).map((alert, idx) => (
+      {/* Warning Alerts - Medium Priority */}
+      {warningAlerts.slice(0, 3).map((alert, idx) => (
         <div
           key={alert.id || idx}
           style={{
-            background: `linear-gradient(90deg, ${BRAND.warning} 0%, #ff8800 100%)`,
-            color: '#000',
-            padding: '10px 20px',
+            background: ALERT_COLORS.warning,
+            color: '#fff',
+            padding: '12px 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            boxShadow: '0 2px 8px rgba(255, 165, 0, 0.4)',
-            borderBottom: '1px solid rgba(0,0,0,0.2)',
-            pointerEvents: 'auto'
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+            borderLeft: '4px solid rgba(255, 255, 255, 0.4)',
+            pointerEvents: 'auto',
+            marginTop: 1
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 20 }}>⚠️</span>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: 12, marginBottom: 2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: 1 }}>
+            <div style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#fff',
+              opacity: 0.8
+            }} />
+            <div style={{ flex: 1 }}>
+              <div style={{
+                fontWeight: 600,
+                fontSize: 12,
+                letterSpacing: '0.3px',
+                marginBottom: 3,
+                textTransform: 'uppercase'
+              }}>
                 WARNING: {alert.rule || alert.type}
               </div>
-              <div style={{ fontSize: 10, opacity: 0.8 }}>
-                {alert.asset_id} • {alert.message || 'Attention required'} • {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+              <div style={{
+                fontSize: 11,
+                opacity: 0.9,
+                lineHeight: 1.3
+              }}>
+                {alert.asset_id} • {alert.message || 'Attention required'}
+                <span style={{ marginLeft: 12, opacity: 0.75 }}>
+                  {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+                </span>
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginLeft: 16 }}>
             <button
               onClick={() => onAcknowledge && onAcknowledge(alert)}
               style={{
-                background: '#000',
-                color: BRAND.warning,
+                background: 'rgba(255, 255, 255, 0.9)',
+                color: ALERT_COLORS.warning,
                 border: 'none',
-                padding: '4px 10px',
-                borderRadius: 4,
-                fontWeight: 'bold',
+                padding: '6px 12px',
+                borderRadius: 3,
+                fontWeight: 600,
                 fontSize: 10,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '0.3px',
+                transition: 'all 0.2s'
               }}
+              onMouseOver={(e) => e.currentTarget.style.background = '#fff'}
+              onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'}
             >
               ACK
             </button>
@@ -131,27 +194,48 @@ const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
               onClick={() => onDismiss && onDismiss(alert)}
               style={{
                 background: 'transparent',
-                border: '1px solid #000',
-                padding: '4px 10px',
-                borderRadius: 4,
-                fontSize: 10,
-                cursor: 'pointer'
+                color: '#fff',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                padding: '6px 10px',
+                borderRadius: 3,
+                fontSize: 14,
+                lineHeight: 1,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'
+                e.currentTarget.style.borderColor = '#fff'
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'
               }}
             >
-              ✕
+              ×
             </button>
           </div>
         </div>
       ))}
 
       <style>{`
-        @keyframes alertPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.9; }
+        @keyframes criticalPulse {
+          0%, 100% {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          }
+          50% {
+            box-shadow: 0 2px 12px rgba(211, 47, 47, 0.6);
+          }
         }
-        @keyframes alertBlink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
+        @keyframes indicatorPulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.4;
+            transform: scale(0.8);
+          }
         }
       `}</style>
     </div>

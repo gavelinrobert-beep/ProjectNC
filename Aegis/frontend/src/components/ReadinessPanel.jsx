@@ -1,14 +1,16 @@
+// Aegis/frontend/src/components/ReadinessPanel.jsx
 import React from 'react'
 
-const BRAND = {
-  primary: '#00BFFF',
-  secondary: '#FFD700',
-  success: '#00FF88',
-  warning: '#FFA500',
-  danger: '#FF4444',
-  dark: '#0a0a0a',
+// Military-standard color palette
+const COLORS = {
+  primary: '#1976D2',    // NATO Blue
+  success: '#388E3C',    // NATO Green
+  warning: '#F57C00',    // NATO Amber
+  danger: '#D32F2F',     // NATO Red
   card: '#1a1a1a',
   border: '#2a2a2a',
+  text: '#e0e0e0',
+  textMuted: '#999',
 }
 
 const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
@@ -60,7 +62,7 @@ const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
 
   // Calculate supply readiness
   const supplyReadiness = () => {
-    if (!inventory || inventory.length === 0) return 85 // Default if no inventory
+    if (!inventory || inventory.length === 0) return 85
     const totalItems = inventory.length
     const adequateStock = inventory.filter(item => {
       const stockLevel = (item.quantity / item.min_stock_level) * 100
@@ -77,33 +79,70 @@ const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
   )
 
   const getReadinessColor = (value) => {
-    if (value >= 80) return BRAND.success
-    if (value >= 60) return BRAND.secondary
-    if (value >= 40) return BRAND.warning
-    return BRAND.danger
+    if (value >= 80) return COLORS.success
+    if (value >= 60) return COLORS.warning
+    if (value >= 40) return COLORS.warning
+    return COLORS.danger
   }
 
   const getReadinessLabel = (value) => {
-    if (value >= 80) return 'EXCELLENT'
-    if (value >= 60) return 'GOOD'
-    if (value >= 40) return 'ADEQUATE'
+    if (value >= 90) return 'EXCELLENT'
+    if (value >= 75) return 'GOOD'
+    if (value >= 60) return 'ADEQUATE'
+    if (value >= 40) return 'MARGINAL'
     return 'CRITICAL'
   }
 
-  const ReadinessBar = ({ label, value, total, operational, onMission }) => {
+  const StatusIndicator = ({ value }) => {
     const color = getReadinessColor(value)
     return (
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontSize: 11, fontWeight: 'bold', color: BRAND.primary }}>{label}</span>
-          <span style={{ fontSize: 10, color: color, fontWeight: 'bold' }}>
-            {value}% {getReadinessLabel(value)}
+      <div style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '3px 8px',
+        background: `${color}22`,
+        border: `1px solid ${color}`,
+        borderRadius: 3,
+        fontSize: 9,
+        fontWeight: 600,
+        color,
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px'
+      }}>
+        <div style={{
+          width: 6,
+          height: 6,
+          borderRadius: '50%',
+          background: color,
+          boxShadow: `0 0 4px ${color}`
+        }} />
+        {getReadinessLabel(value)}
+      </div>
+    )
+  }
+
+  const ReadinessBar = ({ label, value, total, operational, onMission, icon }) => {
+    const color = getReadinessColor(value)
+    return (
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <span style={{
+            fontSize: 10,
+            fontWeight: 600,
+            color: COLORS.text,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            {icon && <span style={{ marginRight: 6, opacity: 0.6 }}>{icon}</span>}
+            {label}
           </span>
+          <StatusIndicator value={value} />
         </div>
         <div style={{
-          height: 12,
+          height: 8,
           background: '#222',
-          borderRadius: 6,
+          borderRadius: 4,
           overflow: 'hidden',
           border: '1px solid #333',
           position: 'relative'
@@ -111,15 +150,39 @@ const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
           <div style={{
             width: `${value}%`,
             height: '100%',
-            background: `linear-gradient(90deg, ${color} 0%, ${color}cc 100%)`,
+            background: color,
             transition: 'width 0.5s ease',
-            boxShadow: `0 0 10px ${color}88`
+            boxShadow: `inset 0 1px 2px rgba(0,0,0,0.3)`
+          }} />
+          {/* Threshold markers */}
+          <div style={{
+            position: 'absolute',
+            left: '80%',
+            top: 0,
+            bottom: 0,
+            width: 1,
+            background: 'rgba(255,255,255,0.2)'
+          }} />
+          <div style={{
+            position: 'absolute',
+            left: '60%',
+            top: 0,
+            bottom: 0,
+            width: 1,
+            background: 'rgba(255,255,255,0.1)'
           }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontSize: 9, color: '#666' }}>
-          <span>Total: {total}</span>
-          <span>Operational: {operational}</span>
-          <span>On Mission: {onMission}</span>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: 5,
+          fontSize: 9,
+          color: COLORS.textMuted
+        }}>
+          <span>Total: <strong style={{ color: COLORS.text }}>{total}</strong></span>
+          <span>Ready: <strong style={{ color: COLORS.success }}>{operational}</strong></span>
+          <span>Deployed: <strong style={{ color: COLORS.primary }}>{onMission}</strong></span>
+          <span><strong style={{ color, fontSize: 10 }}>{value}%</strong></span>
         </div>
       </div>
     )
@@ -127,78 +190,124 @@ const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
 
   return (
     <div style={{
-      background: BRAND.card,
-      border: `1px solid ${BRAND.primary}44`,
-      borderRadius: 8,
-      padding: 16,
-      height: '100%'
+      background: COLORS.card,
+      border: `1px solid ${COLORS.primary}44`,
+      borderRadius: 6,
+      padding: 14,
+      height: '100%',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
       {/* Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 10,
-        marginBottom: 16,
-        paddingBottom: 12,
-        borderBottom: `1px solid ${BRAND.border}`
+        justifyContent: 'space-between',
+        marginBottom: 14,
+        paddingBottom: 10,
+        borderBottom: `1px solid ${COLORS.border}`
       }}>
-        <span style={{ fontSize: 20 }}>🎖️</span>
         <div>
-          <h3 style={{ margin: 0, color: BRAND.primary, fontSize: 14 }}>NATO FORCE READINESS</h3>
-          <div style={{ fontSize: 9, color: '#666', marginTop: 2 }}>
+          <h3 style={{ margin: 0, color: COLORS.text, fontSize: 13, fontWeight: 600, letterSpacing: '0.5px' }}>
+            NATO FORCE READINESS
+          </h3>
+          <div style={{ fontSize: 9, color: COLORS.textMuted, marginTop: 2 }}>
             Swedish Armed Forces • Real-time Status
           </div>
         </div>
+        <div style={{ fontSize: 18, opacity: 0.3 }}>🎖️</div>
       </div>
 
       {/* Overall Readiness Score */}
       <div style={{
-        background: `linear-gradient(135deg, ${getReadinessColor(overallReadiness)}22 0%, ${getReadinessColor(overallReadiness)}11 100%)`,
+        background: `linear-gradient(135deg, ${getReadinessColor(overallReadiness)}15 0%, ${getReadinessColor(overallReadiness)}08 100%)`,
         border: `2px solid ${getReadinessColor(overallReadiness)}`,
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 20,
-        textAlign: 'center'
+        borderRadius: 6,
+        padding: 14,
+        marginBottom: 16,
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div style={{ fontSize: 10, color: '#999', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
+        {/* Background percentage arc */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '120%',
+          height: '120%',
+          opacity: 0.03,
+          fontSize: 120,
+          fontWeight: 'bold',
+          color: getReadinessColor(overallReadiness),
+          pointerEvents: 'none'
+        }}>
+          {overallReadiness}
+        </div>
+
+        <div style={{
+          fontSize: 9,
+          color: COLORS.textMuted,
+          marginBottom: 6,
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          position: 'relative'
+        }}>
           Overall Force Readiness
         </div>
-        <div style={{ fontSize: 42, fontWeight: 'bold', color: getReadinessColor(overallReadiness), lineHeight: 1 }}>
+        <div style={{
+          fontSize: 38,
+          fontWeight: 600,
+          color: getReadinessColor(overallReadiness),
+          lineHeight: 1,
+          position: 'relative'
+        }}>
           {overallReadiness}%
         </div>
-        <div style={{ fontSize: 12, fontWeight: 'bold', color: getReadinessColor(overallReadiness), marginTop: 4 }}>
-          {getReadinessLabel(overallReadiness)}
+        <div style={{
+          marginTop: 8,
+          position: 'relative'
+        }}>
+          <StatusIndicator value={overallReadiness} />
         </div>
-        <div style={{ fontSize: 9, color: '#666', marginTop: 8 }}>
-          NATO Article 5 Response Capability: {overallReadiness >= 80 ? 'READY' : overallReadiness >= 60 ? 'STANDBY' : 'LIMITED'}
+        <div style={{ fontSize: 9, color: COLORS.textMuted, marginTop: 8, position: 'relative' }}>
+          NATO Article 5 Response: <strong style={{
+            color: overallReadiness >= 80 ? COLORS.success : overallReadiness >= 60 ? COLORS.warning : COLORS.danger
+          }}>
+            {overallReadiness >= 80 ? 'READY' : overallReadiness >= 60 ? 'STANDBY' : 'LIMITED'}
+          </strong>
         </div>
       </div>
 
       {/* Category Readiness */}
       <div>
         <ReadinessBar
-          label="🚛 GROUND FORCES"
+          label="Ground Forces"
+          icon="🚛"
           value={readiness.ground.readiness}
           total={readiness.ground.total}
           operational={readiness.ground.operational}
           onMission={readiness.ground.onMission}
         />
         <ReadinessBar
-          label="✈️ AIR FORCES"
+          label="Air Forces"
+          icon="✈️"
           value={readiness.air.readiness}
           total={readiness.air.total}
           operational={readiness.air.operational}
           onMission={readiness.air.onMission}
         />
         <ReadinessBar
-          label="⚓ NAVAL FORCES"
+          label="Naval Forces"
+          icon="⚓"
           value={readiness.naval.readiness}
           total={readiness.naval.total}
           operational={readiness.naval.operational}
           onMission={readiness.naval.onMission}
         />
         <ReadinessBar
-          label="📦 SUPPLY CHAIN"
+          label="Supply Chain"
+          icon="📦"
           value={supply}
           total={inventory.length}
           operational={inventory.filter(i => (i.quantity / i.min_stock_level) >= 1).length}
@@ -208,34 +317,46 @@ const ReadinessPanel = ({ assets, missions, bases, inventory }) => {
 
       {/* Quick Stats */}
       <div style={{
-        marginTop: 16,
-        paddingTop: 16,
-        borderTop: `1px solid ${BRAND.border}`,
+        marginTop: 14,
+        paddingTop: 14,
+        borderTop: `1px solid ${COLORS.border}`,
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 12
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 10
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 9, color: '#666', marginBottom: 4 }}>DEPLOYMENT TIME</div>
-          <div style={{ fontSize: 16, fontWeight: 'bold', color: BRAND.success }}>
+          <div style={{ fontSize: 9, color: COLORS.textMuted, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+            Deploy Time
+          </div>
+          <div style={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: overallReadiness >= 80 ? COLORS.success : overallReadiness >= 60 ? COLORS.warning : COLORS.danger
+          }}>
             {overallReadiness >= 80 ? '< 2h' : overallReadiness >= 60 ? '< 4h' : '< 8h'}
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 9, color: '#666', marginBottom: 4 }}>ACTIVE BASES</div>
-          <div style={{ fontSize: 16, fontWeight: 'bold', color: BRAND.primary }}>
+          <div style={{ fontSize: 9, color: COLORS.textMuted, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+            Bases
+          </div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: COLORS.primary }}>
             {bases.length}
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 9, color: '#666', marginBottom: 4 }}>MISSIONS ACTIVE</div>
-          <div style={{ fontSize: 16, fontWeight: 'bold', color: BRAND.secondary }}>
+          <div style={{ fontSize: 9, color: COLORS.textMuted, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+            Missions
+          </div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: COLORS.warning }}>
             {missions.filter(m => m.status === 'active').length}
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 9, color: '#666', marginBottom: 4 }}>RESPONSE STATUS</div>
-          <div style={{ fontSize: 16, fontWeight: 'bold', color: getReadinessColor(overallReadiness) }}>
+          <div style={{ fontSize: 9, color: COLORS.textMuted, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+            Status
+          </div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: getReadinessColor(overallReadiness) }}>
             {overallReadiness >= 80 ? 'READY' : overallReadiness >= 60 ? 'STANDBY' : 'ALERT'}
           </div>
         </div>
