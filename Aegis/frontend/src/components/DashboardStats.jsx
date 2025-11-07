@@ -1,38 +1,64 @@
-// Aegis/frontend/src/components/DashboardStats.jsx
 import React from 'react'
 import { BRAND } from '../lib/constants'
+import GlassCard from './GlassCard'
 
 const StatCard = ({ icon, label, value, color, leftStat, rightStat }) => (
-  <div style={{
-    background: BRAND.card,
-    border: `1px solid ${color}44`,
-    borderLeft: `4px solid ${color}`,
-    borderRadius: 6,
-    padding: 12
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-      <span style={{ fontSize: 18 }}>{icon}</span>
-      <div style={{ fontSize: 10, color: '#999', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}
+  <GlassCard hover={true} glow={true} padding={14}>
+    <div style={{
+      borderLeft: `4px solid ${color}`,
+      paddingLeft: 12,
+      height: '100%'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+        <span style={{
+          fontSize: 20,
+          filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))'
+        }}>
+          {icon}
+        </span>
+        <div style={{
+          fontSize: 10,
+          color: BRAND.textMuted,
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          fontWeight: 600
+        }}>
+          {label}
+        </div>
+      </div>
+      <div style={{
+        fontSize: 32,
+        fontWeight: 700,
+        background: `linear-gradient(135deg, ${color} 0%, ${color}88 100%)`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        marginBottom: 8,
+        lineHeight: 1
+      }}>
+        {value}
+      </div>
+      <div style={{
+        fontSize: 10,
+        color: BRAND.textDim,
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: 8
+      }}>
+        <span>{leftStat}</span>
+        <span>{rightStat}</span>
       </div>
     </div>
-    <div style={{ fontSize: 28, fontWeight: 'bold', color: color, marginBottom: 6 }}>
-      {value}
-    </div>
-    <div style={{ fontSize: 10, color: '#666', display: 'flex', justifyContent: 'space-between' }}>
-      <span>{leftStat}</span>
-      <span>{rightStat}</span>
-    </div>
-  </div>
+  </GlassCard>
 )
 
 export default function DashboardStats({ stats, alerts, missions, bases, geofences, assets }) {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-      gap: 12,
-      marginBottom: 12
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: 14,
+      marginBottom: 14
     }}>
       <StatCard
         icon="🚗"
@@ -74,7 +100,7 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         icon="🔧"
         label="Underhåll"
         value={stats.maintenance}
-        color={BRAND.secondary}
+        color={BRAND.warning}
         leftStat="🛠️ Behöver service"
         rightStat={`Under service: ${assets.filter(a => a.maintenance_status === 'under_maintenance').length}`}
       />
@@ -92,7 +118,7 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         icon="📍"
         label="Geofences"
         value={geofences.length}
-        color="#9c27b0"
+        color={BRAND.info}
         leftStat="📋 Aktiva områden"
         rightStat="🔍 Övervakade"
       />

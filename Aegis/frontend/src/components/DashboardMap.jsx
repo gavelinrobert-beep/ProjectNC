@@ -1,10 +1,64 @@
 // Aegis/frontend/src/components/DashboardMap.jsx
 import React from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { BRAND, BASE_COLORS, DEFAULT_MAP_CENTER, getBatteryColor } from '../lib/constants'
 import { createAssetIcon } from '../lib/mapIcons'
+import MapControlBar from './MapControlBar'
+import { clusterAssets, createClusterIcon, getClusterStatus } from '../lib/mapUtils'
 
+// Map Style Controller Component
+function MapStyleController({ mapStyle }) {
+  const map = useMap()
+
+  React.useEffect(() => {
+    const tileUrls = {
+      standard: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      tactical: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+    }
+
+    // Remove existing tile layers
+    map.eachLayer((layer) => {
+      if (layer instanceof L.TileLayer) {
+        map.removeLayer(layer)
+      }
+    })
+
+    // Add new tile layer
+    L.tileLayer(tileUrls[mapStyle], {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map)
+
+  }, [mapStyle, map])
+
+  return null
+}
+
+// Zoom Tracker Component
+function ZoomTracker({ onZoomChange }) {
+  const map = useMap()
+
+  React.useEffect(() => {
+    const handleZoom = () => {
+      onZoomChange(map.getZoom())
+    }
+
+    map.on('zoomend', handleZoom)
+
+    // Initial zoom
+    handleZoom()
+
+    return () => {
+      map.off('zoomend', handleZoom)
+    }
+  }, [map, onZoomChange])
+
+  return null
+}
+
+// Base Popup Component
 function BasePopup({ base, baseWeather, loadBaseWeather, inventory }) {
   const bw = baseWeather[base.id] || { loading: false, err: null, data: null }
   const baseInventory = (inventory || []).filter(item => item.location_id === base.id)
@@ -64,6 +118,7 @@ function BasePopup({ base, baseWeather, loadBaseWeather, inventory }) {
   )
 }
 
+// Main DashboardMap Component
 export default function DashboardMap({
   assets,
   bases,
@@ -73,164 +128,261 @@ export default function DashboardMap({
   loadBaseWeather,
   setSelectedAsset
 }) {
+  const [filteredAssets, setFilteredAssets] = React.useState(assets)
+  const [mapStyle, setMapStyle] = React.useState('standard')
+  const [showHeatmap, setShowHeatmap] = React.useState(false)
+  const [zoom, setZoom] = React.useState(5)
+
+  // Update filtered assets when assets change
+  React.useEffect(() => {
+    setFilteredAssets(assets)
+  }, [assets])
+
+  // Filter assets based on control bar
+  const handleFilterChange = (filters) => {
+    let filtered = assets
+
+    if (!filters.ground) {
+      filtered = filtered.filter(a => !['truck', 'armored_vehicle', 'supply_vehicle', 'command_vehicle'].includes(a.type))
+    }
+    if (!filters.air) {
+      filtered = filtered.filter(a => !['fighter_jet', 'cargo_plane', 'helicopter', 'transport_helicopter', 'uav', 'reconnaissance_plane'].includes(a.type))
+    }
+    if (!filters.naval) {
+      filtered = filtered.filter(a => !['patrol_boat', 'corvette', 'submarine', 'supply_ship', 'landing_craft'].includes(a.type))
+    }
+
+    setFilteredAssets(filtered)
+  }
+
+  // Cluster assets based on zoom
+  const clusteredAssets = React.useMemo(() => {
+    return clusterAssets(filteredAssets, zoom)
+  }, [filteredAssets, zoom])
+
   return (
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    gap: 12
+  }}>
+    {/* Control Bar */}
+    <MapControlBar
+      assets={assets}
+      onFilterChange={handleFilterChange}
+      onMapStyleChange={setMapStyle}
+      onHeatmapToggle={setShowHeatmap}
+    />
+
+    {/* Map Container */}
     <div style={{
-      background: BRAND.card,
+      background: BRAND.bgCard,
       border: `1px solid ${BRAND.primary}44`,
-      borderRadius: 8,
+      borderRadius: 12,
       overflow: 'hidden',
-      height: '100%'
+      flex: 1,  // ← Takes remaining space
+      minHeight: 0,  // ← Important for flex child
+      backdropFilter: 'blur(12px)'
     }}>
-      <MapContainer center={DEFAULT_MAP_CENTER} zoom={5} style={{ height: '100%', width: '100%' }}>
-        <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
+      <MapContainer
+        center={DEFAULT_MAP_CENTER}
+        zoom={5}
+        style={{ height: '100%', width: '100%' }}
+        >
+          <MapStyleController mapStyle={mapStyle} />
+          <ZoomTracker onZoomChange={setZoom} />
 
-        {/* Mission Routes */}
-        {missions.filter(m => m.status === 'active' && m.waypoints).map(mission => {
-          const routeColor = mission.mission_type === 'transfer' ? BRAND.secondary : BRAND.success
+          <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
 
-          return (
-            <React.Fragment key={`mission-${mission.id}`}>
-              <Polyline
-                positions={mission.waypoints.map(wp => [wp.lat, wp.lon])}
-                color={routeColor}
-                weight={3}
-                opacity={0.7}
-                dashArray="10, 5"
-              />
+          {/* Mission Routes */}
+          {missions.filter(m => m.status === 'active' && m.waypoints).map(mission => {
+            const routeColor = mission.mission_type === 'transfer' ? BRAND.secondary : BRAND.success
 
-              {mission.waypoints.map((wp, idx) => (
-                <CircleMarker
-                  key={`wp-${mission.id}-${idx}`}
-                  center={[wp.lat, wp.lon]}
-                  radius={4}
-                  pathOptions={{
-                    color: '#fff',
-                    fillColor: routeColor,
-                    fillOpacity: 1,
-                    weight: 2
+            return (
+              <React.Fragment key={`mission-${mission.id}`}>
+                <Polyline
+                  positions={mission.waypoints.map(wp => [wp.lat, wp.lon])}
+                  color={routeColor}
+                  weight={3}
+                  opacity={0.7}
+                  dashArray="10, 5"
+                />
+
+                {mission.waypoints.map((wp, idx) => (
+                  <CircleMarker
+                    key={`wp-${mission.id}-${idx}`}
+                    center={[wp.lat, wp.lon]}
+                    radius={4}
+                    pathOptions={{
+                      color: '#fff',
+                      fillColor: routeColor,
+                      fillOpacity: 1,
+                      weight: 2
+                    }}
+                  >
+                    <Popup>
+                      <div style={{ fontSize: 11 }}>
+                        <strong>Waypoint {idx + 1}</strong><br />
+                        {wp.name || `${wp.lat.toFixed(4)}, ${wp.lon.toFixed(4)}`}<br />
+                        {idx === 0 && <span style={{ color: BRAND.success }}>📍 Start</span>}
+                        {idx === mission.waypoints.length - 1 && <span style={{ color: BRAND.danger }}>🎯 Destination</span>}
+                      </div>
+                    </Popup>
+                  </CircleMarker>
+                ))}
+              </React.Fragment>
+            )
+          })}
+
+          {/* Bases */}
+          {bases.map(base => (
+            <Marker
+              key={base.id}
+              position={[base.lat, base.lon]}
+              icon={L.divIcon({
+                html: `<div style="background: ${BASE_COLORS[base.type]}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 4px #00000080;"></div>`,
+                iconSize: [14, 14],
+                iconAnchor: [7, 7]
+              })}
+              eventHandlers={{ popupopen: () => loadBaseWeather(base) }}
+            >
+              <Popup>
+                <BasePopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} inventory={inventory} />
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Clustered Assets */}
+          {clusteredAssets.map((asset, idx) => {
+            if (asset.clustered && asset.clusterCount > 1) {
+              // Render cluster marker
+              const status = getClusterStatus(asset.clusterMembers)
+              return (
+                <Marker
+                  key={`cluster-${idx}`}
+                  position={[asset.lat, asset.lon]}
+                  icon={createClusterIcon(asset.clusterCount, status)}
+                  eventHandlers={{
+                    click: () => {
+                      console.log('Cluster clicked:', asset.clusterMembers)
+                    }
                   }}
                 >
                   <Popup>
                     <div style={{ fontSize: 11 }}>
-                      <strong>Waypoint {idx + 1}</strong><br />
-                      {wp.name || `${wp.lat.toFixed(4)}, ${wp.lon.toFixed(4)}`}<br />
-                      {idx === 0 && <span style={{ color: BRAND.success }}>📍 Start</span>}
-                      {idx === mission.waypoints.length - 1 && <span style={{ color: BRAND.danger }}>🎯 Destination</span>}
+                      <strong style={{ fontSize: 13, color: BRAND.primary }}>
+                        {asset.clusterCount} Assets Clustered
+                      </strong><br /><br />
+                      <div style={{ maxHeight: 150, overflowY: 'auto' }}>
+                        {asset.clusterMembers.map(a => (
+                          <div key={a.id} style={{
+                            padding: '4px 0',
+                            borderBottom: '1px solid #333',
+                            fontSize: 10
+                          }}>
+                            <strong>{a.id}</strong> - {a.type}<br />
+                            {a.fuel_level && <span style={{ color: a.fuel_level < 20 ? BRAND.danger : BRAND.success }}>
+                              ⛽ {a.fuel_level.toFixed(0)}%
+                            </span>}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </Popup>
-                </CircleMarker>
-              ))}
-            </React.Fragment>
-          )
-        })}
+                </Marker>
+              )
+            } else {
+              // Render individual asset
+              const onMission = missions.some(m => m.status === 'active' && m.asset_id === asset.id)
+              const mission = missions.find(m => m.status === 'active' && m.asset_id === asset.id)
 
-        {/* Bases */}
-        {bases.map(base => (
-          <Marker
-            key={base.id}
-            position={[base.lat, base.lon]}
-            icon={L.divIcon({
-              html: `<div style="background: ${BASE_COLORS[base.type]}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 4px #00000080;"></div>`,
-              iconSize: [14, 14],
-              iconAnchor: [7, 7]
-            })}
-            eventHandlers={{ popupopen: () => loadBaseWeather(base) }}
-          >
-            <Popup>
-              <BasePopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} inventory={inventory} />
-            </Popup>
-          </Marker>
-        ))}
+              return (
+                <Marker
+                  key={asset.id}
+                  position={[asset.lat, asset.lon]}
+                  icon={createAssetIcon(asset, onMission)}
+                  eventHandlers={{ click: () => setSelectedAsset(asset) }}
+                >
+                  <Popup>
+                    <div style={{ fontSize: 11 }}>
+                      <strong style={{ fontSize: 13, color: BRAND.primary }}>{asset.id}</strong><br />
 
-        {/* Assets */}
-        {assets.map(asset => {
-          const onMission = missions.some(m => m.status === 'active' && m.asset_id === asset.id)
-          const mission = missions.find(m => m.status === 'active' && m.asset_id === asset.id)
-
-          return (
-            <Marker
-              key={asset.id}
-              position={[asset.lat, asset.lon]}
-              icon={createAssetIcon(asset, onMission)}
-              eventHandlers={{ click: () => setSelectedAsset(asset) }}
-            >
-              <Popup>
-                <div style={{ fontSize: 11 }}>
-                  <strong style={{ fontSize: 13, color: BRAND.primary }}>{asset.id}</strong><br />
-
-                  <div style={{
-                    marginTop: 6,
-                    paddingTop: 6,
-                    borderTop: '1px solid #333',
-                    display: 'grid',
-                    gap: 4
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#999' }}>Type:</span>
-                      <strong>{asset.type}</strong>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#999' }}>Status:</span>
-                      <strong style={{
-                        color: asset.status === 'mobile' || asset.status === 'airborne' ? BRAND.success : '#999'
+                      <div style={{
+                        marginTop: 6,
+                        paddingTop: 6,
+                        borderTop: '1px solid #333',
+                        display: 'grid',
+                        gap: 4
                       }}>
-                        {asset.status}
-                      </strong>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#999' }}>Speed:</span>
-                      <strong>{asset.speed} km/h</strong>
-                    </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#999' }}>Type:</span>
+                          <strong>{asset.type}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#999' }}>Status:</span>
+                          <strong style={{
+                            color: asset.status === 'mobile' || asset.status === 'airborne' ? BRAND.success : '#999'
+                          }}>
+                            {asset.status}
+                          </strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#999' }}>Speed:</span>
+                          <strong>{asset.speed} km/h</strong>
+                        </div>
 
-                    {asset.fuel_level !== undefined && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#999' }}>Fuel:</span>
-                        <strong style={{
-                          color: asset.fuel_level < 20 ? BRAND.danger : asset.fuel_level < 50 ? BRAND.warning : BRAND.success
+                        {asset.fuel_level !== undefined && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: '#999' }}>Fuel:</span>
+                            <strong style={{
+                              color: asset.fuel_level < 20 ? BRAND.danger : asset.fuel_level < 50 ? BRAND.warning : BRAND.success
+                            }}>
+                              {asset.fuel_level.toFixed(1)}%
+                            </strong>
+                          </div>
+                        )}
+
+                        {asset.has_battery && asset.battery !== undefined && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ color: '#999' }}>Battery:</span>
+                            <strong style={{ color: getBatteryColor(asset.battery) }}>
+                              {asset.battery}%
+                            </strong>
+                          </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#999' }}>Maintenance:</span>
+                          <strong style={{
+                            color: asset.maintenance_status === 'operational' ? BRAND.success : BRAND.warning
+                          }}>
+                            {asset.maintenance_status}
+                          </strong>
+                        </div>
+                      </div>
+
+                      {onMission && (
+                        <div style={{
+                          marginTop: 8,
+                          padding: '6px 8px',
+                          background: `${BRAND.success}22`,
+                          border: `1px solid ${BRAND.success}`,
+                          borderRadius: 4,
+                          textAlign: 'center'
                         }}>
-                          {asset.fuel_level.toFixed(1)}%
-                        </strong>
-                      </div>
-                    )}
-
-                    {asset.has_battery && asset.battery !== undefined && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: '#999' }}>Battery:</span>
-                        <strong style={{ color: getBatteryColor(asset.battery) }}>
-                          {asset.battery}%
-                        </strong>
-                      </div>
-                    )}
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#999' }}>Maintenance:</span>
-                      <strong style={{
-                        color: asset.maintenance_status === 'operational' ? BRAND.success : BRAND.warning
-                      }}>
-                        {asset.maintenance_status}
-                      </strong>
+                          <span style={{ color: BRAND.success, fontWeight: 'bold' }}>🎯 ON MISSION</span><br />
+                          <span style={{ fontSize: 10 }}>{mission.name}</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
-
-                  {onMission && (
-                    <div style={{
-                      marginTop: 8,
-                      padding: '6px 8px',
-                      background: `${BRAND.success}22`,
-                      border: `1px solid ${BRAND.success}`,
-                      borderRadius: 4,
-                      textAlign: 'center'
-                    }}>
-                      <span style={{ color: BRAND.success, fontWeight: 'bold' }}>🎯 ON MISSION</span><br />
-                      <span style={{ fontSize: 10 }}>{mission.name}</span>
-                    </div>
-                  )}
-                </div>
-              </Popup>
-            </Marker>
-          )
-        })}
-      </MapContainer>
+                  </Popup>
+                </Marker>
+              )
+            }
+          })}
+          </MapContainer>
     </div>
+  </div>
   )
 }
