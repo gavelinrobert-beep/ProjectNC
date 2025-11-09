@@ -12,10 +12,17 @@ export const BRAND = {
 }
 
 export const BASE_COLORS = {
-  military: '#b5392f',
-  airfield: BRAND.primary,
-  logistics: BRAND.secondary,
-  storage: '#9c27b0'
+  military: '#FF3B5C',     // Coral red
+  airfield: '#00D9FF',     // Electric blue
+  logistics: '#FFB800',    // Amber
+  storage: '#A855F7',      // Purple
+
+
+  air_base: '#00D9FF',     // Electric blue (same as airfield)
+  naval_base: '#3B82F6',   // Navy blue
+  army_base: '#FF3B5C',    // Coral red (same as military)
+  command_center: '#A855F7', // Purple
+  support_base: '#FFB800'  // Amber (same as logistics)
 }
 
 export const MISSION_COLORS = {

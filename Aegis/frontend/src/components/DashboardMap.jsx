@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker } from '
 import L from 'leaflet'
 import { BRAND, BASE_COLORS, DEFAULT_MAP_CENTER, getBatteryColor } from '../lib/constants'
 import { createAssetIcon } from '../lib/mapIcons'
+import { createBaseIcon } from '../lib/baseIcons'
 
 function BasePopup({ base, baseWeather, loadBaseWeather, inventory }) {
   const bw = baseWeather[base.id] || { loading: false, err: null, data: null }
@@ -73,6 +74,7 @@ export default function DashboardMap({
   loadBaseWeather,
   setSelectedAsset
 }) {
+  console.log('🏭 DashboardMap received bases:', bases?.length, bases)
   return (
     <div style={{
       background: BRAND.card,
@@ -124,23 +126,19 @@ export default function DashboardMap({
           )
         })}
 
-        {/* Bases */}
-        {bases.map(base => (
-          <Marker
-            key={base.id}
-            position={[base.lat, base.lon]}
-            icon={L.divIcon({
-              html: `<div style="background: ${BASE_COLORS[base.type]}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 4px #00000080;"></div>`,
-              iconSize: [14, 14],
-              iconAnchor: [7, 7]
-            })}
-            eventHandlers={{ popupopen: () => loadBaseWeather(base) }}
-          >
-            <Popup>
-              <BasePopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} inventory={inventory} />
-            </Popup>
-          </Marker>
-        ))}
+{/* Bases */}
+{bases.map(base => (
+  <Marker
+    key={base.id}
+    position={[base.lat, base.lon]}
+    icon={createBaseIcon(base)}
+    eventHandlers={{ popupopen: () => loadBaseWeather(base) }}
+  >
+    <Popup>
+      <BasePopup base={base} baseWeather={baseWeather} loadBaseWeather={loadBaseWeather} inventory={inventory} />
+    </Popup>
+  </Marker>
+))}
 
         {/* Assets */}
         {assets.map(asset => {

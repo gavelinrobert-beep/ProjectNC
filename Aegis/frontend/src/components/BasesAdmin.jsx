@@ -139,18 +139,20 @@ export default function BasesAdmin() {
             </div>
 
             <div style={{ marginBottom: 12 }}>
-              <label>Type</label>
-              <select
-                value={form.type}
-                onChange={e => setForm({...form, type: e.target.value})}
-                style={{ width: '100%', padding: 8 }}
-              >
-                <option value="logistics">Logistics</option>
-                <option value="military">Military</option>
-                <option value="airfield">Airfield</option>
-                <option value="storage">Storage</option>
-              </select>
-            </div>
+  <label>Type</label>
+  <select
+    value={form.type}
+    onChange={e => setForm({...form, type: e.target.value})}
+    style={{ width: '100%', padding: 8 }}
+  >
+    <option value="air_base">Air Base</option>
+    <option value="naval_base">Naval Base</option>
+    <option value="army_base">Army Base</option>
+    <option value="command_center">Command Center</option>
+    <option value="support_base">Support Base</option>
+    <option value="logistics">Logistics</option>
+  </select>
+</div>
 
             <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <div>

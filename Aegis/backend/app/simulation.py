@@ -58,7 +58,49 @@ MAINTENANCE_INTERVALS = {
     'landing_craft': 150,
     'plane': 100
 }
+# Maximum speeds by asset type (km/h)
+MAX_SPEEDS = {
+    'truck': 90,
+    'armored_vehicle': 70,
+    'supply_vehicle': 80,
+    'fuel_truck': 80,
+    'ambulance': 120,
+    'command_vehicle': 90,
+    'cargo_plane': 800,
+    'fighter_jet': 1200,  # JAS Gripen cruise speed
+    'helicopter': 250,
+    'transport_helicopter': 280,
+    'reconnaissance_plane': 600,
+    'uav': 150,
+    'patrol_boat': 80,
+    'corvette': 60,
+    'submarine': 40,
+    'supply_ship': 50,
+    'landing_craft': 45,
+    'plane': 800
+}
 
+# Acceleration rates (km/h per second)
+ACCELERATION_RATES = {
+    'truck': 5,
+    'armored_vehicle': 3,
+    'supply_vehicle': 4,
+    'fuel_truck': 4,
+    'ambulance': 6,
+    'command_vehicle': 5,
+    'cargo_plane': 15,
+    'fighter_jet': 50,  # Fast acceleration for jets
+    'helicopter': 20,
+    'transport_helicopter': 18,
+    'reconnaissance_plane': 25,
+    'uav': 10,
+    'patrol_boat': 8,
+    'corvette': 5,
+    'submarine': 2,
+    'supply_ship': 3,
+    'landing_craft': 4,
+    'plane': 15
+}
 # Compatible base types for different asset categories
 BASE_COMPATIBILITY = {
     'ground': ['military', 'logistics', 'storage'],
@@ -268,8 +310,26 @@ async def simulation_loop():
 
                 # Calculate movement
                 distance = calculate_distance(current_lat, current_lon, target_lat, target_lon)
-                speed_kmh = asset.get('speed', 50)
-                speed_kps = speed_kmh / 3600  # km per second
+
+                # Get current and max speed
+                current_speed = asset.get('speed', 0.0)
+                max_speed = MAX_SPEEDS.get(asset['type'], 80)
+                acceleration = ACCELERATION_RATES.get(asset['type'], 5)
+
+                # Calculate new speed with acceleration (1 second tick)
+                if asset['status'] in ['mobile', 'airborne', 'returning']:
+                    # Accelerate toward max speed
+                    new_speed = min(current_speed + acceleration, max_speed)
+
+                    # Decelerate if approaching waypoint
+                    stopping_distance = (new_speed ** 2) / (2 * acceleration * 3.6)  # Convert to km
+                    if distance < stopping_distance:
+                        # Decelerate
+                        new_speed = max(new_speed - acceleration, 10)  # Minimum 10 km/h
+                else:
+                    new_speed = 0
+
+                speed_kps = new_speed / 3600  # km per second
                 move_distance = speed_kps * 1  # 1 second tick
 
                 # Check fuel consumption
@@ -336,10 +396,11 @@ async def simulation_loop():
                             route_index = $3,
                             fuel_level = $4,
                             operating_hours = $5,
-                            maintenance_status = $6
-                        WHERE id = $7
+                            maintenance_status = $6,
+                            speed = $7
+                        WHERE id = $8
                     """, new_lat, new_lon, new_route_index, new_fuel_level,
-                        new_operating_hours, maintenance_status, asset['id'])
+                        new_operating_hours, maintenance_status, new_speed, asset['id'])
 
             # Broadcast asset updates to SSE subscribers
             async with pool.acquire() as conn:
