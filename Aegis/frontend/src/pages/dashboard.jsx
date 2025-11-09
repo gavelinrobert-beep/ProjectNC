@@ -14,6 +14,10 @@ import DashboardSidebar from '../components/DashboardSidebar'
 import AssetDetailModal from '../components/AssetDetailModal'
 import DemoControls from '../components/DemoControls'
 import AccessibilitySettings from '../components/AccessibilitySettings'
+import GlassCard from '../components/GlassCard'
+import GradientButton from '../components/GradientButton'
+import QuickActionsPanel from '../components/QuickActionsPanel'
+import AssetContextToolbar from '../components/AssetContextToolbar'
 
 export default function Dashboard() {
   // State
@@ -30,6 +34,7 @@ export default function Dashboard() {
   const [demoSpeed, setDemoSpeed] = useState(1)
   const [demoScenario] = useState(() => new DemoScenario())
   const [demoMessages, setDemoMessages] = useState([])
+  const [showAssetToolbar, setShowAssetToolbar] = useState(false)
 
   // Custom hook for demo mode
   useDemoMode(
@@ -83,6 +88,43 @@ export default function Dashboard() {
     } catch (err) {
       setBaseWeather(prev => ({ ...prev, [id]: { loading: false, err, data: null } }))
     }
+  }
+
+  const selectAsset = (asset) => {
+    setSelectedAsset(asset)
+    setShowAssetToolbar(true)
+  }
+
+  const handleNewMission = () => {
+    console.log('[QUICK ACTION] New Mission')
+    alert('🎯 New Mission dialog would open here!')
+  }
+
+  const handleEmergencyAlert = () => {
+    console.log('[QUICK ACTION] Emergency Alert')
+    alert('🚨 Emergency Alert broadcast initiated!')
+  }
+
+  const handleGenerateReport = () => {
+    console.log('[QUICK ACTION] Generate Report')
+    alert('📊 Generating operational report...')
+  }
+
+  const handleSyncAssets = async () => {
+    console.log('[QUICK ACTION] Sync Assets')
+    alert('🔄 Syncing all assets...')
+    const assetsData = await api.assets()
+    setAssets(assetsData || [])
+  }
+
+  const handleBroadcastMessage = () => {
+    console.log('[QUICK ACTION] Broadcast Message')
+    alert('📡 Broadcast message dialog would open here!')
+  }
+
+  const handleAssetContextAction = (action, asset) => {
+    console.log('[ASSET ACTION]', action, asset)
+    alert(`${action} for ${asset.id}`)
   }
 
   const handleAcknowledgeAlert = async (alert) => {
@@ -157,7 +199,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className='content' style={{ height: 'calc(100vh - 80px)', overflow: 'hidden', padding: 12 }}>
+    <div
+      className='content'
+      style={{
+        height: 'calc(100vh - 80px)',
+        overflow: 'hidden',
+        padding: 12,
+        background: BRAND.bgBase,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+      }}
+    >
       <AlertBanner
         alerts={alerts}
         onAcknowledge={handleAcknowledgeAlert}
@@ -165,26 +216,48 @@ export default function Dashboard() {
       />
 
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <h3 style={{ margin: 0, color: BRAND.primary, fontSize: 18 }}>Dashboard - Operationsöversikt</h3>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 14,
+        padding: '16px 20px',
+        background: BRAND.bgCard,
+        backdropFilter: 'blur(12px)',
+        border: `1px solid ${BRAND.border}`,
+        borderRadius: 12,
+        boxShadow: BRAND.shadowMd
+      }}>
+        <h3 style={{
+          margin: 0,
+          background: BRAND.gradientPrimary,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          fontSize: 22,
+          fontWeight: 700,
+          letterSpacing: '0.5px'
+        }}>
+          Dashboard - Operationsöversikt
+        </h3>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <GradientButton
+            icon="📦"
             onClick={handleSetupInventory}
-            style={{
-              background: BRAND.secondary,
-              color: '#000',
-              border: 'none',
-              padding: '6px 12px',
-              borderRadius: 6,
-              fontSize: 10,
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
+            size="small"
+            variant="primary"
           >
-            📦 Setup Inventory
-          </button>
-          <div style={{ fontSize: 9, color: '#666' }}>
-            Uppdaterad: {new Date().toLocaleTimeString('sv-SE')}
+            Setup Inventory
+          </GradientButton>
+          <div style={{
+            fontSize: 11,
+            color: BRAND.textMuted,
+            padding: '6px 12px',
+            background: 'rgba(0, 217, 255, 0.1)',
+            borderRadius: 6,
+            border: `1px solid ${BRAND.border}`
+          }}>
+            ⏱️ Uppdaterad: {new Date().toLocaleTimeString('sv-SE')}
           </div>
         </div>
       </div>
@@ -200,17 +273,31 @@ export default function Dashboard() {
       />
 
       {/* Main Content: Map + Sidebar */}
-      <div style={{ display: 'grid', gridTemplateColumns: '60fr 40fr', gap: 12, height: 'calc(100% - 240px)' }}>
-        <DashboardMap
-          assets={assets}
-          bases={bases}
-          missions={missions}
-          inventory={inventory}
-          baseWeather={baseWeather}
-          loadBaseWeather={loadBaseWeather}
-          setSelectedAsset={setSelectedAsset}
-        />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 400px',
+        gap: 12,
+        height: 'calc(100% - 180px)'
+      }}>
+        {/* LEFT: Map */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+          minHeight: 0
+        }}>
+          <DashboardMap
+            assets={assets}
+            bases={bases}
+            missions={missions}
+            inventory={inventory}
+            baseWeather={baseWeather}
+            loadBaseWeather={loadBaseWeather}
+            setSelectedAsset={selectAsset}
+          />
+        </div>
 
+        {/* RIGHT: Sidebar */}
         <DashboardSidebar
           assets={assets}
           missions={missions}
@@ -263,9 +350,59 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Quick Actions Panel */}
+      <QuickActionsPanel
+        onNewMission={handleNewMission}
+        onEmergencyAlert={handleEmergencyAlert}
+        onGenerateReport={handleGenerateReport}
+        onSyncAssets={handleSyncAssets}
+        onBroadcastMessage={handleBroadcastMessage}
+      />
+
+      {/* Asset Context Toolbar */}
+      {showAssetToolbar && selectedAsset && (
+        <AssetContextToolbar
+          asset={selectedAsset}
+          onClose={() => {
+            setShowAssetToolbar(false)
+            setSelectedAsset(null)
+          }}
+          onViewDetails={() => handleAssetContextAction('View Details', selectedAsset)}
+          onAssignMission={(asset) => handleAssetContextAction('Assign Mission', asset)}
+          onReturnToBase={(asset) => handleAssetContextAction('Return to Base', asset)}
+          onRefuelRequest={(asset) => handleAssetContextAction('Refuel Request', asset)}
+          onMaintenance={(asset) => handleAssetContextAction('Maintenance', asset)}
+        />
+      )}
+
       <AccessibilitySettings />
 
       <style>{`
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: ${BRAND.bgBase};
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: ${BRAND.border};
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: ${BRAND.borderHover};
+        }
+
+        /* Smooth transitions globally */
+        * {
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Animations */
         @keyframes slideIn {
           from {
             transform: translateX(100%);
@@ -275,6 +412,60 @@ export default function Dashboard() {
             transform: translateX(0);
             opacity: 1;
           }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+
+        @keyframes slideUp {
+          from {
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        /* Glass effect helpers */
+        .glass {
+          background: ${BRAND.bgCard};
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid ${BRAND.border};
+          border-radius: 12px;
+        }
+
+        .glass-hover:hover {
+          background: ${BRAND.bgCardHover};
+          border-color: ${BRAND.borderHover};
+          box-shadow: ${BRAND.shadowGlow};
+        }
+
+        /* Gradient text */
+        .gradient-text {
+          background: ${BRAND.gradientPrimary};
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
       `}</style>
     </div>
