@@ -1,18 +1,10 @@
-"""
-Entry point for the Aegis backend (refactor branch).
-
-- Initializes FastAPI and CORS from config.
-- On startup: create DB pool, run DB init, populate from constants, and start simulation_loop as a background task.
-- Includes routers (weather, streams, auth, assets, bases, geofences, alerts).
-"""
 import asyncio
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from .config import ALLOWED_ORIGINS, _ALLOW_ALL_ORIGINS
+from .routes import communications
 from .database import get_pool, init_database, populate_from_constants
-from .simulation import simulation_loop
+from .simulation import simulation_loop, ASSET_SUBS, ALERT_SUBS
 from .routes.weather import router as weather_router
 from .routes.streams import router as streams_router
 from .routes.auth import router as auth_router
@@ -23,12 +15,21 @@ from .routes.alerts import router as alerts_router
 from .routes.health import router as health_router
 from .routes.missions import router as missions_router
 from .routes.inventory import router as inventory_router
+from .routes import intelligence
+from .routes import simulation
+
 app = FastAPI(title="Aegis API (refactor)")
 
+# CORS Configuration - Single middleware only
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=False if _ALLOW_ALL_ORIGINS else True,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "*"  # Allow all for development
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -44,6 +45,9 @@ app.include_router(alerts_router)
 app.include_router(health_router)
 app.include_router(missions_router)
 app.include_router(inventory_router)
+app.include_router(communications.router, prefix="/api/communications", tags=["communications"])
+app.include_router(intelligence.router, prefix="/api/intelligence", tags=["intelligence"])
+app.include_router(simulation.router, prefix="/api/simulation", tags=["simulation"])
 
 @app.on_event("startup")
 async def on_startup():
