@@ -1,4 +1,3 @@
-
 {
   "name": "aegis-frontend",
   "private": true,
@@ -15,7 +14,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-leaflet": "4.2.1",
-    "react-leaflet-draw": "0.20.4"
+    "react-leaflet-draw": "0.20.4",
+    "react-router-dom": "^7.9.5"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.3.1",

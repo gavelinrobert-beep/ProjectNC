@@ -69,7 +69,7 @@ async def get_simulation_dashboard(request: Request):
 
             # Get pending maintenance
             maintenance = await conn.fetch("""
-                SELECT m.*, a.name as asset_name, a.type as asset_type
+                SELECT m.*, a.id as asset_id, a.type as asset_type
                 FROM maintenance_schedule m
                 LEFT JOIN assets a ON m.asset_id::text = a.id::text
                 WHERE m.completed = FALSE
@@ -235,7 +235,7 @@ async def trigger_weather_event(request: Request):
         {
             "type": "extreme_heat",
             "title": "Extreme Heat Advisory",
-            "description": "Temperature exceeding 45°C. Heat exhaustion risk elevated. Mandatory hydration protocols in effect.",
+            "description": "Temperature exceeding 45C. Heat exhaustion risk elevated. Mandatory hydration protocols in effect.",
             "severity": "medium"
         },
         {
@@ -314,7 +314,7 @@ async def trigger_maintenance_event(request: Request):
         async with pool.acquire() as conn:
             # Get a random asset
             asset = await conn.fetchrow("""
-                SELECT id, name, type FROM assets 
+                SELECT id, type FROM assets 
                 WHERE status = 'operational'
                 ORDER BY RANDOM()
                 LIMIT 1
@@ -326,20 +326,20 @@ async def trigger_maintenance_event(request: Request):
             maintenance_types = [
                 {
                     "type": "scheduled",
-                    "title": f"Scheduled Maintenance: {asset['name']}",
-                    "description": f"Routine maintenance required for {asset['type']} {asset['name']}. Service interval reached. Estimated downtime: 4 hours.",
+                    "title": f"Scheduled Maintenance: {asset['id']}",
+                    "description": f"Routine maintenance required for {asset['type']} {asset['id']}. Service interval reached. Estimated downtime: 4 hours.",
                     "severity": "low"
                 },
                 {
                     "type": "urgent",
-                    "title": f"Urgent Repair: {asset['name']}",
-                    "description": f"Mechanical issue detected on {asset['type']} {asset['name']}. Immediate attention required. Asset temporarily offline.",
+                    "title": f"Urgent Repair: {asset['id']}",
+                    "description": f"Mechanical issue detected on {asset['type']} {asset['id']}. Immediate attention required. Asset temporarily offline.",
                     "severity": "high"
                 },
                 {
                     "type": "inspection",
-                    "title": f"Safety Inspection: {asset['name']}",
-                    "description": f"Mandatory safety inspection due for {asset['type']} {asset['name']}. Compliance check required within 24 hours.",
+                    "title": f"Safety Inspection: {asset['id']}",
+                    "description": f"Mandatory safety inspection due for {asset['type']} {asset['id']}. Compliance check required within 24 hours.",
                     "severity": "medium"
                 }
             ]
@@ -427,7 +427,7 @@ async def get_maintenance(request: Request, completed: Optional[bool] = None):
         pool = request.app.state.pool
         async with pool.acquire() as conn:
             query = """
-                SELECT m.*, a.name as asset_name, a.type as asset_type
+                SELECT m.*, a.id as asset_id, a.type as asset_type
                 FROM maintenance_schedule m
                 LEFT JOIN assets a ON m.asset_id::text = a.id::text
             """

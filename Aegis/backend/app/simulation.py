@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 # Subscriber dictionaries for SSE streams
-ASSET_SUBS = defaultdict(list)
+ASSET_SUBS = []
 ALERT_SUBS = []
 
 
