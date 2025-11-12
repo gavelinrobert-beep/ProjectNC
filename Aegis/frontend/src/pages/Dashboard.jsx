@@ -53,7 +53,7 @@ export default function Dashboard() {
           📊 Dashboard - Executive Overview
         </h1>
         <p style={{ color: '#718096', fontSize: '1rem' }}>
-          Real-time operational status and force readiness
+          Real-time resource status and system overview
         </p>
       </div>
 
@@ -76,9 +76,9 @@ export default function Dashboard() {
         <Link to="/operations" style={quickLinkStyle}>
           <span style={{ fontSize: '2.5rem' }}>🗺️</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>View Operations Map</h3>
+            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>View Resource Map</h3>
             <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#718096' }}>
-              Full situational awareness picture
+              Track all resources and locations
             </p>
           </div>
         </Link>
@@ -86,9 +86,9 @@ export default function Dashboard() {
         <Link to="/missions" style={quickLinkStyle}>
           <span style={{ fontSize: '2.5rem' }}>📋</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Manage Missions</h3>
+            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Manage Tasks</h3>
             <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#718096' }}>
-              Plan and execute operations
+              Plan and coordinate work assignments
             </p>
           </div>
         </Link>

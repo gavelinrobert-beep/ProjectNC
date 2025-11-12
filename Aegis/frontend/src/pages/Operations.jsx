@@ -69,7 +69,7 @@ export default function Operations() {
   }
 
   if (loading) {
-    return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading operations map...</div>
+    return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading resource map...</div>
   }
 
   return (
@@ -86,7 +86,7 @@ export default function Operations() {
         marginBottom: '1rem'
       }}>
         <h1 style={{ fontSize: '1.5rem', color: '#e0e0e0', margin: 0 }}>
-          🗺️ Operations - Common Operational Picture
+          🗺️ Resource Map - Live Asset Tracking
         </h1>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button style={buttonStyle}>Layers</button>

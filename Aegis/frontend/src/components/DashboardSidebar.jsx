@@ -54,7 +54,7 @@ export default function DashboardSidebar({
         </div>
       </CollapsibleSection>
 
-      <CollapsibleSection title="Operational Metrics" defaultOpen={false}>
+      <CollapsibleSection title="System Metrics" defaultOpen={false}>
         <div style={{ padding: 0 }}>
           <MetricsPanel
             missions={missions}

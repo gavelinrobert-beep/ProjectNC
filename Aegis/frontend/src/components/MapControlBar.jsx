@@ -207,7 +207,7 @@ export default function MapControlBar({
             <MapStyleButton style="standard" icon="🗺️" label="Standard" />
             <MapStyleButton style="satellite" icon="🛰️" label="Satellite" />
             <MapStyleButton style="dark" icon="🌙" label="Dark" />
-            <MapStyleButton style="tactical" icon="🎖️" label="Tactical" />
+            <MapStyleButton style="operational" icon="🗺️" label="Operational" />
           </div>
         </div>
       </div>

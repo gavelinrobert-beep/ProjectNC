@@ -11,7 +11,7 @@ const EXPORT_OPTIONS = [
   { id: 'inventory', name: 'Inventory', icon: '📦', endpoint: '/api/exports/inventory.csv' },
   { id: 'alerts', name: 'Alerts', icon: '🚨', endpoint: '/api/exports/alerts.csv' },
   { id: 'bases', name: 'Locations', icon: '📍', endpoint: '/api/exports/bases.csv' },
-  { id: 'operations', name: 'Operations Report', icon: '📊', endpoint: '/api/exports/operations-report.csv' },
+  { id: 'operations', name: 'Resource Report', icon: '📊', endpoint: '/api/exports/operations-report.csv' },
 ]
 
 export default function ExportManager({ compact = false }) {
@@ -27,7 +27,7 @@ export default function ExportManager({ compact = false }) {
     try {
       let url = API_BASE + option.endpoint
       
-      // Add date range for operations report
+      // Add date range for resource report
       if (option.id === 'operations' && (dateRange.start || dateRange.end)) {
         const params = new URLSearchParams()
         if (dateRange.start) params.append('start_date', dateRange.start)
@@ -112,7 +112,7 @@ export default function ExportManager({ compact = false }) {
         </p>
       </div>
 
-      {/* Date Range for Operations Report */}
+      {/* Date Range for Resource Report */}
       <div style={{
         background: '#1a1f2e',
         padding: '1.5rem',
@@ -121,7 +121,7 @@ export default function ExportManager({ compact = false }) {
         marginBottom: '2rem'
       }}>
         <h3 style={{ marginTop: 0, marginBottom: '1rem', fontSize: '1.1rem' }}>
-          📅 Date Range (for Operations Report)
+          📅 Date Range (for Resource Report)
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
@@ -178,7 +178,7 @@ export default function ExportManager({ compact = false }) {
         <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#e0e0e0', lineHeight: 1.8 }}>
           <li>All exports are in CSV format, compatible with Excel and Google Sheets</li>
           <li>Data reflects the current state at time of export</li>
-          <li>Operations Report includes summary statistics for the selected date range</li>
+          <li>Resource Report includes summary statistics for the selected date range</li>
           <li>Exports require authentication and log all download activity</li>
           <li>Large datasets may take a few seconds to generate</li>
         </ul>
