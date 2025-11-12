@@ -1,0 +1,16 @@
+/* Global page styles */
+.page {
+  max-width: 1400px;
+  padding: 2rem;
+}
+
+.page h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+}
+
+.page p {
+  color: #718096;
+  font-size: 1.1rem;
+}

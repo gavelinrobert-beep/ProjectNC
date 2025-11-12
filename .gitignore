@@ -1,0 +1,54 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Dependency directories
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+frontend/dist/
+frontend/build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker volumes (local development)
+postgres_data/

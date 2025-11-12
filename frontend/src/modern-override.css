@@ -1,0 +1,147 @@
+/* Modern UI Override for Legacy Components */
+
+/* Card styling */
+.card {
+  background: linear-gradient(180deg, #1a1f2e, #0f1419) !important;
+  border: 1px solid #2d3748 !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Button styling */
+.btn, button[type="submit"], button[type="button"] {
+  background: #63b3ed !important;
+  color: #0a0e14 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1.2rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.btn:hover, button[type="submit"]:hover {
+  background: #4299e1 !important;
+  transform: translateY(-1px);
+}
+
+/* Input and select styling */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  background: #0a0e14 !important;
+  border: 1px solid #2d3748 !important;
+  border-radius: 8px !important;
+  color: #e0e0e0 !important;
+  padding: 0.6rem !important;
+  font-size: 0.95rem !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #63b3ed !important;
+  outline: none !important;
+}
+
+/* Labels */
+label {
+  color: #a0aec0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* Tables */
+table {
+  background: transparent !important;
+  border-collapse: collapse !important;
+}
+
+thead {
+  background: #1a1f2e !important;
+}
+
+th {
+  color: #63b3ed !important;
+  font-weight: 600 !important;
+  padding: 0.75rem !important;
+  border-bottom: 2px solid #2d3748 !important;
+}
+
+td {
+  padding: 0.75rem !important;
+  border-bottom: 1px solid #2d3748 !important;
+}
+
+tbody tr:hover {
+  background: rgba(99, 179, 237, 0.05) !important;
+}
+
+/* Headings inside components */
+h2, h3, h4 {
+  color: #e0e0e0 !important;
+  font-weight: 600 !important;
+}
+
+h2 { font-size: 1.5rem !important; }
+h3 { font-size: 1.2rem !important; }
+h4 { font-size: 1rem !important; }
+
+/* List items */
+.list li {
+  background: #0f1419 !important;
+  border: 1px solid #2d3748 !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Map containers */
+.leaflet-container {
+  border-radius: 12px !important;
+  border: 2px solid #2d3748 !important;
+}
+
+/* Modal overlays */
+.modal-overlay {
+  background: rgba(10, 14, 20, 0.9) !important;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #1a1f2e, #0f1419) !important;
+  border: 2px solid #2d3748 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Delete/danger buttons */
+button[style*="background: #e74c3c"],
+button[style*="background:#e74c3c"] {
+  background: #742a2a !important;
+  color: #fc8181 !important;
+  border: 1px solid #9b2c2c !important;
+}
+
+button[style*="background: #e74c3c"]:hover {
+  background: #9b2c2c !important;
+}
+
+/* Status badges */
+span[style*="background: #2ecc71"] {
+  background: #22543d !important;
+  color: #68d391 !important;
+}
+
+span[style*="background: #95a5a6"] {
+  background: #2d3748 !important;
+  color: #a0aec0 !important;
+}
+
+/* Content wrapper background */
+.content {
+  background: transparent !important;
+}
