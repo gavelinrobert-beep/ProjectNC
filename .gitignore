@@ -17,6 +17,9 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+venv/
+env/
+.venv/
 
 # Build artifacts
 dist/
