@@ -6,3 +6,4 @@ passlib==1.7.4
 pyjwt==2.8.0
 httpx==0.26.0
 pydantic==2.5.3
+python-multipart==0.0.6
