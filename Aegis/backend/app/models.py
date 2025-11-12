@@ -26,10 +26,24 @@ class GeofenceIn(BaseModel):
         return v
 
 
-class BaseIn(BaseModel):
+class FacilityIn(BaseModel):
+    """Facility (location, depot, distribution center) input model"""
     id: Optional[str] = None
     name: str
-    type: str = Field(..., description="logistics, military, airfield, storage")
+    type: str = Field(..., description="distribution_center, warehouse, depot, service_center, office")
+    lat: float
+    lon: float
+    capacity: Optional[int] = None
+    assets_stored: Optional[List[str]] = None
+    description: Optional[str] = None
+
+
+# Alias for backward compatibility
+class BaseIn(BaseModel):
+    """Legacy alias for FacilityIn"""
+    id: Optional[str] = None
+    name: str
+    type: str = Field(..., description="distribution_center, warehouse, depot, service_center, office")
     lat: float
     lon: float
     capacity: Optional[int] = None
@@ -64,7 +78,9 @@ class AssetIn(BaseModel):
     last_maintenance: Optional[str] = None
     maintenance_status: Optional[Literal["operational", "needs_maintenance", "under_maintenance"]] = "operational"
 
-    # NEW: Home Base
+    # Home Facility (updated terminology)
+    home_facility_id: Optional[str] = None
+    # Legacy field name for compatibility
     home_base_id: Optional[str] = None
 
 
@@ -78,7 +94,7 @@ class LoginOut(BaseModel):
     role: str
 
 
-# Mission models
+# Task models (work orders, assignments)
 class Waypoint(BaseModel):
     lat: float
     lon: float
@@ -86,7 +102,8 @@ class Waypoint(BaseModel):
     action: Optional[str] = None
 
 
-class MissionIn(BaseModel):
+class TaskIn(BaseModel):
+    """Task (work order, assignment) input model"""
     id: Optional[str] = None
     name: str
     description: Optional[str] = None
@@ -95,8 +112,42 @@ class MissionIn(BaseModel):
     status: Literal["planned", "active", "completed", "cancelled"] = "planned"
     priority: Literal["low", "medium", "high", "critical"] = "medium"
 
-    # Transfer mission fields
-    mission_type: Optional[Literal["patrol", "transfer", "reconnaissance", "supply"]] = "patrol"
+    # Task type and transfer fields
+    task_type: Optional[Literal["delivery", "pickup", "service", "inspection", "transport"]] = "delivery"
+    source_facility_id: Optional[str] = None
+    destination_facility_id: Optional[str] = None
+    transfer_items: Optional[List[dict]] = None
+    
+    # Legacy field names for compatibility
+    mission_type: Optional[str] = None
+    source_base_id: Optional[str] = None
+    destination_base_id: Optional[str] = None
+
+    @validator('waypoints')
+    def validate_waypoints(cls, v):
+        if len(v) < 2:
+            raise ValueError('Task must have at least 2 waypoints')
+        for wp in v:
+            if not -90 <= wp.lat <= 90:
+                raise ValueError(f'Invalid latitude: {wp.lat}')
+            if not -180 <= wp.lon <= 180:
+                raise ValueError(f'Invalid longitude: {wp.lon}')
+        return v
+
+
+# Legacy alias for backward compatibility
+class MissionIn(BaseModel):
+    """Legacy alias for TaskIn"""
+    id: Optional[str] = None
+    name: str
+    description: Optional[str] = None
+    asset_id: Optional[str] = None
+    waypoints: List[Waypoint] = Field(..., min_items=2, description="At least 2 waypoints required")
+    status: Literal["planned", "active", "completed", "cancelled"] = "planned"
+    priority: Literal["low", "medium", "high", "critical"] = "medium"
+
+    # Transfer fields
+    mission_type: Optional[Literal["patrol", "transfer", "reconnaissance", "supply", "delivery", "pickup", "service", "inspection", "transport"]] = "patrol"
     source_base_id: Optional[str] = None
     destination_base_id: Optional[str] = None
     transfer_items: Optional[List[dict]] = None
@@ -112,8 +163,8 @@ class MissionIn(BaseModel):
                 raise ValueError(f'Invalid longitude: {wp.lon}')
         return v
 
-
-class MissionOut(BaseModel):
+class TaskOut(BaseModel):
+    """Task output model"""
     id: str
     name: str
     description: Optional[str]
@@ -123,7 +174,31 @@ class MissionOut(BaseModel):
     priority: str
     created_at: Optional[datetime]
 
-    # Transfer mission fields
+    # Task type and transfer fields
+    task_type: Optional[str] = "delivery"
+    source_facility_id: Optional[str] = None
+    destination_facility_id: Optional[str] = None
+    transfer_items: Optional[List[dict]] = None
+    
+    # Legacy field names for compatibility
+    mission_type: Optional[str] = None
+    source_base_id: Optional[str] = None
+    destination_base_id: Optional[str] = None
+
+
+# Legacy alias
+class MissionOut(BaseModel):
+    """Legacy alias for TaskOut"""
+    id: str
+    name: str
+    description: Optional[str]
+    asset_id: Optional[str]
+    waypoints: List[Waypoint]
+    status: str
+    priority: str
+    created_at: Optional[datetime]
+
+    # Transfer fields
     mission_type: Optional[str] = "patrol"
     source_base_id: Optional[str] = None
     destination_base_id: Optional[str] = None
@@ -140,7 +215,7 @@ class InventoryItemIn(BaseModel):
     unit: str = Field(..., description="liters, kg, units, boxes, etc.")
     weight_per_unit: Optional[float] = Field(None, ge=0, description="Weight in kg")
     volume_per_unit: Optional[float] = Field(None, ge=0, description="Volume in cubic meters")
-    location_type: Literal["base", "asset"] = "base"
+    location_type: Literal["facility", "asset", "base"] = "facility"  # "base" for backward compatibility
     location_id: str
     min_stock_level: Optional[float] = Field(default=0, ge=0)
     max_stock_level: Optional[float] = None

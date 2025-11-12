@@ -1,4 +1,5 @@
--- Initialize Aegis Database Schema
+-- Initialize AEGIS Light Database Schema
+-- Civil Logistics & Situational Awareness Platform
 
 -- Geofences table
 CREATE TABLE IF NOT EXISTS geofences (
@@ -7,7 +8,7 @@ CREATE TABLE IF NOT EXISTS geofences (
     polygon JSONB NOT NULL
 );
 
--- Alerts table (with message and severity columns!)
+-- Alerts table
 CREATE TABLE IF NOT EXISTS alerts (
     id SERIAL PRIMARY KEY,
     asset_id TEXT NOT NULL,
@@ -20,8 +21,8 @@ CREATE TABLE IF NOT EXISTS alerts (
     color TEXT DEFAULT '#ff9800'
 );
 
--- Bases table
-CREATE TABLE IF NOT EXISTS bases (
+-- Facilities table (locations, depots, distribution centers)
+CREATE TABLE IF NOT EXISTS facilities (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     type TEXT NOT NULL,
@@ -31,6 +32,9 @@ CREATE TABLE IF NOT EXISTS bases (
     assets_stored JSONB,
     description TEXT
 );
+
+-- Legacy alias for backwards compatibility
+CREATE VIEW IF NOT EXISTS bases AS SELECT * FROM facilities;
 
 -- Assets table
 CREATE TABLE IF NOT EXISTS assets (
@@ -53,20 +57,23 @@ CREATE TABLE IF NOT EXISTS assets (
     fuel_consumption FLOAT DEFAULT 1.0,
     maintenance_status TEXT DEFAULT 'operational',
     last_maintenance TIMESTAMPTZ DEFAULT NOW(),
-    home_base_id TEXT,
+    home_facility_id TEXT,
     heading FLOAT DEFAULT 0
 );
 
--- Missions table
-CREATE TABLE IF NOT EXISTS missions (
+-- Tasks table (work orders, assignments)
+CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    mission_type TEXT,
+    task_type TEXT,
     status TEXT DEFAULT 'pending',
     asset_id TEXT,
     waypoints JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Legacy alias for backwards compatibility
+CREATE VIEW IF NOT EXISTS missions AS SELECT * FROM tasks;
 
 -- Inventory table
 CREATE TABLE IF NOT EXISTS inventory (
@@ -87,14 +94,15 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert sample bases
-INSERT INTO bases (id, name, type, lat, lon, capacity) VALUES
-    ('BASE-01', 'Stockholm HQ', 'headquarters', 59.3293, 18.0686, 50),
-    ('BASE-02', 'Gotland Forward Base', 'forward_base', 57.6348, 18.2948, 30),
-    ('BASE-03', 'Malmö Supply Depot', 'supply_depot', 55.6050, 13.0038, 40)
+-- Insert sample civilian facilities
+INSERT INTO facilities (id, name, type, lat, lon, capacity, description) VALUES
+    ('FAC-01', 'Stockholm Central Hub', 'distribution_center', 59.3293, 18.0686, 50, 'Main distribution center for Stockholm region'),
+    ('FAC-02', 'Gotland Regional Depot', 'warehouse', 57.6348, 18.2948, 30, 'Island distribution warehouse'),
+    ('FAC-03', 'Malmö South Warehouse', 'warehouse', 55.6050, 13.0038, 40, 'Southern region logistics warehouse')
 ON CONFLICT (id) DO NOTHING;
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_assets_status ON assets(status);
 CREATE INDEX IF NOT EXISTS idx_alerts_acknowledged ON alerts(acknowledged);
-CREATE INDEX IF NOT EXISTS idx_missions_status ON missions(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_facilities_type ON facilities(type);
