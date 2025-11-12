@@ -1,8 +1,8 @@
-# AEGIS Light - Security Guide
+# Project SYLON - Security Guide
 
 ## Overview
 
-AEGIS Light is designed for civilian use with security best practices built in. This guide covers security considerations for deployment and operation.
+Project SYLON is designed for civilian use with security best practices built in. This guide covers security considerations for deployment and operation.
 
 ---
 
