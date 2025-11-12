@@ -1,5 +1,5 @@
 """
-Authentication logic for Aegis backend.
+Authentication logic for Project SYLON backend.
 Handles user management, password hashing, JWT token creation and verification, and role checks.
 """
 import jwt
@@ -12,8 +12,8 @@ pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Example users (you may want to replace with database calls)
 USERS = {
-    "admin@aegis.local": {"password_hash": pwd.hash("admin123"), "role": "admin"},
-    "user@aegis.local": {"password_hash": pwd.hash("user123"), "role": "user"},
+    "admin@sylon.local": {"password_hash": pwd.hash("admin123"), "role": "admin"},
+    "user@sylon.local": {"password_hash": pwd.hash("user123"), "role": "user"},
 }
 
 def make_token(email: str, role: str) -> str:

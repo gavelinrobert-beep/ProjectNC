@@ -1,5 +1,5 @@
 """
-Utility functions for Aegis backend.
+Utility functions for Project SYLON backend.
 """
 import math
 

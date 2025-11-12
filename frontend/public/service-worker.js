@@ -1,5 +1,5 @@
 /**
- * AEGIS Light - Service Worker
+ * Project SYLON - Service Worker
  * Provides offline capabilities for field operations
  * 
  * Features:

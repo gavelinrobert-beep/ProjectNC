@@ -1,4 +1,4 @@
-// AEGIS Light - Field Reports Manager Component
+// Project SYLON - Field Reports Manager Component
 // Allows field operators to submit and view field reports with photo attachments
 
 import React, { useState, useEffect } from 'react'

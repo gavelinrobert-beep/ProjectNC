@@ -1,6 +1,6 @@
-# AEGIS Light - API Reference
+# Project SYLON - API Reference
 
-Quick reference for all API endpoints in AEGIS Light.
+Quick reference for all API endpoints in Project SYLON.
 
 **Base URL**: `http://localhost:8000` (development)
 

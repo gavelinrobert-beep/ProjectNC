@@ -64,7 +64,7 @@ async def export_assets_csv(request: Request, role: str = Depends(bearer_role)):
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_assets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
@@ -114,7 +114,7 @@ async def export_missions_csv(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_missions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_missions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
@@ -161,7 +161,7 @@ async def export_inventory_csv(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_inventory_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_inventory_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
@@ -210,7 +210,7 @@ async def export_alerts_csv(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_alerts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_alerts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
@@ -249,7 +249,7 @@ async def export_bases_csv(request: Request, role: str = Depends(bearer_role)):
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_bases_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_bases_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
@@ -315,6 +315,6 @@ async def export_operations_report_csv(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=aegis_operations_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=sylon_operations_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )

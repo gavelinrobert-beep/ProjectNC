@@ -1,4 +1,4 @@
-// AEGIS Light - Export Manager Component
+// Project SYLON - Export Manager Component
 // Provides CSV and PDF export functionality for all major entities
 
 import React, { useState } from 'react'

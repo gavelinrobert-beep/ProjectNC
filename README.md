@@ -1,8 +1,8 @@
-# AEGIS Light — Civil Logistics & Situational Awareness Platform
+# Project SYLON — Civil Logistics & Situational Awareness Platform
 
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
-AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
+Project SYLON is a secure, cloud-based logistics and coordination platform designed for:
 - 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
 - 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations
 - 🚨 **Emergency Response** - Civil defense, incident management, resource coordination
@@ -47,7 +47,7 @@ This is the **civilian MVP version**, focused on real-time situational awareness
 
 1. **Clone and navigate**
    ```bash
-   cd Aegis
+   cd Sylon
    ```
 
 2. **Configure environment**
@@ -64,7 +64,7 @@ This is the **civilian MVP version**, focused on real-time situational awareness
 4. **Access the application**
    - 🌐 Frontend: http://localhost:5173
    - 📚 API Docs: http://localhost:8000/docs
-   - 🔑 Login: `admin@aegis.local` / `admin123`
+   - 🔑 Login: `admin@sylon.local` / `admin123`
 
 ⚠️ **Change default credentials after first login!**
 
@@ -73,7 +73,7 @@ This is the **civilian MVP version**, focused on real-time situational awareness
 ## 📁 Project Structure
 
 ```
-Aegis/
+Sylon/
 ├── backend/           # FastAPI application
 │   ├── app/
 │   │   ├── routes/   # API endpoints
@@ -178,7 +178,7 @@ Full deployment guide: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 🔒 Security
 
-AEGIS Light follows security best practices:
+Project SYLON follows security best practices:
 - ✅ JWT-based authentication
 - ✅ Role-based access control (RBAC)
 - ✅ Environment-based configuration
@@ -251,16 +251,16 @@ npm test
 
 ## 💼 Support & Contact
 
-- **Documentation**: https://docs.aegis-light.com
-- **Issues**: https://github.com/your-org/aegis-light/issues
-- **Email**: support@aegis-light.com
-- **Commercial**: enterprise@aegis-light.com
+- **Documentation**: https://docs.sylon.com
+- **Issues**: https://github.com/your-org/sylon/issues
+- **Email**: support@sylon.com
+- **Commercial**: enterprise@sylon.com
 
 ---
 
 ## 📜 License
 
-AEGIS Light is released under the MIT License.
+Project SYLON is released under the MIT License.
 See [LICENSE](./LICENSE) file for details.
 
 ---
@@ -272,5 +272,5 @@ Special thanks to the open-source community.
 
 ---
 
-**AEGIS Light** - Professional logistics made simple.
+**Project SYLON** - Professional logistics made simple.
 *Civilian deployment. No classified data. Production-ready.*

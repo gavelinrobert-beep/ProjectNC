@@ -1,5 +1,5 @@
 """
-Civilian constants for AEGIS Light platform.
+Civilian constants for Project SYLON platform.
 Sample data for municipalities, contractors, and civil logistics operations.
 """
 

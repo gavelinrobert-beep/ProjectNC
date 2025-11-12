@@ -19,11 +19,11 @@ router = APIRouter(prefix="/api/shipments", tags=["Shipments"])
 
 def generate_tracking_number() -> str:
     """Generate a unique tracking number (DHL-style)"""
-    # Format: AEGIS + 10 random alphanumeric characters
-    # Example: AEGIS-A7B9C2D4E6
+    # Format: SYLON + 10 random alphanumeric characters
+    # Example: SYLON-A7B9C2D4E6
     chars = string.ascii_uppercase + string.digits
     random_part = ''.join(random.choices(chars, k=10))
-    return f"AEGIS-{random_part}"
+    return f"SYLON-{random_part}"
 
 
 @router.get("", response_model=List[ShipmentOut])

@@ -1,14 +1,14 @@
-# AEGIS Light - Deployment Guide
+# Project SYLON - Deployment Guide
 
 ## 🎯 Overview
 
-AEGIS Light is a **civilian logistics and situational awareness platform** designed for:
+Project SYLON is a **civilian logistics and situational awareness platform** designed for:
 - **Municipalities**: Track vehicles, equipment, and field personnel
 - **Contractors**: Coordinate resources and operations
 - **Civil Defense**: Emergency response and resource management
 - **Public Works**: Infrastructure maintenance tracking
 
-This guide will help you deploy AEGIS Light in your organization.
+This guide will help you deploy Project SYLON in your organization.
 
 ---
 
@@ -24,8 +24,8 @@ This guide will help you deploy AEGIS Light in your organization.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-org/aegis-light.git
-   cd aegis-light/Aegis
+   git clone https://github.com/your-org/sylon.git
+   cd sylon/Sylon
    ```
 
 2. **Configure environment**
@@ -45,7 +45,7 @@ This guide will help you deploy AEGIS Light in your organization.
    - Database: localhost:5432
 
 5. **Login with default credentials**
-   - Email: `admin@aegis.local`
+   - Email: `admin@sylon.local`
    - Password: `admin123`
    
    ⚠️ **Change these immediately after first login!**
@@ -67,7 +67,7 @@ CORS_ORIGINS=https://yourdomain.com
 VITE_API_BASE=https://yourdomain.com/api
 
 # 3. Configure database (if using external DB)
-DATABASE_URL=postgresql://user:pass@db-host:5432/aegis
+DATABASE_URL=postgresql://user:pass@db-host:5432/sylon
 
 # 4. Add weather API key (optional)
 OPENWEATHER_API_KEY=your_api_key_here
@@ -217,17 +217,17 @@ Before deploying to production:
 **Automated Backups** (Recommended)
 ```bash
 # Add to crontab
-0 2 * * * docker exec aegis-db pg_dump -U postgres aegis > /backups/aegis_$(date +\%Y\%m\%d).sql
+0 2 * * * docker exec sylon-db pg_dump -U postgres sylon > /backups/sylon_$(date +\%Y\%m\%d).sql
 ```
 
 **Manual Backup**
 ```bash
-docker exec aegis-db pg_dump -U postgres aegis > aegis_backup.sql
+docker exec sylon-db pg_dump -U postgres sylon > sylon_backup.sql
 ```
 
 **Restore from Backup**
 ```bash
-docker exec -i aegis-db psql -U postgres aegis < aegis_backup.sql
+docker exec -i sylon-db psql -U postgres sylon < sylon_backup.sql
 ```
 
 ### Data Retention
@@ -328,10 +328,10 @@ docker exec aegis-db psql -U postgres aegis -c "UPDATE users SET password_hash =
 
 ### Getting Help
 
-- Documentation: https://docs.aegis-light.com
-- Support: support@aegis-light.com
-- Community Forum: https://community.aegis-light.com
-- GitHub Issues: https://github.com/your-org/aegis-light/issues
+- Documentation: https://docs.sylon.com
+- Support: support@sylon.com
+- Community Forum: https://community.sylon.com
+- GitHub Issues: https://github.com/your-org/sylon/issues
 
 ---
 
@@ -353,7 +353,7 @@ docker compose logs -f
 docker compose logs -f api
 
 # Save logs
-docker compose logs > aegis_logs.txt
+docker compose logs > sylon_logs.txt
 ```
 
 ### Performance Tuning
@@ -397,13 +397,13 @@ For municipalities and organizations requiring:
 - Training sessions
 - SLA agreements
 
-Contact: enterprise@aegis-light.com
+Contact: enterprise@sylon.com
 
 ---
 
 ## 📝 License
 
-AEGIS Light is released under the MIT License.
+Project SYLON is released under the MIT License.
 See LICENSE file for details.
 
 ---

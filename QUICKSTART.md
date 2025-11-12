@@ -1,6 +1,6 @@
-# AEGIS Light - Quick Start Guide
+# Project SYLON - Quick Start Guide
 
-Get up and running with AEGIS Light in under 5 minutes.
+Get up and running with Project SYLON in under 5 minutes.
 
 ---
 
@@ -16,7 +16,7 @@ Get up and running with AEGIS Light in under 5 minutes.
 
 ```bash
 # Clone repository (if not already cloned)
-cd aegis2.0/Aegis
+cd aegis2.0/Sylon
 
 # Copy environment template
 cp .env.example .env
@@ -222,7 +222,7 @@ docker compose up
 
 - **Documentation**: Check `/docs` folder
 - **Issues**: Create GitHub issue
-- **Email**: support@aegis-light.com (if configured)
+- **Email**: support@sylon.com (if configured)
 
 ---
 

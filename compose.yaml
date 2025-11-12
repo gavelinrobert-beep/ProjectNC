@@ -7,7 +7,7 @@ services:
       POSTGRES_DB: postgres
       command: postgres -c max_connections=200
     volumes:
-      - aegis_dbdata_v16:/var/lib/postgresql/data
+      - sylon_dbdata_v16:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - aegis-network
+      - sylon-network
 
   api:
     build: ./backend
@@ -34,7 +34,7 @@ services:
     volumes:
       - ./backend/app:/app/app
     networks:
-      - aegis-network
+      - sylon-network
     restart: unless-stopped
 
   frontend:
@@ -50,12 +50,12 @@ services:
     depends_on:
       - api
     networks:
-      - aegis-network
+      - sylon-network
     restart: unless-stopped
 
 volumes:
-  aegis_dbdata_v16:
+  sylon_dbdata_v16:
 
 networks:
-  aegis-network:
+  sylon-network:
     driver: bridge

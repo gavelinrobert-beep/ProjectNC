@@ -1,4 +1,4 @@
-# AEGIS Light - User Guide
+# Project SYLON - User Guide
 
 ## Table of Contents
 1. [Getting Started](#getting-started)
@@ -17,7 +17,7 @@
 
 ### First Login
 
-1. Navigate to the AEGIS Light URL provided by your administrator
+1. Navigate to the Project SYLON URL provided by your administrator
 2. Enter your credentials
 3. Click **Login**
 
@@ -180,8 +180,8 @@ Export formats: PDF, CSV
 
 ## Support
 
-- Documentation: https://docs.aegis-light.com
-- Email: support@aegis-light.com
+- Documentation: https://docs.sylon.com
+- Email: support@sylon.com
 - Contact your administrator for help
 
 **Version**: 1.0.0 (Civil MVP)

@@ -178,7 +178,7 @@ function AppLayout() {
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1.5rem' }}>🛡️</span>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>AEGIS LIGHT</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>PROJECT SYLON</span>
           </div>
         </div>
 

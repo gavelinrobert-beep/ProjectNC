@@ -1,4 +1,4 @@
-# AEGIS Light v1.0.0 - Release Notes
+# Project SYLON v1.0.0 - Release Notes
 
 **Release Date**: Q1 2025  
 **Type**: Civilian MVP (Minimum Viable Product)  
@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-AEGIS Light v1.0.0 is the first production-ready release of our civilian logistics and coordination platform. This platform provides real-time resource management and situational awareness for municipalities, contractors, and emergency response organizations.
+Project SYLON v1.0.0 is the first production-ready release of our civilian logistics and coordination platform. This platform provides real-time resource management and situational awareness for municipalities, contractors, and emergency response organizations.
 
 > "A platform for real-time coordination and resource management for municipalities, contractors, and emergency response organizations."
 
@@ -94,7 +94,7 @@ AEGIS Light v1.0.0 is the first production-ready release of our civilian logisti
 ### Installation
 
 ```bash
-cd Aegis
+cd Sylon
 cp .env.example .env
 # Edit .env with your configuration
 docker compose up --build
@@ -106,7 +106,7 @@ docker compose up --build
 - 💊 **Health Check**: http://localhost:8000/health
 
 ### Default Credentials
-- **Username**: `admin@aegis.local`
+- **Username**: `admin@sylon.local`
 - **Password**: `admin123`
 
 ⚠️ **IMPORTANT**: Change default credentials immediately after first login!
@@ -229,7 +229,7 @@ CORS_ORIGINS=http://localhost:5173,https://yourdomain.com
 OPENWEATHER_API_KEY=<your key>  # For weather integration
 
 # Customization
-APP_NAME=AEGIS Light
+APP_NAME=Project SYLON
 APP_VERSION=1.0.0
 ```
 
@@ -355,7 +355,7 @@ Designed with security, usability, and scalability in mind for civilian logistic
 
 ## 🎉 Getting Started
 
-Ready to deploy AEGIS Light? Follow these steps:
+Ready to deploy Project SYLON? Follow these steps:
 
 1. **Read** the [QUICKSTART.md](./QUICKSTART.md) guide
 2. **Configure** your `.env` file with secure credentials
@@ -368,4 +368,4 @@ Need help? Check out the complete documentation or open an issue on GitHub.
 
 ---
 
-**AEGIS Light v1.0.0 - Production Ready for Civilian Logistics**
+**Project SYLON v1.0.0 - Production Ready for Civilian Logistics**

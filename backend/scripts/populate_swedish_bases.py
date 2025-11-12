@@ -2,7 +2,7 @@ import asyncio
 import asyncpg
 
 # Docker exposes PostgreSQL on port 5432 mapped to host
-DATABASE_URL = "postgresql://aegis:aegis_password@localhost:5432/aegis"
+DATABASE_URL = "postgresql://sylon:sylon_password@localhost:5432/sylon"
 
 SWEDISH_BASES = [
     # Air Force Bases
@@ -77,8 +77,8 @@ async def populate_bases():
         print("✅ Connected successfully!\n")
     except Exception as e:
         print(f"❌ Connection failed: {e}")
-        print("\n💡 Make sure Docker container 'aegis-db-1' is running:")
-        print("   docker ps | grep aegis-db")
+        print("\n💡 Make sure Docker container 'sylon-db-1' is running:")
+        print("   docker ps | grep sylon-db")
         return
 
     print("📥 Adding Swedish military bases...\n")

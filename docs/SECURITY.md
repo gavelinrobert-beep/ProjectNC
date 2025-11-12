@@ -385,7 +385,7 @@ Required for compliance:
 ## Vulnerability Reporting
 
 **Report Security Issues**:
-- Email: security@aegis-light.com
+- Email: security@sylon.com
 - PGP Key: Available on website
 - Response time: 24 hours
 - Bug bounty: Available for verified issues
@@ -406,6 +406,6 @@ Required for compliance:
 
 ---
 
-**Security Contact**: security@aegis-light.com
+**Security Contact**: security@sylon.com
 **Last Updated**: Q1 2025
 **Version**: 1.0.0

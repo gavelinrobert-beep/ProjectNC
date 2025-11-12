@@ -60,7 +60,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app with lifespan
 app = FastAPI(
-    title="AEGIS Light API",
+    title="Project SYLON API",
     description="Civil Logistics & Situational Awareness Platform",
     version="1.0.0",
     lifespan=lifespan
@@ -109,7 +109,7 @@ app.include_router(missions_router, tags=["Missions (Deprecated)"])
 async def root():
     """API root endpoint"""
     return {
-        "name": "AEGIS Light API",
+        "name": "Project SYLON API",
         "version": "1.0.0",
         "description": "Civil Logistics & Situational Awareness Platform",
         "documentation": "/docs",
@@ -135,7 +135,7 @@ async def root():
 async def api_info():
     """API information endpoint"""
     return {
-        "name": "AEGIS Light API",
+        "name": "Project SYLON API",
         "version": "1.0.0",
         "description": "RESTful API for logistics and asset management",
         "features": [
