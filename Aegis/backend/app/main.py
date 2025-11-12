@@ -17,8 +17,14 @@ from .routes.missions import router as missions_router
 from .routes.inventory import router as inventory_router
 from .routes import intelligence
 from .routes import simulation
+from .routes.exports import router as exports_router
+from .routes.field_reports import router as field_reports_router
 
-app = FastAPI(title="Aegis API (refactor)")
+app = FastAPI(
+    title="AEGIS Light API",
+    description="Civil Logistics & Situational Awareness Platform",
+    version="1.0.0"
+)
 
 # CORS Configuration - Single middleware only
 app.add_middleware(
@@ -48,6 +54,8 @@ app.include_router(inventory_router)
 app.include_router(communications.router, prefix="/api/communications", tags=["communications"])
 app.include_router(intelligence.router, prefix="/api/intelligence", tags=["intelligence"])
 app.include_router(simulation.router, prefix="/api/simulation", tags=["simulation"])
+app.include_router(exports_router)
+app.include_router(field_reports_router)
 
 @app.on_event("startup")
 async def on_startup():

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import FieldReportsManager from '../components/FieldReportsManager'
 
 export default function Intelligence() {
   const [activeTab, setActiveTab] = useState('dashboard')

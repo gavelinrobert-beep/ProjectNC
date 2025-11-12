@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { BRAND } from '../lib/constants'
 import AdminGeofences from '../components/AdminGeofences'
+import ExportManager from '../components/ExportManager'
 
 export default function Admin() {
   const [selectedTab, setSelectedTab] = useState('geofences')
@@ -20,7 +21,7 @@ export default function Admin() {
         borderBottom: '2px solid #2d3748',
         paddingBottom: '0.5rem'
       }}>
-        {['geofences', 'users', 'settings', 'logs'].map(tab => (
+        {['geofences', 'users', 'exports', 'settings', 'logs'].map(tab => (
           <button
             key={tab}
             onClick={() => setSelectedTab(tab)}
@@ -44,6 +45,7 @@ export default function Admin() {
       {/* Content */}
       {selectedTab === 'geofences' && <AdminGeofences />}
       {selectedTab === 'users' && <PlaceholderTab icon="👥" title="User Management" />}
+      {selectedTab === 'exports' && <ExportManager />}
       {selectedTab === 'settings' && <PlaceholderTab icon="⚙️" title="System Settings" />}
       {selectedTab === 'logs' && <PlaceholderTab icon="📜" title="System Logs" />}
     </div>
