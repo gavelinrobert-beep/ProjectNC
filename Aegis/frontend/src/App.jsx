@@ -21,12 +21,12 @@ function Sidebar({ isOpen, toggle }) {
 
  const navigation = [
   { name: 'Dashboard', icon: '📊', path: '/' },
-  { name: 'Operations', icon: '🗺️', path: '/operations' },
-  { name: 'Missions', icon: '📋', path: '/missions' },
-  { name: 'Assets & Logistics', icon: '🚛', path: '/assets' },
-  { name: 'Communications', icon: '💬', path: '/communications', badge: 'NEW' },
-  { name: 'Intelligence', icon: '🎯', path: '/intelligence', badge: 'NEW' },
-  { name: 'Simulation', icon: '🎮', path: '/simulation', badge: 'NEW' },
+  { name: 'Live Map', icon: '🗺️', path: '/operations' },
+  { name: 'Tasks & Missions', icon: '📋', path: '/missions' },
+  { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
+  { name: 'Communications', icon: '💬', path: '/communications' },
+  { name: 'Situation Reports', icon: '🎯', path: '/intelligence' },
+  { name: 'Simulation & Training', icon: '🎮', path: '/simulation' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
   { name: 'Administration', icon: '⚙️', path: '/admin' }
 ]
@@ -184,7 +184,7 @@ function AppLayout() {
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1.5rem' }}>🛡️</span>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>PROJECT AEGIS</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>AEGIS LIGHT</span>
           </div>
         </div>
 
@@ -194,7 +194,7 @@ function AppLayout() {
           textTransform: 'uppercase',
           letterSpacing: '0.5px'
         }}>
-          Military Logistics Command System
+          Civil Logistics & Situational Awareness Platform
         </span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

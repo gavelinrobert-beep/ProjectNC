@@ -3,7 +3,7 @@ import { api } from '../lib/api'
 import { setIdToken } from '../lib/auth'
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState('admin@aegis.mil')
+  const [email, setEmail] = useState('admin@aegis.local')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -49,9 +49,9 @@ export default function Login({ onLogin }) {
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛡️</div>
-          <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>PROJECT AEGIS</h1>
+          <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700 }}>AEGIS LIGHT</h1>
           <p style={{ color: '#718096', margin: '0.5rem 0 0', fontSize: '0.9rem' }}>
-            Military Logistics Command System
+            Civil Logistics & Situational Awareness
           </p>
         </div>
 
