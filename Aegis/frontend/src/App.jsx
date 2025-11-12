@@ -9,12 +9,9 @@ import Dashboard from './pages/Dashboard'
 import Operations from './pages/Operations'
 import Missions from './pages/Missions'
 import Assets from './pages/Assets'
-import Communications from './pages/Communications'
-import Intelligence from './pages/Intelligence'
 import Inventory from './pages/Inventory'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
-import Simulation from './pages/Simulation'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -22,11 +19,8 @@ function Sidebar({ isOpen, toggle }) {
  const navigation = [
   { name: 'Dashboard', icon: '📊', path: '/' },
   { name: 'Live Map', icon: '🗺️', path: '/operations' },
-  { name: 'Tasks & Missions', icon: '📋', path: '/missions' },
+  { name: 'Tasks & Assignments', icon: '📋', path: '/missions' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
-  { name: 'Communications', icon: '💬', path: '/communications' },
-  { name: 'Situation Reports', icon: '🎯', path: '/intelligence' },
-  { name: 'Simulation & Training', icon: '🎮', path: '/simulation' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
   { name: 'Administration', icon: '⚙️', path: '/admin' }
 ]
@@ -242,9 +236,6 @@ function AppLayout() {
           <Route path="/operations" element={<Operations />} />
           <Route path="/missions" element={<Missions />} />
           <Route path="/assets" element={<Assets />} />
-          <Route path="/communications" element={<Communications />} />
-          <Route path="/intelligence" element={<Intelligence />} />
-          <Route path="/simulation" element={<Simulation />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
