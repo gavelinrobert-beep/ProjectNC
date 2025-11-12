@@ -3,12 +3,15 @@
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
 AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
-- 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel
-- 🏗️ **Contractors** - Coordinate resources and operations
-- 🚨 **Civil Defense** - Emergency response and resource management
-- 🛠️ **Public Works** - Infrastructure maintenance tracking
+- 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
+- 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations
+- 🚨 **Emergency Response** - Civil defense, incident management, resource coordination
+- 🚛 **Logistics Companies** - Fleet management, delivery tracking, route optimization
+- 🛠️ **Public Works** - Infrastructure maintenance, crew coordination, asset management
 
-This is the **civilian MVP version** of Project AEGIS, focused on real-time situational awareness, resource tracking, and coordination in field operations.
+> "A platform for real-time coordination and resource management for municipalities, contractors, and emergency response organizations."
+
+This is the **civilian MVP version**, focused on real-time situational awareness, resource tracking, and field coordination without military dependencies or terminology.
 
 ---
 
@@ -18,7 +21,7 @@ This is the **civilian MVP version** of Project AEGIS, focused on real-time situ
 - 📍 **Live Asset Tracking** - Real-time location of vehicles, machines, and staff
 - 🗺️ **Map-Based Visualization** - Interactive map with Leaflet/OpenStreetMap
 - 📊 **Status Dashboard** - Fuel levels, availability, task progress
-- 📋 **Mission Planning** - Route planning and task assignment
+- 📋 **Task Management** - Work orders, assignments, route planning
 - 📦 **Inventory Management** - Track supplies and equipment
 - 📱 **Offline Support** - Field-ready with offline capabilities
 - 👥 **Role-Based Access** - Municipality Admin, Contractor, Operator, Viewer

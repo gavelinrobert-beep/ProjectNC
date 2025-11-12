@@ -2,7 +2,13 @@
 
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
-A secure, cloud-based logistics and coordination platform designed for municipalities, contractors, and civil defense organizations.
+> A platform for real-time coordination and resource management for municipalities, contractors, and emergency response organizations.
+
+AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
+- 🏛️ **Municipalities** - Public works, infrastructure maintenance, fleet management
+- 🏗️ **Contractors** - Resource coordination, equipment tracking, project management
+- 🚨 **Emergency Response** - Civil defense, incident management, real-time coordination
+- 🚛 **Logistics Companies** - Fleet tracking, delivery management, route optimization
 
 ## 🚀 Quick Start
 
@@ -25,7 +31,7 @@ docker compose up --build
 - 📍 **Live Asset Tracking** - Real-time location of vehicles and equipment
 - 🗺️ **Interactive Map** - Leaflet-based visualization with offline support
 - 📊 **Dashboard** - Overview of operations and key metrics
-- 📋 **Mission Planning** - Route planning and task assignment
+- 📋 **Task Management** - Work orders, assignments, route planning
 - 📦 **Inventory Management** - Track supplies and equipment
 - 📝 **Field Reports** - Submit status updates with photos (offline-capable)
 - 📤 **Export Tools** - Generate CSV reports for all entities
