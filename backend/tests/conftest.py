@@ -4,10 +4,11 @@ Provides database connections, test clients, authentication fixtures, and mock d
 """
 import asyncio
 import os
-from typing import AsyncGenerator, Dict, Any
+from typing import AsyncGenerator, Dict, Any, Optional
 import pytest
 import asyncpg
 from httpx import AsyncClient
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 # Set test environment variables before importing app
@@ -18,18 +19,26 @@ os.environ['DATABASE_URL'] = os.environ.get(
 os.environ['JWT_SECRET'] = 'test-secret-key-for-testing'
 os.environ['CORS_ORIGINS'] = 'http://localhost:5173'
 
-from app.main import app
-from app.database import get_pool
-from app.auth import create_access_token
-
-
-# Configure pytest-asyncio
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create an instance of the default event loop for the test session."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+# Import app conditionally to avoid import errors
+try:
+    from app.main import app
+    from app.database import get_pool
+    from app.auth import create_access_token
+    APP_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Could not import app: {e}")
+    APP_AVAILABLE = False
+    # Create a minimal app for testing
+    app = FastAPI()
+    
+    # Dummy function for create_access_token if app not available
+    def create_access_token(data: dict) -> str:
+        import jwt
+        return jwt.encode(data, os.environ['JWT_SECRET'], algorithm="HS256")
+    
+    async def get_pool(app_instance: FastAPI = None) -> Optional[asyncpg.Pool]:
+        database_url = os.environ['DATABASE_URL']
+        return await asyncpg.create_pool(database_url, min_size=1, max_size=5)
 
 
 @pytest.fixture(scope="session")
@@ -69,8 +78,12 @@ async def db_connection(db_pool: asyncpg.Pool) -> AsyncGenerator[asyncpg.Connect
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
     """
     Provide an async HTTP client for testing API endpoints.
+    Uses ASGI transport to properly handle lifespan events.
     """
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    from httpx import ASGITransport
+    from app.main import app as test_app
+    transport = ASGITransport(app=test_app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
 
 
@@ -79,7 +92,8 @@ def test_client() -> TestClient:
     """
     Provide a synchronous test client for simpler test cases.
     """
-    return TestClient(app)
+    from app.main import app as test_app
+    return TestClient(test_app)
 
 
 # Authentication fixtures for different roles

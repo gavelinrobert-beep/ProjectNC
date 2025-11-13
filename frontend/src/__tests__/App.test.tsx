@@ -2,7 +2,9 @@
  * Basic tests for the App component.
  */
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - App.jsx exists but TypeScript doesn't recognize it
 import App from '../App';
 
 describe('App Component', () => {
