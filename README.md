@@ -130,6 +130,7 @@ Full deployment guide: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 - **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment instructions
 - **[API Documentation](http://localhost:8000/docs)** - Interactive API explorer (after starting)
+- **[CI/CD Pipeline](./docs/CI_CD.md)** - Continuous integration and testing guide
 - **[User Guide](./docs/USER_GUIDE.md)** - End-user documentation
 - **[Security Guide](./docs/SECURITY.md)** - Security best practices
 
@@ -215,15 +216,29 @@ npm run dev
 ```
 
 ### Testing
-```bash
-# Backend tests
-cd backend
-pytest
 
-# Frontend tests  
+AEGIS Light includes comprehensive test infrastructure with automated CI/CD pipelines.
+
+```bash
+# Backend tests with coverage
+cd backend
+pytest --cov=app --cov-report=term-missing
+
+# Frontend tests
 cd frontend
 npm test
+
+# Frontend tests with coverage
+npm run test:coverage
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
 ```
+
+For more details on testing and CI/CD, see the **[CI/CD Pipeline Documentation](./docs/CI_CD.md)**.
 
 ---
 
