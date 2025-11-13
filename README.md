@@ -2,6 +2,12 @@
 
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
+[![Backend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml)
+[![Frontend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml)
+[![Docker Build](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml)
+[![Security Scanning](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/gavelinrobert-beep/SYLON/branch/master/graph/badge.svg)](https://codecov.io/gh/gavelinrobert-beep/SYLON)
+
 AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
 - 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
 - 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations

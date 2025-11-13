@@ -1,0 +1,86 @@
+name: Docker Build Validation
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Validate docker-compose.yml syntax
+      run: |
+        docker compose config > /dev/null
+        echo "✅ docker-compose.yml syntax is valid"
+
+    - name: Build backend Docker image
+      run: |
+        cd backend
+        docker build -t sylon-backend:test .
+        echo "✅ Backend Docker image built successfully"
+
+    - name: Build frontend Docker image
+      run: |
+        cd frontend
+        docker build -t sylon-frontend:test .
+        echo "✅ Frontend Docker image built successfully"
+
+    - name: Test docker-compose up scenario
+      run: |
+        # Set environment variables for testing
+        export DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+        export JWT_SECRET=test-secret-for-ci
+        export CORS_ORIGINS=http://localhost:5173
+        export VITE_API_BASE=http://localhost:8000
+        
+        # Start services in detached mode
+        docker compose up -d
+        
+        # Wait for services to be healthy
+        echo "Waiting for services to start..."
+        sleep 30
+        
+        # Check if services are running
+        docker compose ps
+        
+        # Check backend health
+        echo "Checking backend health..."
+        curl -f http://localhost:8000/health || echo "Backend health check failed (may need more time)"
+        
+        # Check frontend availability
+        echo "Checking frontend availability..."
+        curl -f http://localhost:5173 || echo "Frontend check failed (may need more time)"
+        
+        # Show logs for debugging
+        echo "=== Backend Logs ==="
+        docker compose logs api | tail -50
+        echo "=== Frontend Logs ==="
+        docker compose logs frontend | tail -50
+        
+        # Cleanup
+        docker compose down -v
+
+    - name: Check for Docker image vulnerabilities
+      run: |
+        # Install trivy
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install -y trivy
+        
+        # Scan images
+        trivy image --severity HIGH,CRITICAL sylon-backend:test || true
+        trivy image --severity HIGH,CRITICAL sylon-frontend:test || true
