@@ -15,6 +15,7 @@ import Login from './pages/Login'
 import Shipments from './pages/Shipments'
 import Drivers from './pages/Drivers'
 import Customers from './pages/Customers'
+import Metrics from './pages/Metrics'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -25,6 +26,7 @@ function Sidebar({ isOpen, toggle }) {
   { name: 'Shipments', icon: '📦', path: '/shipments' },
   { name: 'Customers', icon: '👥', path: '/customers' },
   { name: 'Drivers', icon: '👷', path: '/drivers' },
+  { name: 'Performance Metrics', icon: '📈', path: '/metrics' },
   { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
@@ -271,6 +273,7 @@ function AppLayout() {
           <Route path="/shipments" element={<Shipments />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/drivers" element={<Drivers />} />
+          <Route path="/metrics" element={<Metrics />} />
           <Route path="/tasks" element={<Tasks />} />  {/* CHANGED: Was /missions */}
           <Route path="/assets" element={<Assets />} />
           <Route path="/inventory" element={<Inventory />} />
