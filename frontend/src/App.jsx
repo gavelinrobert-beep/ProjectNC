@@ -12,6 +12,13 @@ import Assets from './pages/Assets'
 import Inventory from './pages/Inventory'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
+import Shipments from './pages/Shipments'
+import Drivers from './pages/Drivers'
+import Customers from './pages/Customers'
+import Metrics from './pages/Metrics'
+import Incidents from './pages/Incidents'
+import Resources from './pages/Resources'
+import Training from './pages/Training'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -19,7 +26,14 @@ function Sidebar({ isOpen, toggle }) {
  const navigation = [
   { name: 'Dashboard', icon: '📊', path: '/' },
   { name: 'Live Map', icon: '🗺️', path: '/operations' },
-  { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },  // CHANGED: Was /missions
+  { name: 'Shipments', icon: '📦', path: '/shipments' },
+  { name: 'Customers', icon: '👥', path: '/customers' },
+  { name: 'Drivers', icon: '👷', path: '/drivers' },
+  { name: 'Performance Metrics', icon: '📈', path: '/metrics' },
+  { name: 'Incidents', icon: '🚨', path: '/incidents' },
+  { name: 'Resource Status', icon: '🛡️', path: '/resources' },
+  { name: 'Training & Certs', icon: '📜', path: '/training' },
+  { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
   { name: 'Administration', icon: '⚙️', path: '/admin' }
@@ -28,13 +42,14 @@ function Sidebar({ isOpen, toggle }) {
   return (
     <aside style={{
       width: isOpen ? '250px' : '70px',
-      background: '#1a1f2e',
-      borderRight: '2px solid #2d3748',
+      background: '#FFFFFF',
+      borderRight: '1px solid #E8EDF2',
       display: 'flex',
       flexDirection: 'column',
       transition: 'width 0.3s ease',
       overflow: 'hidden',
-      height: '100%'
+      height: '100%',
+      boxShadow: '2px 0 8px rgba(45, 62, 80, 0.08)'
     }}>
       <nav style={{ flex: 1, padding: '1rem 0' }}>
         {navigation.map((item) => {
@@ -48,22 +63,23 @@ function Sidebar({ isOpen, toggle }) {
                 alignItems: 'center',
                 gap: '0.75rem',
                 padding: '0.9rem 1.25rem',
-                color: isActive ? '#63b3ed' : '#a0aec0',
+                color: isActive ? '#4A90E2' : '#556B7C',
                 textDecoration: 'none',
-                background: isActive ? 'rgba(99, 179, 237, 0.15)' : 'transparent',
-                borderLeft: `3px solid ${isActive ? '#63b3ed' : 'transparent'}`,
-                transition: 'all 0.2s'
+                background: isActive ? 'rgba(74, 144, 226, 0.08)' : 'transparent',
+                borderLeft: `3px solid ${isActive ? '#4A90E2' : 'transparent'}`,
+                transition: 'all 0.2s ease',
+                fontWeight: isActive ? 600 : 500
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = 'rgba(99, 179, 237, 0.1)'
-                  e.currentTarget.style.color = '#63b3ed'
+                  e.currentTarget.style.background = 'rgba(74, 144, 226, 0.05)'
+                  e.currentTarget.style.color = '#4A90E2'
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = '#a0aec0'
+                  e.currentTarget.style.color = '#556B7C'
                 }
               }}
             >
@@ -98,14 +114,14 @@ function Sidebar({ isOpen, toggle }) {
       {isOpen && (
         <div style={{
           padding: '1rem',
-          borderTop: '1px solid #2d3748',
-          background: 'rgba(245, 101, 101, 0.1)'
+          borderTop: '1px solid #E8EDF2',
+          background: 'rgba(255, 152, 0, 0.05)'
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#fc8181',
+            color: '#FF9800',
             fontSize: '0.85rem',
             fontWeight: 600,
             marginBottom: '0.75rem'
@@ -113,7 +129,7 @@ function Sidebar({ isOpen, toggle }) {
             <span style={{
               width: '8px',
               height: '8px',
-              background: '#fc8181',
+              background: '#FF9800',
               borderRadius: '50%',
               animation: 'pulse 2s infinite'
             }}></span>
@@ -122,12 +138,22 @@ function Sidebar({ isOpen, toggle }) {
           <button style={{
             width: '100%',
             padding: '0.6rem',
-            background: '#742a2a',
-            color: '#fc8181',
-            border: '1px solid #9b2c2c',
-            borderRadius: '6px',
+            background: '#FFFFFF',
+            color: '#FF9800',
+            border: '2px solid #FF9800',
+            borderRadius: '8px',
             cursor: 'pointer',
-            fontSize: '0.85rem'
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#FF9800'
+            e.currentTarget.style.color = '#FFFFFF'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#FFFFFF'
+            e.currentTarget.style.color = '#FF9800'
           }}>
             ⏹️ Stop Demo
           </button>
@@ -145,22 +171,22 @@ function AppLayout() {
       display: 'grid',
       gridTemplateAreas: '"topbar topbar" "sidebar content"',
       gridTemplateColumns: sidebarOpen ? '250px 1fr' : '70px 1fr',
-      gridTemplateRows: '60px 1fr',
+      gridTemplateRows: '64px 1fr',
       height: '100vh',
-      background: '#0a0e14',
-      color: '#e0e0e0',
+      background: '#F5F7FA',
+      color: '#2D3E50',
       transition: 'grid-template-columns 0.3s ease'
     }}>
-      {/* Top Bar */}
+      {/* Top Bar - Nordic Blue Gradient */}
       <header style={{
         gridArea: 'topbar',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 1.5rem',
-        background: 'linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%)',
-        borderBottom: '2px solid #2d3748',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+        background: 'linear-gradient(135deg, #4A90E2 0%, #5B9BD5 100%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 2px 8px rgba(74, 144, 226, 0.15)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button
@@ -168,25 +194,29 @@ function AppLayout() {
             style={{
               background: 'none',
               border: 'none',
-              color: '#e0e0e0',
+              color: '#FFFFFF',
               fontSize: '1.5rem',
               cursor: 'pointer',
-              padding: '0.5rem'
+              padding: '0.5rem',
+              transition: 'opacity 0.2s'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           >
             ☰
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1.5rem' }}>🛡️</span>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>AEGIS LIGHT</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF' }}>AEGIS LIGHT</span>
           </div>
         </div>
 
         <span style={{
-          color: '#718096',
+          color: 'rgba(255, 255, 255, 0.9)',
           fontSize: '0.85rem',
           textTransform: 'uppercase',
-          letterSpacing: '0.5px'
+          letterSpacing: '0.5px',
+          fontWeight: 500
         }}>
           Civil Logistics & Situational Awareness Platform
         </span>
@@ -194,9 +224,11 @@ function AppLayout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
   <span style={{
     padding: '0.4rem 0.8rem',
-    background: '#2d3748',
-    borderRadius: '6px',
-    fontSize: '0.9rem'
+    background: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: '8px',
+    fontSize: '0.9rem',
+    color: '#FFFFFF',
+    fontWeight: 500
   }}>
     👤 {localStorage.getItem('user') || 'admin'}
   </span>
@@ -208,12 +240,22 @@ function AppLayout() {
     }}
     style={{
       padding: '0.4rem 0.8rem',
-      background: '#742a2a',
-      border: '1px solid #9b2c2c',
-      borderRadius: '6px',
-      color: '#fc8181',
+      background: '#FFFFFF',
+      border: 'none',
+      borderRadius: '8px',
+      color: '#4A90E2',
       cursor: 'pointer',
-      fontSize: '0.85rem'
+      fontSize: '0.85rem',
+      fontWeight: 600,
+      transition: 'all 0.2s ease'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
+      e.currentTarget.style.transform = 'translateY(-1px)'
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = '#FFFFFF'
+      e.currentTarget.style.transform = 'translateY(0)'
     }}
   >
     🚪 Logout
@@ -229,11 +271,18 @@ function AppLayout() {
         gridArea: 'content',
         padding: '2rem',
         overflowY: 'auto',
-        background: '#0f1419'
+        background: '#F5F7FA'
       }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/operations" element={<Operations />} />
+          <Route path="/shipments" element={<Shipments />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/drivers" element={<Drivers />} />
+          <Route path="/metrics" element={<Metrics />} />
+          <Route path="/incidents" element={<Incidents />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/training" element={<Training />} />
           <Route path="/tasks" element={<Tasks />} />  {/* CHANGED: Was /missions */}
           <Route path="/assets" element={<Assets />} />
           <Route path="/inventory" element={<Inventory />} />
@@ -248,20 +297,20 @@ function AppLayout() {
         }
 
         ::-webkit-scrollbar {
-          width: 8px;
+          width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-          background: #1a1f2e;
+          background: #F5F7FA;
         }
 
         ::-webkit-scrollbar-thumb {
-          background: #2d3748;
-          border-radius: 4px;
+          background: #B8C5D0;
+          border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-          background: #4a5568;
+          background: #4A90E2;
         }
       `}</style>
     </div>

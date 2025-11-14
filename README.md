@@ -2,6 +2,12 @@
 
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
+[![Backend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml)
+[![Frontend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml)
+[![Docker Build](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml)
+[![Security Scanning](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/gavelinrobert-beep/SYLON/branch/master/graph/badge.svg)](https://codecov.io/gh/gavelinrobert-beep/SYLON)
+
 AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
 - 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
 - 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations
@@ -124,6 +130,7 @@ Full deployment guide: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 - **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment instructions
 - **[API Documentation](http://localhost:8000/docs)** - Interactive API explorer (after starting)
+- **[CI/CD Pipeline](./docs/CI_CD.md)** - Continuous integration and testing guide
 - **[User Guide](./docs/USER_GUIDE.md)** - End-user documentation
 - **[Security Guide](./docs/SECURITY.md)** - Security best practices
 
@@ -209,15 +216,29 @@ npm run dev
 ```
 
 ### Testing
-```bash
-# Backend tests
-cd backend
-pytest
 
-# Frontend tests  
+AEGIS Light includes comprehensive test infrastructure with automated CI/CD pipelines.
+
+```bash
+# Backend tests with coverage
+cd backend
+pytest --cov=app --cov-report=term-missing
+
+# Frontend tests
 cd frontend
 npm test
+
+# Frontend tests with coverage
+npm run test:coverage
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
 ```
+
+For more details on testing and CI/CD, see the **[CI/CD Pipeline Documentation](./docs/CI_CD.md)**.
 
 ---
 

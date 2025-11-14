@@ -1,89 +1,117 @@
-/* Modern UI Override for Legacy Components */
+/* Modern Nordic UI Override for Legacy Components */
 
-/* Card styling */
+/* Card styling - Clean white cards with subtle shadows */
 .card {
-  background: linear-gradient(180deg, #1a1f2e, #0f1419) !important;
-  border: 1px solid #2d3748 !important;
+  background: var(--white) !important;
+  border: 1px solid var(--light-gray) !important;
   border-radius: 12px !important;
   padding: 1.5rem !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(45, 62, 80, 0.08) !important;
+  transition: box-shadow 0.2s ease !important;
 }
 
-/* Button styling */
+.card:hover {
+  box-shadow: 0 4px 12px rgba(45, 62, 80, 0.12) !important;
+}
+
+/* Button styling - Nordic blue primary */
 .btn, button[type="submit"], button[type="button"] {
-  background: #63b3ed !important;
-  color: #0a0e14 !important;
+  background: var(--nordic-blue-primary) !important;
+  color: var(--white) !important;
   border: none !important;
   border-radius: 8px !important;
   padding: 0.6rem 1.2rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  transition: all 0.2s !important;
+  transition: all 0.2s ease !important;
 }
 
 .btn:hover, button[type="submit"]:hover {
-  background: #4299e1 !important;
+  background: var(--nordic-blue-dark) !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25) !important;
 }
 
-/* Input and select styling */
+.btn-secondary {
+  background: var(--white) !important;
+  color: var(--nordic-blue-primary) !important;
+  border: 2px solid var(--nordic-blue-primary) !important;
+}
+
+.btn-secondary:hover {
+  background: var(--off-white) !important;
+}
+
+/* Input and select styling - Clean white inputs */
 input[type="text"],
 input[type="number"],
 input[type="email"],
 input[type="password"],
+input[type="date"],
+input[type="time"],
 select,
 textarea {
-  background: #0a0e14 !important;
-  border: 1px solid #2d3748 !important;
+  background: var(--white) !important;
+  border: 2px solid var(--light-gray) !important;
   border-radius: 8px !important;
-  color: #e0e0e0 !important;
+  color: var(--charcoal) !important;
   padding: 0.6rem !important;
   font-size: 0.95rem !important;
+  transition: border-color 0.2s ease !important;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #63b3ed !important;
+  border-color: var(--nordic-blue-primary) !important;
   outline: none !important;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1) !important;
 }
 
-/* Labels */
+/* Labels - Clean and readable */
 label {
-  color: #a0aec0 !important;
+  color: var(--dark-gray) !important;
   font-size: 0.9rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   display: block;
   margin-bottom: 0.5rem;
 }
 
-/* Tables */
+/* Tables - Clean with subtle separators */
 table {
-  background: transparent !important;
+  background: var(--white) !important;
   border-collapse: collapse !important;
+  border-radius: 12px !important;
+  overflow: hidden;
 }
 
 thead {
-  background: #1a1f2e !important;
+  background: linear-gradient(135deg, var(--nordic-blue-primary), var(--nordic-blue-accent)) !important;
 }
 
 th {
-  color: #63b3ed !important;
+  color: var(--white) !important;
   font-weight: 600 !important;
-  padding: 0.75rem !important;
-  border-bottom: 2px solid #2d3748 !important;
+  padding: 1rem !important;
+  text-align: left;
+  border: none !important;
 }
 
 td {
-  padding: 0.75rem !important;
-  border-bottom: 1px solid #2d3748 !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--light-gray) !important;
+  color: var(--charcoal) !important;
 }
 
 tbody tr:hover {
-  background: rgba(99, 179, 237, 0.05) !important;
+  background: rgba(74, 144, 226, 0.05) !important;
+}
+
+tbody tr:last-child td {
+  border-bottom: none !important;
 }
 
 /* Headings inside components */
 h2, h3, h4 {
-  color: #e0e0e0 !important;
+  color: var(--charcoal) !important;
   font-weight: 600 !important;
 }
 
@@ -91,10 +119,10 @@ h2 { font-size: 1.5rem !important; }
 h3 { font-size: 1.2rem !important; }
 h4 { font-size: 1rem !important; }
 
-/* List items */
+/* List items - Clean white list items */
 .list li {
-  background: #0f1419 !important;
-  border: 1px solid #2d3748 !important;
+  background: var(--white) !important;
+  border: 1px solid var(--light-gray) !important;
   border-radius: 8px !important;
   padding: 1rem !important;
   margin-bottom: 0.75rem !important;
