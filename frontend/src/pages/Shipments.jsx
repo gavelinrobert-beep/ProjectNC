@@ -71,7 +71,7 @@ export default function Shipments() {
 
   const updateShipmentStatus = async (shipmentId, newStatus) => {
     try {
-      await api.put(`/api/shipments/${shipmentId}/status`, { status: newStatus })
+      await api.post(`/api/shipments/${shipmentId}/status?new_status=${newStatus}`)
       loadData()
     } catch (error) {
       console.error('Failed to update status:', error)
