@@ -16,6 +16,9 @@ import Shipments from './pages/Shipments'
 import Drivers from './pages/Drivers'
 import Customers from './pages/Customers'
 import Metrics from './pages/Metrics'
+import Incidents from './pages/Incidents'
+import Resources from './pages/Resources'
+import Training from './pages/Training'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -27,6 +30,9 @@ function Sidebar({ isOpen, toggle }) {
   { name: 'Customers', icon: '👥', path: '/customers' },
   { name: 'Drivers', icon: '👷', path: '/drivers' },
   { name: 'Performance Metrics', icon: '📈', path: '/metrics' },
+  { name: 'Incidents', icon: '🚨', path: '/incidents' },
+  { name: 'Resource Status', icon: '🛡️', path: '/resources' },
+  { name: 'Training & Certs', icon: '📜', path: '/training' },
   { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
@@ -274,6 +280,9 @@ function AppLayout() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/metrics" element={<Metrics />} />
+          <Route path="/incidents" element={<Incidents />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/training" element={<Training />} />
           <Route path="/tasks" element={<Tasks />} />  {/* CHANGED: Was /missions */}
           <Route path="/assets" element={<Assets />} />
           <Route path="/inventory" element={<Inventory />} />
