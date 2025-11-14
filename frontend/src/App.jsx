@@ -12,6 +12,9 @@ import Assets from './pages/Assets'
 import Inventory from './pages/Inventory'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
+import Shipments from './pages/Shipments'
+import Drivers from './pages/Drivers'
+import Customers from './pages/Customers'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -19,7 +22,10 @@ function Sidebar({ isOpen, toggle }) {
  const navigation = [
   { name: 'Dashboard', icon: '📊', path: '/' },
   { name: 'Live Map', icon: '🗺️', path: '/operations' },
-  { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },  // CHANGED: Was /missions
+  { name: 'Shipments', icon: '📦', path: '/shipments' },
+  { name: 'Customers', icon: '👥', path: '/customers' },
+  { name: 'Drivers', icon: '👷', path: '/drivers' },
+  { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
   { name: 'Inventory', icon: '📦', path: '/inventory' },
   { name: 'Administration', icon: '⚙️', path: '/admin' }
@@ -262,6 +268,9 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/operations" element={<Operations />} />
+          <Route path="/shipments" element={<Shipments />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/drivers" element={<Drivers />} />
           <Route path="/tasks" element={<Tasks />} />  {/* CHANGED: Was /missions */}
           <Route path="/assets" element={<Assets />} />
           <Route path="/inventory" element={<Inventory />} />
