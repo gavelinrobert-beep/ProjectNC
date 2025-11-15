@@ -104,6 +104,32 @@ async def create_mission(payload: MissionIn, request: Request):
     # Convert waypoints to dict list
     waypoints_data = [wp.dict() for wp in payload.waypoints]
 
+    # Use routing API to get road coordinates if multiple waypoints
+    road_coordinates = None
+    actual_distance_km = None
+    if len(waypoints_data) >= 2:
+        try:
+            # Call internal routing API
+            from .routing import get_route, RouteRequest, Waypoint as RoutingWaypoint
+            
+            route_request = RouteRequest(
+                waypoints=[RoutingWaypoint(lat=wp['lat'], lon=wp['lon']) for wp in waypoints_data]
+            )
+            route_result = await get_route(route_request)
+            
+            # Convert road coordinates back to lat/lon format for storage
+            # ORS returns [[lon, lat], ...], we want [{"lat": ..., "lon": ...}, ...]
+            road_coordinates = [{"lat": coord[1], "lon": coord[0]} for coord in route_result.coordinates]
+            actual_distance_km = route_result.distance_km
+            
+            print(f"[MISSION] Generated road route with {len(road_coordinates)} points, distance: {actual_distance_km} km (source: {route_result.source})")
+            
+            # Use road coordinates as waypoints if routing succeeded
+            if road_coordinates:
+                waypoints_data = road_coordinates
+        except Exception as e:
+            print(f"[MISSION] Routing API failed, using original waypoints: {e}")
+
     # Get asset speed if asset is assigned
     asset_speed = 50.0  # default speed
     asset = None
@@ -116,8 +142,16 @@ async def create_mission(payload: MissionIn, request: Request):
                 raise HTTPException(status_code=404, detail="Asset not found")
             asset_speed = asset['speed'] if asset['speed'] > 0 else 50.0
 
-        # Calculate mission metrics
-        metrics = calculate_mission_metrics(waypoints_data, asset_speed)
+        # Calculate mission metrics (use actual distance if available from routing)
+        if actual_distance_km:
+            # Calculate duration based on actual road distance
+            duration_hours = actual_distance_km / asset_speed if asset_speed > 0 else 0
+            metrics = {
+                'total_distance_km': actual_distance_km,
+                'estimated_duration_minutes': int(duration_hours * 60)
+            }
+        else:
+            metrics = calculate_mission_metrics(waypoints_data, asset_speed)
 
         # Get mission type and transfer data
         mission_type = getattr(payload, 'mission_type', 'patrol')
