@@ -61,9 +61,9 @@ async def get_missions(request: Request, status: str = None):
     pool = await get_pool(request.app)
     async with pool.acquire() as conn:
         if status:
-            rows = await conn.fetch("SELECT * FROM missions WHERE status = $1 ORDER BY created_at DESC", status)
+            rows = await conn.fetch("SELECT * FROM tasks WHERE status = $1 ORDER BY created_at DESC", status)
         else:
-            rows = await conn.fetch("SELECT * FROM missions ORDER BY created_at DESC")
+            rows = await conn.fetch("SELECT * FROM tasks ORDER BY created_at DESC")
 
         missions = []
         for row in rows:
@@ -83,7 +83,7 @@ async def get_mission(mission_id: str, request: Request):
     """Get a specific mission by ID"""
     pool = await get_pool(request.app)
     async with pool.acquire() as conn:
-        row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        row = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         if not row:
             raise HTTPException(status_code=404, detail="Mission not found")
 
@@ -134,11 +134,11 @@ async def create_mission(payload: MissionIn, request: Request):
 
         # Insert mission
         await conn.execute("""
-            INSERT INTO missions (
-                id, name, description, asset_id, waypoints, status, priority,
-                estimated_duration_minutes, estimated_fuel_consumption, total_distance_km,
-                mission_type, source_base_id, destination_base_id, transfer_items
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+            INSERT INTO tasks (
+                id, name, description, assigned_vehicle_id, waypoints, status, priority,
+                estimated_duration_minutes, estimated_distance_km,
+                task_type, source_facility_id, destination_facility_id, transfer_items
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         """,
             mission_id,
             payload.name,
@@ -148,9 +148,8 @@ async def create_mission(payload: MissionIn, request: Request):
             payload.status,
             payload.priority,
             metrics['estimated_duration_minutes'],
-            metrics['estimated_fuel_consumption'],
             metrics['total_distance_km'],
-            mission_type,
+            mission_type or 'delivery',
             source_base_id,
             destination_base_id,
             json.dumps(transfer_items) if transfer_items else None
@@ -161,10 +160,8 @@ async def create_mission(payload: MissionIn, request: Request):
             # Build route string from waypoints
             route_str = ' '.join([f"{wp['lat']},{wp['lon']}" for wp in waypoints_data])
 
-            # Determine asset status based on asset type
-            asset_type = asset['type'] if asset else 'truck'
-            air_types = ['plane', 'helicopter', 'cargo_plane', 'fighter_jet', 'transport_helicopter', 'reconnaissance_plane', 'uav']
-            new_status = 'airborne' if asset_type in air_types else 'mobile'
+            # Set asset to in_use status (for logistics vehicles)
+            new_status = 'in_use'
 
             await conn.execute("""
                 UPDATE assets 
@@ -175,7 +172,7 @@ async def create_mission(payload: MissionIn, request: Request):
             print(f"[MISSION] Started mission {mission_id}: Asset {payload.asset_id} set to {new_status} with route: {route_str}")
 
         # Fetch and return the created mission
-        row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        row = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         mission = dict(row)
         mission['waypoints'] = waypoints_data
         if mission.get('transfer_items'):
@@ -191,7 +188,7 @@ async def update_mission(mission_id: str, payload: MissionIn, request: Request):
 
     async with pool.acquire() as conn:
         # Check if mission exists
-        existing = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        existing = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         if not existing:
             raise HTTPException(status_code=404, detail="Mission not found")
 
@@ -209,8 +206,8 @@ async def update_mission(mission_id: str, payload: MissionIn, request: Request):
         metrics = calculate_mission_metrics(waypoints_data, asset_speed)
 
         # Update timestamps based on status changes
-        started_at = existing['started_at']
-        completed_at = existing['completed_at']
+        started_at = existing['actual_start']
+        completed_at = existing['actual_end']
 
         if payload.status == 'active' and not started_at:
             started_at = datetime.utcnow()
@@ -218,29 +215,28 @@ async def update_mission(mission_id: str, payload: MissionIn, request: Request):
             completed_at = datetime.utcnow()
 
         # Get mission type and transfer data
-        mission_type = getattr(payload, 'mission_type', existing['mission_type'] or 'patrol')
-        source_base_id = getattr(payload, 'source_base_id', existing['source_base_id'])
-        destination_base_id = getattr(payload, 'destination_base_id', existing['destination_base_id'])
+        mission_type = getattr(payload, 'mission_type', existing['task_type'] or 'delivery')
+        source_base_id = getattr(payload, 'source_base_id', existing['source_facility_id'])
+        destination_base_id = getattr(payload, 'destination_base_id', existing['destination_facility_id'])
         transfer_items = getattr(payload, 'transfer_items', existing['transfer_items'])
 
         # Update mission
         await conn.execute("""
-            UPDATE missions SET
+            UPDATE tasks SET
                 name = $2,
                 description = $3,
-                asset_id = $4,
+                assigned_vehicle_id = $4,
                 waypoints = $5,
                 status = $6,
                 priority = $7,
                 estimated_duration_minutes = $8,
-                estimated_fuel_consumption = $9,
-                total_distance_km = $10,
-                started_at = $11,
-                completed_at = $12,
-                mission_type = $13,
-                source_base_id = $14,
-                destination_base_id = $15,
-                transfer_items = $16
+                estimated_distance_km = $9,
+                actual_start = $10,
+                actual_end = $11,
+                task_type = $12,
+                source_facility_id = $13,
+                destination_facility_id = $14,
+                transfer_items = $15
             WHERE id = $1
         """,
             mission_id,
@@ -251,18 +247,17 @@ async def update_mission(mission_id: str, payload: MissionIn, request: Request):
             payload.status,
             payload.priority,
             metrics['estimated_duration_minutes'],
-            metrics['estimated_fuel_consumption'],
             metrics['total_distance_km'],
             started_at,
             completed_at,
-            mission_type,
+            mission_type or 'delivery',
             source_base_id,
             destination_base_id,
             json.dumps(transfer_items) if transfer_items else None
         )
 
         # Fetch and return updated mission
-        row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        row = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         mission = dict(row)
         mission['waypoints'] = waypoints_data
         if mission.get('transfer_items'):
@@ -276,7 +271,7 @@ async def delete_mission(mission_id: str, request: Request):
     """Delete a mission"""
     pool = await get_pool(request.app)
     async with pool.acquire() as conn:
-        result = await conn.execute("DELETE FROM missions WHERE id = $1", mission_id)
+        result = await conn.execute("DELETE FROM tasks WHERE id = $1", mission_id)
         if result == "DELETE 0":
             raise HTTPException(status_code=404, detail="Mission not found")
         return {"ok": True}
@@ -287,37 +282,33 @@ async def start_mission(mission_id: str, request: Request):
     """Start a mission (change status to active)"""
     pool = await get_pool(request.app)
     async with pool.acquire() as conn:
-        mission = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        mission = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         if not mission:
             raise HTTPException(status_code=404, detail="Mission not found")
 
         await conn.execute("""
-            UPDATE missions SET status = 'active', started_at = NOW()
+            UPDATE tasks SET status = 'active', actual_start = NOW()
             WHERE id = $1
         """, mission_id)
 
         # Update asset status if mission has an assigned asset
-        if mission['asset_id']:
-            # Get asset type
-            asset = await conn.fetchrow("SELECT type FROM assets WHERE id = $1", mission['asset_id'])
-            if asset:
-                asset_type = asset['type']
-                air_types = ['plane', 'helicopter', 'cargo_plane', 'fighter_jet', 'transport_helicopter', 'reconnaissance_plane', 'uav']
-                new_status = 'airborne' if asset_type in air_types else 'mobile'
+        if mission['assigned_vehicle_id']:
+            # Set asset to in_use status (for logistics vehicles)
+            new_status = 'in_use'
 
-                # Get waypoints and build route
-                waypoints = json.loads(mission['waypoints']) if isinstance(mission['waypoints'], str) else mission['waypoints']
-                route_str = ' '.join([f"{wp['lat']},{wp['lon']}" for wp in waypoints])
+            # Get waypoints and build route
+            waypoints = json.loads(mission['waypoints']) if isinstance(mission['waypoints'], str) else mission['waypoints']
+            route_str = ' '.join([f"{wp['lat']},{wp['lon']}" for wp in waypoints])
 
-                await conn.execute("""
-                    UPDATE assets 
-                    SET status = $1, route = $2, route_index = 0
-                    WHERE id = $3
-                """, new_status, route_str, mission['asset_id'])
+            await conn.execute("""
+                UPDATE assets 
+                SET status = $1, route = $2, route_index = 0
+                WHERE id = $3
+            """, new_status, route_str, mission['assigned_vehicle_id'])
 
-                print(f"[MISSION] Started mission {mission_id}: Asset {mission['asset_id']} set to {new_status}")
+            print(f"[MISSION] Started mission {mission_id}: Asset {mission['assigned_vehicle_id']} set to {new_status}")
 
-        row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        row = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         result = dict(row)
         result['waypoints'] = json.loads(result['waypoints']) if isinstance(result['waypoints'], str) else result['waypoints']
         if result.get('transfer_items'):
@@ -331,7 +322,7 @@ async def complete_mission(mission_id: str, request: Request):
     """Complete a mission and process inventory transfers if applicable"""
     pool = await get_pool(request.app)
     async with pool.acquire() as conn:
-        mission = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        mission = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         if not mission:
             raise HTTPException(status_code=404, detail="Mission not found")
 
@@ -340,20 +331,20 @@ async def complete_mission(mission_id: str, request: Request):
 
         # Update mission status
         await conn.execute("""
-            UPDATE missions SET status = 'completed', completed_at = NOW()
+            UPDATE tasks SET status = 'completed', actual_end = NOW()
             WHERE id = $1
         """, mission_id)
 
         # Set asset to parked
-        if mission['asset_id']:
+        if mission['assigned_vehicle_id']:
             await conn.execute("""
                 UPDATE assets 
                 SET status = 'parked', route = 'stationary', route_index = 0
                 WHERE id = $1
-            """, mission['asset_id'])
+            """, mission['assigned_vehicle_id'])
 
         # If this is a transfer mission, process inventory transfers
-        if mission['mission_type'] == 'transfer' and mission['transfer_items']:
+        if mission['task_type'] == 'transfer' and mission['transfer_items']:
             transfer_items = json.loads(mission['transfer_items']) if isinstance(mission['transfer_items'], str) else mission['transfer_items']
             transfer_results = []
 
@@ -362,7 +353,7 @@ async def complete_mission(mission_id: str, request: Request):
                     # Get source item
                     source_item = await conn.fetchrow(
                         'SELECT * FROM inventory_items WHERE id = $1 AND location_id = $2',
-                        item_data['item_id'], mission['source_base_id']
+                        item_data['item_id'], mission['source_facility_id']
                     )
 
                     if not source_item:
@@ -383,14 +374,14 @@ async def complete_mission(mission_id: str, request: Request):
                            (item_id, transaction_type, quantity, location_id, performed_by, notes)
                            VALUES ($1, 'transfer_out', $2, $3, 'system', $4)''',
                         item_data['item_id'], -item_data['quantity'],
-                        mission['source_base_id'],
-                        f"Transfer to {mission['destination_base_id']} (Mission: {mission['name']})"
+                        mission['source_facility_id'],
+                        f"Transfer to {mission['destination_facility_id']} (Mission: {mission['name']})"
                     )
 
                     # Check if item exists at destination
                     dest_item = await conn.fetchrow(
                         'SELECT * FROM inventory_items WHERE name = $1 AND location_id = $2',
-                        source_item['name'], mission['destination_base_id']
+                        source_item['name'], mission['destination_facility_id']
                     )
 
                     if dest_item:
@@ -409,9 +400,9 @@ async def complete_mission(mission_id: str, request: Request):
                                RETURNING id''',
                             source_item['name'], source_item['category'],
                             item_data['quantity'], source_item['unit'],
-                            mission['destination_base_id'], source_item['min_stock_level'],
+                            mission['destination_facility_id'], source_item['min_stock_level'],
                             source_item['weight_per_unit'],
-                            f"Transferred from {mission['source_base_id']}"
+                            f"Transferred from {mission['source_facility_id']}"
                         )
 
                     # Create transaction for addition
@@ -420,8 +411,8 @@ async def complete_mission(mission_id: str, request: Request):
                            (item_id, transaction_type, quantity, location_id, performed_by, notes)
                            VALUES ($1, 'transfer_in', $2, $3, 'system', $4)''',
                         dest_item_id, item_data['quantity'],
-                        mission['destination_base_id'],
-                        f"Transfer from {mission['source_base_id']} (Mission: {mission['name']})"
+                        mission['destination_facility_id'],
+                        f"Transfer from {mission['source_facility_id']} (Mission: {mission['name']})"
                     )
 
                     transfer_results.append({
@@ -441,7 +432,7 @@ async def complete_mission(mission_id: str, request: Request):
             # Update mission description with transfer results
             success_count = len([r for r in transfer_results if r['success']])
             await conn.execute(
-                '''UPDATE missions 
+                '''UPDATE tasks 
                    SET description = description || $1
                    WHERE id = $2''',
                 f"\n\n✅ Transfer completed: {success_count} of {len(transfer_results)} items transferred successfully.",
@@ -449,7 +440,7 @@ async def complete_mission(mission_id: str, request: Request):
             )
 
         # Fetch and return updated mission
-        row = await conn.fetchrow("SELECT * FROM missions WHERE id = $1", mission_id)
+        row = await conn.fetchrow("SELECT * FROM tasks WHERE id = $1", mission_id)
         result = dict(row)
         result['waypoints'] = json.loads(result['waypoints']) if isinstance(result['waypoints'], str) else result['waypoints']
         if result.get('transfer_items'):
