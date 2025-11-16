@@ -65,8 +65,8 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         label="Tillgångar"
         value={stats.totalAssets}
         color={BRAND.primary}
-        leftStat={`✅ Aktiva: ${stats.mobile}`}
-        rightStat={`🅿️ Parkerade: ${stats.totalAssets - stats.mobile}`}
+        leftStat={`🚗 I bruk: ${stats.inUse || 0}`}
+        rightStat={`✅ Tillgängliga: ${stats.available || 0}`}
       />
 
       <StatCard

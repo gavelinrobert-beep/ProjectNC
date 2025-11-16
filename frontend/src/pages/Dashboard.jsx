@@ -37,11 +37,12 @@ export default function Dashboard() {
 
   const stats = {
     totalAssets: assets.length,
-    mobile: assets.filter(a => ['mobile', 'airborne'].includes(a.status)).length,
+    inUse: assets.filter(a => a.status === 'in_use').length,
+    available: assets.filter(a => a.status === 'available').length,
     activeMissions: missions.filter(m => m.status === 'active').length,
     criticalAlerts: alerts.filter(a => !a.acknowledged && a.severity === 'critical').length,
     lowFuel: assets.filter(a => a.fuel_level && a.fuel_level < 20).length,
-    maintenance: assets.filter(a => a.maintenance_status === 'needs_maintenance').length,
+    maintenance: assets.filter(a => a.maintenance_status === 'needs_maintenance' || a.status === 'maintenance').length,
   }
 
   if (loading) return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading...</div>
