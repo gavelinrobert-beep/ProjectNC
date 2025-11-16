@@ -87,39 +87,24 @@ async def weather_by_coords(lat: float, lon: float):
     return await _fetch_weather(lat, lon)
 
 
-@router.get("/weather/{base_id}")
-async def weather_by_base(base_id: str, request: Request):
+@router.get("/weather/{facility_id}")
+async def weather_by_facility(facility_id: str, request: Request):
     """
-    GET /weather/{base_id}
-    Lookup base by ID in database or constants and fetch weather.
+    GET /weather/{facility_id}
+    Lookup facility by ID in database and fetch weather.
     """
     from ..database import get_pool
-    from ..constants import BASES
 
-    print(f"[WEATHER] Looking up base_id: {base_id} (type: {type(base_id)})")
+    print(f"[WEATHER] Looking up facility_id: {facility_id}")
 
-    # Try database first
-    try:
-        pool = await get_pool(request.app)
-        async with pool.acquire() as conn:
-            base_row = await conn.fetchrow(
-                "SELECT id, name, lat, lon FROM bases WHERE id = $1",
-                base_id
-            )
-            if base_row:
-                print(f"[WEATHER] Found base in database: {base_row['name']}")
-                return await _fetch_weather(float(base_row['lat']), float(base_row['lon']))
-    except Exception as e:
-        print(f"[WEATHER] Database lookup failed: {e}")
-
-    # Fallback to constants
-    print(f"[WEATHER] Searching in constants (total: {len(BASES)})")
-    for b in BASES:
-        b_id = str(b.get("id", ""))
-        if b_id == str(base_id):
-            print(f"[WEATHER] Found base in constants: {b.get('name')}")
-            return await _fetch_weather(float(b["lat"]), float(b["lon"]))
-
-    # Not found anywhere
-    print(f"[WEATHER] Base {base_id} not found in database or constants")
-    raise HTTPException(status_code=404, detail=f"Base {base_id} not found")
+    pool = await get_pool(request.app)
+    async with pool.acquire() as conn:
+        facility_row = await conn.fetchrow(
+            "SELECT id, name, lat, lon FROM facilities WHERE id = $1",
+            facility_id
+        )
+        if not facility_row:
+            raise HTTPException(status_code=404, detail=f"Facility {facility_id} not found")
+        
+        print(f"[WEATHER] Found facility in database: {facility_row['name']}")
+        return await _fetch_weather(float(facility_row['lat']), float(facility_row['lon']))

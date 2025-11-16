@@ -22,6 +22,8 @@ from .routes.field_reports import router as field_reports_router
 from .routes.customers import router as customers_router
 from .routes.drivers import router as drivers_router
 from .routes.shipments import router as shipments_router
+from .routes.weather import router as weather_router
+from .routes.routing import router as routing_router
 # Legacy route aliases for backward compatibility (deprecated)
 from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
@@ -97,6 +99,8 @@ app.include_router(exports_router, tags=["Exports"])
 app.include_router(customers_router, tags=["Customers"])
 app.include_router(drivers_router, tags=["Drivers"])
 app.include_router(shipments_router, tags=["Shipments"])
+app.include_router(weather_router, tags=["Weather"])
+app.include_router(routing_router, tags=["Routing"])
 # ============================================================================
 # DEPRECATED ROUTES - Backward Compatibility Only
 # ============================================================================

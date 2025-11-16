@@ -1,6 +1,6 @@
 // frontend/src/App.jsx
 import React, { useState } from 'react'
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import { BRAND } from './lib/constants'
 import './modern-override.css'
 
@@ -24,19 +24,14 @@ function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
 
  const navigation = [
-  { name: 'Dashboard', icon: '📊', path: '/' },
-  { name: 'Live Map', icon: '🗺️', path: '/operations' },
-  { name: 'Shipments', icon: '📦', path: '/shipments' },
-  { name: 'Customers', icon: '👥', path: '/customers' },
-  { name: 'Drivers', icon: '👷', path: '/drivers' },
-  { name: 'Performance Metrics', icon: '📈', path: '/metrics' },
-  { name: 'Incidents', icon: '🚨', path: '/incidents' },
-  { name: 'Resource Status', icon: '🛡️', path: '/resources' },
-  { name: 'Training & Certs', icon: '📜', path: '/training' },
-  { name: 'Tasks & Assignments', icon: '📋', path: '/tasks' },
-  { name: 'Fleet & Resources', icon: '🚛', path: '/assets' },
-  { name: 'Inventory', icon: '📦', path: '/inventory' },
-  { name: 'Administration', icon: '⚙️', path: '/admin' }
+  { name: 'Dashboard', icon: '📊', path: '/', section: 'OPERATIONS' },
+  { name: 'Live Map', icon: '🗺️', path: '/operations', section: 'OPERATIONS' },
+  { name: 'Tasks & Deliveries', icon: '📋', path: '/tasks', section: 'LOGISTICS' },
+  { name: 'Fleet & Resources', icon: '🚛', path: '/assets', section: 'LOGISTICS' },
+  { name: 'Inventory', icon: '📦', path: '/inventory', section: 'LOGISTICS' },
+  { name: 'Incidents', icon: '🚨', path: '/incidents', section: 'MANAGEMENT' },
+  { name: 'Reports & Metrics', icon: '📈', path: '/metrics', section: 'MANAGEMENT' },
+  { name: 'Administration', icon: '⚙️', path: '/admin', section: 'MANAGEMENT' }
 ]
 
   return (
@@ -52,61 +47,77 @@ function Sidebar({ isOpen, toggle }) {
       boxShadow: '2px 0 8px rgba(45, 62, 80, 0.08)'
     }}>
       <nav style={{ flex: 1, padding: '1rem 0' }}>
-        {navigation.map((item) => {
+        {navigation.map((item, index) => {
           const isActive = location.pathname === item.path
+          const showSectionHeader = index === 0 || navigation[index - 1].section !== item.section
+          
           return (
-            <Link
-              key={item.path}
-              to={item.path}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.9rem 1.25rem',
-                color: isActive ? '#4A90E2' : '#556B7C',
-                textDecoration: 'none',
-                background: isActive ? 'rgba(74, 144, 226, 0.08)' : 'transparent',
-                borderLeft: `3px solid ${isActive ? '#4A90E2' : 'transparent'}`,
-                transition: 'all 0.2s ease',
-                fontWeight: isActive ? 600 : 500
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = 'rgba(74, 144, 226, 0.05)'
-                  e.currentTarget.style.color = '#4A90E2'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = '#556B7C'
-                }
-              }}
-            >
-              <span style={{ fontSize: '1.3rem', minWidth: '1.5rem' }}>
-                {item.icon}
-              </span>
-              {isOpen && (
-                <>
-                  <span style={{ fontSize: '0.95rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
-                    {item.name}
-                  </span>
-                  {item.badge && (
-                    <span style={{
-                      marginLeft: 'auto',
-                      background: '#48bb78',
-                      color: 'white',
-                      fontSize: '0.65rem',
-                      padding: '0.15rem 0.5rem',
-                      borderRadius: '10px',
-                      fontWeight: 600
-                    }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </>
+            <React.Fragment key={item.path}>
+              {showSectionHeader && isOpen && (
+                <div style={{
+                  padding: '0.75rem 1.25rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: '#9CA3AF',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginTop: index === 0 ? '0' : '1rem'
+                }}>
+                  {item.section}
+                </div>
               )}
-            </Link>
+              <Link
+                to={item.path}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.9rem 1.25rem',
+                  color: isActive ? '#4A90E2' : '#556B7C',
+                  textDecoration: 'none',
+                  background: isActive ? 'rgba(74, 144, 226, 0.08)' : 'transparent',
+                  borderLeft: `3px solid ${isActive ? '#4A90E2' : 'transparent'}`,
+                  transition: 'all 0.2s ease',
+                  fontWeight: isActive ? 600 : 500
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'rgba(74, 144, 226, 0.05)'
+                    e.currentTarget.style.color = '#4A90E2'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent'
+                    e.currentTarget.style.color = '#556B7C'
+                  }
+                }}
+              >
+                <span style={{ fontSize: '1.3rem', minWidth: '1.5rem' }}>
+                  {item.icon}
+                </span>
+                {isOpen && (
+                  <>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                      {item.name}
+                    </span>
+                    {item.badge && (
+                      <span style={{
+                        marginLeft: 'auto',
+                        background: '#48bb78',
+                        color: 'white',
+                        fontSize: '0.65rem',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '10px',
+                        fontWeight: 600
+                      }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+              </Link>
+            </React.Fragment>
           )
         })}
       </nav>
@@ -276,17 +287,21 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/operations" element={<Operations />} />
-          <Route path="/shipments" element={<Shipments />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/drivers" element={<Drivers />} />
-          <Route path="/metrics" element={<Metrics />} />
-          <Route path="/incidents" element={<Incidents />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/tasks" element={<Tasks />} />  {/* CHANGED: Was /missions */}
+          <Route path="/tasks" element={<Tasks />} />
           <Route path="/assets" element={<Assets />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/incidents" element={<Incidents />} />
+          <Route path="/metrics" element={<Metrics />} />
           <Route path="/admin" element={<Admin />} />
+          
+          {/* Redirects for backward compatibility */}
+          <Route path="/shipments" element={<Navigate to="/tasks" replace />} />
+          <Route path="/drivers" element={<Navigate to="/assets" replace />} />
+          <Route path="/customers" element={<Navigate to="/admin" replace />} />
+          
+          {/* Keep old routes for now but they're not in navigation */}
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/training" element={<Training />} />
         </Routes>
       </main>
 
