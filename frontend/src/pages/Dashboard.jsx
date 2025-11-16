@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { BRAND } from '../lib/constants'
 import DashboardStats from '../components/DashboardStats'
+import ResourceStatusWidget from '../components/ResourceStatusWidget'
+import PerformanceMetricsWidget from '../components/PerformanceMetricsWidget'
 
 export default function Dashboard() {
   const [assets, setAssets] = useState([])
@@ -66,6 +68,17 @@ export default function Dashboard() {
         geofences={geofences}
         assets={assets}
       />
+
+      {/* New Widgets */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '1.5rem',
+        marginTop: '2rem'
+      }}>
+        <ResourceStatusWidget />
+        <PerformanceMetricsWidget />
+      </div>
 
       {/* Quick Access Links */}
       <div style={{

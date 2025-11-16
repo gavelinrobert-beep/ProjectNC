@@ -85,6 +85,11 @@ export const api = {
   createIncident: (data) => send('POST', '/api/incidents', data),
   updateIncident: (id, data) => send('PUT', `/api/incidents/${id}`, data),
   deleteIncident: (id) => send('DELETE', `/api/incidents/${id}`),
+
+  // Metrics
+  resourceStatus: () => send('GET', '/api/metrics/resource-status'),
+  performanceMetrics: (period) => send('GET', `/api/metrics/performance?period=${period || '7days'}`),
+  metricsSummary: () => send('GET', '/api/metrics/summary'),
 }
 // ============================================
 // INVENTORY API
