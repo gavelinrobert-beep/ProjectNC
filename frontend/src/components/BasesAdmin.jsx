@@ -47,7 +47,7 @@ export default function BasesAdmin() {
   }, [])
 
   const fetchBases = () => {
-    api.bases()
+    api.facilities()
       .then(setBases)
       .catch(err => {
         console.error('Error fetching bases:', err)

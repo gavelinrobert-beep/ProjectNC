@@ -57,7 +57,7 @@ const InventoryManager = () => {
     try {
       const [invData, basesData, transData] = await Promise.all([
         fetchInventoryItems(),
-        api.bases(),
+        api.facilities(),
         getInventoryTransactions(null, 50)
       ]);
       setInventory(invData || []);

@@ -22,7 +22,7 @@ const MissionManager = () => {
       const [missionsData, assetsData, basesData] = await Promise.all([
         api.missions(),
         api.assets(),
-        api.bases()
+        api.facilities()
       ]);
       console.log('[MissionManager] Loaded data:', {
       missions: missionsData?.length || 0,

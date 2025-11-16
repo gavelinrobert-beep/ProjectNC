@@ -29,7 +29,7 @@ export default function Operations() {
       try {
         const [assetsData, basesData, missionsData, inventoryData] = await Promise.all([
           api.assets(),
-          api.bases(),
+          api.facilities(),
           api.missions(),
           fetchInventoryItems()
         ])

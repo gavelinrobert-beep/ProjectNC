@@ -47,7 +47,12 @@ export const api = {
   updateAsset: (id, a) => send('PUT', `/api/assets/${id}`, a),
   deleteAsset: (id) => send('DELETE', `/api/assets/${id}`),
 
-  // Bases
+  // Facilities (primary API)
+  facilities: () => send('GET', '/api/facilities'),
+  createFacility: (f) => send('POST', '/api/facilities', f),
+  deleteFacility: (id) => send('DELETE', `/api/facilities/${id}`),
+
+  // Bases (deprecated - use facilities instead)
   bases: () => send('GET', '/api/bases'),
   createBase: (b) => send('POST', '/api/bases', b),
   deleteBase: (id) => send('DELETE', `/api/bases/${id}`),

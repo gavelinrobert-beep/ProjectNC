@@ -17,7 +17,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [assetsData, basesData, alertsData, geofencesData, missionsData] = await Promise.all([
-          api.assets(), api.bases(), api.alerts(), api.geofences(), api.missions()
+          api.assets(), api.facilities(), api.alerts(), api.geofences(), api.missions()
         ])
         setAssets(assetsData || [])
         setBases(basesData || [])
