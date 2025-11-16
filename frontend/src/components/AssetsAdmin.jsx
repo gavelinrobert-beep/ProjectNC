@@ -104,7 +104,7 @@ export default function AssetsAdmin() {
     route: '',
     route_index: 0,
     speed: 50,
-    status: 'mobile',
+    status: 'available',
     battery: 100,
     battery_drain: 1,
     has_battery: false,
@@ -171,15 +171,6 @@ export default function AssetsAdmin() {
     alert(`Location selected: ${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`)
   }
 
-  const normalizeStatus = (s) => {
-    if (!s) return 'mobile'
-    const v = s.toString().toLowerCase()
-    if (['mobile', 'moving'].includes(v)) return 'mobile'
-    if (['parked', 'idle', 'stationary'].includes(v)) return 'parked'
-    if (['airborne', 'air'].includes(v)) return 'airborne'
-    return 'mobile'
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -199,7 +190,7 @@ export default function AssetsAdmin() {
       route: routeValue,
       route_index: parseInt(form.route_index) || 0,
       speed: parseFloat(form.speed) || 50,
-      status: normalizeStatus(form.status),
+      status: form.status,
       battery: parseFloat(form.battery) || 100,
       battery_drain: parseFloat(form.battery_drain) || 1,
       has_battery: !!form.has_battery,
@@ -246,7 +237,7 @@ export default function AssetsAdmin() {
       route: '',
       route_index: 0,
       speed: 50,
-      status: 'mobile',
+      status: 'available',
       battery: 100,
       battery_drain: 1,
       has_battery: false,
@@ -360,9 +351,11 @@ export default function AssetsAdmin() {
                   onChange={e => setForm({...form, status: e.target.value})}
                   style={{ width: '100%', padding: 8 }}
                 >
-                  <option value="mobile">Mobile</option>
-                  <option value="parked">Parked</option>
-                  <option value="airborne">Airborne</option>
+                  <option value="available">Available (Tillgänglig)</option>
+                  <option value="in_use">In Use (I bruk)</option>
+                  <option value="parked">Parked (Parkerad)</option>
+                  <option value="maintenance">Maintenance (Underhåll)</option>
+                  <option value="out_of_service">Out of Service (Ur drift)</option>
                 </select>
               </div>
             </div>
@@ -511,7 +504,7 @@ export default function AssetsAdmin() {
                       padding: '2px 6px',
                       borderRadius: 3,
                       fontSize: 11,
-                      background: asset.status === 'mobile' ? '#2ecc71' : asset.status === 'emergency' ? '#e74c3c' : '#95a5a6'
+                      background: asset.status === 'in_use' ? '#2ecc71' : asset.status === 'available' ? '#3498db' : asset.status === 'maintenance' ? '#f39c12' : asset.status === 'out_of_service' ? '#e74c3c' : '#95a5a6'
                     }}>
                       {asset.status}
                     </span>

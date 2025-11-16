@@ -131,7 +131,7 @@ export default function DashboardSidebar({
                   </span>
                   {asset && (
                     <span style={{ color: BRAND.success, fontWeight: 'bold' }}>
-                      {asset.status === 'mobile' ? '🚗 Moving' : asset.status === 'airborne' ? '✈️ Airborne' : '⏸️ Paused'}
+                      {asset.status === 'in_use' ? '🚗 In Use' : asset.status === 'available' ? '✅ Available' : asset.status === 'parked' ? '⏸️ Parked' : asset.status === 'maintenance' ? '🔧 Maintenance' : '🔴 ' + asset.status}
                     </span>
                   )}
                 </div>

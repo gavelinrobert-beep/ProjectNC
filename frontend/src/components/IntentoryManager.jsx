@@ -25,6 +25,7 @@ const InventoryManager = () => {
   // Form states
   const [formData, setFormData] = useState({
     name: '',
+    type: 'equipment',
     category: 'equipment',
     quantity: 0,
     unit: 'units',
@@ -76,6 +77,7 @@ const InventoryManager = () => {
       setShowAddModal(false);
       setFormData({
         name: '',
+        type: 'equipment',
         category: 'equipment',
         quantity: 0,
         unit: 'units',
@@ -166,6 +168,7 @@ const InventoryManager = () => {
     setSelectedItem(item);
     setFormData({
       name: item.name,
+      type: item.type || 'equipment',
       category: item.category,
       quantity: item.quantity,
       unit: item.unit,
@@ -219,6 +222,7 @@ const InventoryManager = () => {
             setSelectedItem(null);
             setFormData({
               name: '',
+              type: 'equipment',
               category: 'equipment',
               quantity: 0,
               unit: 'units',
@@ -407,6 +411,22 @@ const InventoryManager = () => {
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required
                   />
+                </label>
+
+                <label>
+                  Type:
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                    required
+                  >
+                    <option value="fuel">Fuel (Bränsle)</option>
+                    <option value="spare_parts">Spare Parts (Reservdelar)</option>
+                    <option value="equipment">Equipment (Utrustning)</option>
+                    <option value="consumable">Consumable (Förbrukningsmaterial)</option>
+                    <option value="pallet">Pallet (Pall)</option>
+                    <option value="packaging">Packaging (Förpackning)</option>
+                  </select>
                 </label>
 
                 <label>

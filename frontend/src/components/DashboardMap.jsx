@@ -170,7 +170,7 @@ export default function DashboardMap({
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#999' }}>Status:</span>
                       <strong style={{
-                        color: asset.status === 'mobile' || asset.status === 'airborne' ? BRAND.success : '#999'
+                        color: asset.status === 'in_use' ? BRAND.success : asset.status === 'available' ? BRAND.primary : asset.status === 'maintenance' ? BRAND.warning : '#999'
                       }}>
                         {asset.status}
                       </strong>
