@@ -45,14 +45,35 @@ def require_admin(role: str = Depends(bearer_role)) -> None:
         raise HTTPException(status_code=403, detail="Admin required")
 
 
-async def get_current_user(authorization: str = Header(None)) -> str:
-    """Get current user email from token (optional, returns 'system' if not authenticated)"""
+async def get_current_user(authorization: str = Header(None)) -> dict:
+    """Get current user from token (requires authentication)"""
     if not authorization:
-        return "system"
+        raise HTTPException(status_code=401, detail="Authentication required")
 
     try:
         token = authorization.replace("Bearer ", "")
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        return payload.get("email", "system")
-    except Exception:
-        return "system"
+        return {
+            "id": payload.get("sub", "system"),
+            "email": payload.get("sub", "system"),
+            "role": payload.get("role", "user")
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid authentication token")
+
+
+def require_auth(authorization: str = Header(None)) -> dict:
+    """Dependency to require authentication - returns user dict"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    try:
+        token = authorization.replace("Bearer ", "")
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return {
+            "id": payload.get("sub", "system"),
+            "email": payload.get("sub", "system"),
+            "role": payload.get("role", "user")
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid authentication token")
