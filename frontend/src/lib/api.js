@@ -75,6 +75,16 @@ export const api = {
   deleteMission: (id) => send('DELETE', `/api/missions/${id}`),
   startMission: (id) => send('POST', `/api/missions/${id}/start`),
   completeMission: (id) => send('POST', `/api/missions/${id}/complete`),
+
+  // Incidents
+  incidents: (params) => {
+    const query = new URLSearchParams(params).toString()
+    return send('GET', `/api/incidents${query ? '?' + query : ''}`)
+  },
+  incident: (id) => send('GET', `/api/incidents/${id}`),
+  createIncident: (data) => send('POST', '/api/incidents', data),
+  updateIncident: (id, data) => send('PUT', `/api/incidents/${id}`, data),
+  deleteIncident: (id) => send('DELETE', `/api/incidents/${id}`),
 }
 // ============================================
 // INVENTORY API
