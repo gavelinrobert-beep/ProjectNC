@@ -145,7 +145,7 @@ export default function Operations() {
   // Fetch bases
   useEffect(() => {
     console.log('[Operations] Fetching bases...')
-    api.bases()
+    api.facilities()
       .then(data => {
         console.log('[Operations] Bases received:', data)
         setBases(data || [])

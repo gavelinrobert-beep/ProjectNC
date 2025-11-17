@@ -47,7 +47,12 @@ export const api = {
   updateAsset: (id, a) => send('PUT', `/api/assets/${id}`, a),
   deleteAsset: (id) => send('DELETE', `/api/assets/${id}`),
 
-  // Bases
+  // Facilities (primary API)
+  facilities: () => send('GET', '/api/facilities'),
+  createFacility: (f) => send('POST', '/api/facilities', f),
+  deleteFacility: (id) => send('DELETE', `/api/facilities/${id}`),
+
+  // Bases (deprecated - use facilities instead)
   bases: () => send('GET', '/api/bases'),
   createBase: (b) => send('POST', '/api/bases', b),
   deleteBase: (id) => send('DELETE', `/api/bases/${id}`),
@@ -70,6 +75,21 @@ export const api = {
   deleteMission: (id) => send('DELETE', `/api/missions/${id}`),
   startMission: (id) => send('POST', `/api/missions/${id}/start`),
   completeMission: (id) => send('POST', `/api/missions/${id}/complete`),
+
+  // Incidents
+  incidents: (params) => {
+    const query = new URLSearchParams(params).toString()
+    return send('GET', `/api/incidents${query ? '?' + query : ''}`)
+  },
+  incident: (id) => send('GET', `/api/incidents/${id}`),
+  createIncident: (data) => send('POST', '/api/incidents', data),
+  updateIncident: (id, data) => send('PUT', `/api/incidents/${id}`, data),
+  deleteIncident: (id) => send('DELETE', `/api/incidents/${id}`),
+
+  // Metrics
+  resourceStatus: () => send('GET', '/api/metrics/resource-status'),
+  performanceMetrics: (period) => send('GET', `/api/metrics/performance?period=${period || '7days'}`),
+  metricsSummary: () => send('GET', '/api/metrics/summary'),
 }
 // ============================================
 // INVENTORY API

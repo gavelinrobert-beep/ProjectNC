@@ -2,7 +2,7 @@ import { api } from './api'
 
 export async function setupBaseInventory() {
   try {
-    const bases = await api.bases()
+    const bases = await api.facilities()
     console.log('[SETUP] Found', bases.length, 'bases')
 
     const inventoryItems = [
