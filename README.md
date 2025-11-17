@@ -250,10 +250,10 @@ To load realistic Swedish transport demo data for customer demos:
 
 ```bash
 # Load demo data
-docker exec -i projectsylon-db-1 psql -U postgres -d postgres < backend/demo_data_sundsvall.sql
+docker exec -i sylon-db-1 psql -U postgres -d postgres < backend/demo_data_sundsvall.sql
 
 # Verify
-docker exec -it projectsylon-db-1 psql -U postgres -d postgres -c "SELECT COUNT(*) FROM assets WHERE id LIKE 'VEH-SND-%';"
+docker exec -it sylon-db-1 psql -U postgres -d postgres -c "SELECT COUNT(*) FROM assets WHERE id LIKE 'VEH-SND-%';"
 ```
 
 Demo includes:
