@@ -272,10 +272,9 @@ export default function DriverApp() {
                 PIN-kod (4 siffror)
               </label>
               <input
-                type="password"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={4}
+                type="text"
+                inputMode="text"
+                maxLength={10}
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 placeholder="0000"
@@ -308,17 +307,17 @@ export default function DriverApp() {
 
             <button
               type="submit"
-              disabled={loading || pin.length !== 4}
+              disabled={loading || pin.length === 0}
               style={{
                 width: '100%',
                 padding: '1rem',
                 fontSize: '1.125rem',
                 fontWeight: 'bold',
                 color: 'white',
-                background: pin.length === 4 ? '#4A90E2' : '#9CA3AF',
+                background: pin.length > 0 ? '#4A90E2' : '#9CA3AF',
                 border: 'none',
                 borderRadius: '0.5rem',
-                cursor: pin.length === 4 ? 'pointer' : 'not-allowed',
+                cursor: pin.length > 0 ? 'pointer' : 'not-allowed',
                 opacity: loading ? 0.6 : 1
               }}
             >

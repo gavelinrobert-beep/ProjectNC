@@ -67,7 +67,7 @@ async def driver_login(payload: DriverLoginRequest, request: Request):
             SELECT a.id, a.registration, a.type, d.id as driver_id, d.first_name, d.last_name
             FROM assets a
             LEFT JOIN drivers d ON d.assigned_vehicle_id = a.id
-            WHERE a.registration SIMILAR TO '%' || $1
+            WHERE REPLACE(a.registration, ' ', '') LIKE '%' || REPLACE($1, ' ', '')
             AND d.employment_status = 'active'
             LIMIT 1
             """,
@@ -81,7 +81,7 @@ async def driver_login(payload: DriverLoginRequest, request: Request):
                 SELECT a.id, a.registration, a.type, d.id as driver_id, d.first_name, d.last_name
                 FROM assets a
                 LEFT JOIN drivers d ON d.assigned_vehicle_id = a.id
-                WHERE a.id LIKE '%' || $1
+                WHERE REPLACE(a.id, ' ', '') LIKE '%' || REPLACE($1, ' ', '')
                 AND d.employment_status = 'active'
                 LIMIT 1
                 """,
