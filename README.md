@@ -242,6 +242,31 @@ For more details on testing and CI/CD, see the **[CI/CD Pipeline Documentation](
 
 ---
 
+## 📦 Demo Data
+
+### Loading Sundsvall Transport Demo Data
+
+To load realistic Swedish transport demo data for customer demos:
+
+```bash
+# Load demo data
+docker exec -i projectsylon-db-1 psql -U postgres -d postgres < backend/demo_data_sundsvall.sql
+
+# Verify
+docker exec -it projectsylon-db-1 psql -U postgres -d postgres -c "SELECT COUNT(*) FROM assets WHERE id LIKE 'VEH-SND-%';"
+```
+
+Demo includes:
+- 6 facilities (Sundsvall, Stockholm, Göteborg)
+- 8 drivers (Swedish names and licenses)
+- 8 vehicles (Swedish registration plates ABC 123, etc.)
+- 5 customers (Swedish companies)
+- 25 deliveries (20 completed + 5 active)
+
+**Test driver login:** Use PIN `0001` for vehicle VEH-SND-01
+
+---
+
 ## 🗺️ Roadmap
 
 ### Phase 1: Civil MVP (Q1 2025) ✅
