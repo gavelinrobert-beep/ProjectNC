@@ -325,6 +325,14 @@ CREATE TABLE IF NOT EXISTS tasks (
     actual_start TIMESTAMPTZ,
     actual_end TIMESTAMPTZ,
 
+    -- Proof of Delivery (Week 1 MVP)
+    signature_image TEXT, -- Base64 PNG signature
+    delivered_to TEXT, -- Recipient name
+    photo_url TEXT, -- Delivery photo URL
+    picked_up_at TIMESTAMPTZ,
+    delivered_at TIMESTAMPTZ,
+    driver_notes TEXT,
+
     -- Legacy fields
     asset_id TEXT, -- Same as assigned_vehicle_id
     mission_type TEXT,

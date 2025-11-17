@@ -19,6 +19,9 @@ import Metrics from './pages/Metrics'
 import Incidents from './pages/Incidents'
 import Resources from './pages/Resources'
 import Training from './pages/Training'
+// Week 1 Commercial MVP - Public & Driver Pages
+import TrackDelivery from './pages/TrackDelivery'
+import DriverApp from './pages/DriverApp'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -335,13 +338,22 @@ function AppLayout() {
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(!!localStorage.getItem('token'))
 
-  if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />
-  }
-
   return (
     <BrowserRouter>
-      <AppLayout />
+      <Routes>
+        {/* Public routes - no authentication required */}
+        <Route path="/track/:deliveryId" element={<TrackDelivery />} />
+        <Route path="/driver" element={<DriverApp />} />
+        
+        {/* Protected routes - require authentication */}
+        <Route path="/*" element={
+          isAuthenticated ? (
+            <AppLayout />
+          ) : (
+            <Login onLogin={() => setIsAuthenticated(true)} />
+          )
+        } />
+      </Routes>
     </BrowserRouter>
   )
 }
