@@ -97,8 +97,15 @@ function BaseWeatherPopup({ base, baseWeather, loadBaseWeather }) {
 export default function AssetsAdmin() {
   const [assets, setAssets] = useState([])
   const [bases, setBases] = useState([])
+  const [facilities, setFacilities] = useState([])
+  const [drivers, setDrivers] = useState([])
   const [form, setForm] = useState({
     type: 'truck',
+    registration_number: '',
+    vin: '',
+    make: '',
+    model: '',
+    year: 2024,
     lat: '',
     lon: '',
     route: '',
@@ -108,7 +115,11 @@ export default function AssetsAdmin() {
     battery: 100,
     battery_drain: 1,
     has_battery: false,
-    fuel_type: 'diesel'
+    fuel_type: 'diesel',
+    cargo_capacity_kg: 0,
+    pallet_capacity: 0,
+    home_facility_id: '',
+    current_driver_id: ''
   })
   const [editing, setEditing] = useState(null)
   const [mapClickMode, setMapClickMode] = useState(false)
@@ -119,6 +130,8 @@ export default function AssetsAdmin() {
   useEffect(() => {
     fetchAssets()
     fetchBases()
+    fetchFacilities()
+    fetchDrivers()
   }, [])
 
   const fetchAssets = () => {
@@ -134,6 +147,18 @@ export default function AssetsAdmin() {
     api.facilities()
       .then(setBases)
       .catch(err => console.error('Error fetching bases:', err))
+  }
+
+  const fetchFacilities = () => {
+    api.facilities()
+      .then(setFacilities)
+      .catch(err => console.error('Error fetching facilities:', err))
+  }
+
+  const fetchDrivers = () => {
+    api.drivers()
+      .then(setDrivers)
+      .catch(err => console.error('Error fetching drivers:', err))
   }
 
   async function loadBaseWeather(base) {
@@ -185,6 +210,11 @@ export default function AssetsAdmin() {
 
     const assetData = {
       type: form.type,
+      registration_number: form.registration_number || null,
+      vin: form.vin || null,
+      make: form.make || null,
+      model: form.model || null,
+      year: form.year ? parseInt(form.year) : null,
       lat: parseFloat(form.lat),
       lon: parseFloat(form.lon),
       route: routeValue,
@@ -194,7 +224,11 @@ export default function AssetsAdmin() {
       battery: parseFloat(form.battery) || 100,
       battery_drain: parseFloat(form.battery_drain) || 1,
       has_battery: !!form.has_battery,
-      fuel_type: form.fuel_type
+      fuel_type: form.fuel_type,
+      cargo_capacity_kg: form.cargo_capacity_kg ? parseFloat(form.cargo_capacity_kg) : null,
+      pallet_capacity: form.pallet_capacity ? parseInt(form.pallet_capacity) : null,
+      home_facility_id: form.home_facility_id || null,
+      current_driver_id: form.current_driver_id || null
     }
 
     try {
@@ -232,6 +266,11 @@ export default function AssetsAdmin() {
   const resetForm = () => {
     setForm({
       type: 'truck',
+      registration_number: '',
+      vin: '',
+      make: '',
+      model: '',
+      year: 2024,
       lat: '',
       lon: '',
       route: '',
@@ -241,7 +280,11 @@ export default function AssetsAdmin() {
       battery: 100,
       battery_drain: 1,
       has_battery: false,
-      fuel_type: 'diesel'
+      fuel_type: 'diesel',
+      cargo_capacity_kg: 0,
+      pallet_capacity: 0,
+      home_facility_id: '',
+      current_driver_id: ''
     })
     setEditing(null)
     setTempMarker(null)
@@ -287,6 +330,113 @@ export default function AssetsAdmin() {
                   ))}
                 </optgroup>
               </select>
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label>Registreringsnummer / Registration Number *</label>
+              <input
+                type="text"
+                value={form.registration_number || ''}
+                onChange={e => setForm({...form, registration_number: e.target.value})}
+                placeholder="ABC 123"
+                style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                required
+              />
+            </div>
+
+            <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label>VIN</label>
+                <input
+                  type="text"
+                  value={form.vin || ''}
+                  onChange={e => setForm({...form, vin: e.target.value})}
+                  placeholder="YV1CZ59H471234567"
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+              <div>
+                <label>År / Year</label>
+                <input
+                  type="number"
+                  value={form.year || 2024}
+                  onChange={e => setForm({...form, year: parseInt(e.target.value)})}
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label>Märke / Make</label>
+                <input
+                  type="text"
+                  value={form.make || ''}
+                  onChange={e => setForm({...form, make: e.target.value})}
+                  placeholder="Volvo"
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+              <div>
+                <label>Modell / Model</label>
+                <input
+                  type="text"
+                  value={form.model || ''}
+                  onChange={e => setForm({...form, model: e.target.value})}
+                  placeholder="FH16"
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label>Lastkapacitet / Cargo Capacity (kg)</label>
+                <input
+                  type="number"
+                  value={form.cargo_capacity_kg || 0}
+                  onChange={e => setForm({...form, cargo_capacity_kg: parseFloat(e.target.value)})}
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+              <div>
+                <label>Pallkapacitet / Pallet Capacity</label>
+                <input
+                  type="number"
+                  value={form.pallet_capacity || 0}
+                  onChange={e => setForm({...form, pallet_capacity: parseInt(e.target.value)})}
+                  style={{ width: '100%', padding: 8, boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label>Hemstation / Home Facility</label>
+                <select
+                  value={form.home_facility_id || ''}
+                  onChange={e => setForm({...form, home_facility_id: e.target.value})}
+                  style={{ width: '100%', padding: 8 }}
+                >
+                  <option value="">Välj facility...</option>
+                  {facilities.map(f => (
+                    <option key={f.id} value={f.id}>{f.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label>Tilldelad Förare / Assigned Driver</label>
+                <select
+                  value={form.current_driver_id || ''}
+                  onChange={e => setForm({...form, current_driver_id: e.target.value})}
+                  style={{ width: '100%', padding: 8 }}
+                >
+                  <option value="">Ingen förare...</option>
+                  {drivers.map(d => (
+                    <option key={d.id} value={d.id}>{d.first_name} {d.last_name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div style={{ marginBottom: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -518,6 +668,11 @@ export default function AssetsAdmin() {
                         setEditing(asset.id)
                         setForm({
                           type: asset.type,
+                          registration_number: asset.registration_number || '',
+                          vin: asset.vin || '',
+                          make: asset.make || '',
+                          model: asset.model || '',
+                          year: asset.year || 2024,
                           lat: asset.lat,
                           lon: asset.lon,
                           route: asset.route || '',
@@ -527,7 +682,11 @@ export default function AssetsAdmin() {
                           battery: asset.battery,
                           battery_drain: asset.battery_drain || 1,
                           has_battery: asset.has_battery,
-                          fuel_type: asset.fuel_type
+                          fuel_type: asset.fuel_type,
+                          cargo_capacity_kg: asset.cargo_capacity_kg || 0,
+                          pallet_capacity: asset.pallet_capacity || 0,
+                          home_facility_id: asset.home_facility_id || '',
+                          current_driver_id: asset.current_driver_id || ''
                         })
                         setTempMarker({ lat: asset.lat, lng: asset.lon })
                       }}

@@ -108,15 +108,15 @@ async def get_performance_metrics(
         """, start_date)
         deliveries_completed = deliveries_result['completed'] if deliveries_result else 0
         
-        # Get total distance driven (sum of all asset odometers for period)
-        # Note: In a real system, you'd track distance per trip/mission
+        # Get total distance driven from completed tasks
+        # Use actual tracked distance from tasks table
         distance_result = await conn.fetchrow("""
-            SELECT SUM(fuel_consumed * 10) as estimated_distance
-            FROM assets
-            WHERE updated_at >= $1
+            SELECT SUM(estimated_distance_km) as total_distance
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_end >= $1
         """, start_date)
-        # Rough estimate: 10 km per liter of fuel consumed
-        total_distance = distance_result['estimated_distance'] if distance_result and distance_result['estimated_distance'] else 0
+        total_distance = distance_result['total_distance'] if distance_result and distance_result['total_distance'] else 0
         
         # Calculate average delivery time
         avg_time_result = await conn.fetchrow("""
