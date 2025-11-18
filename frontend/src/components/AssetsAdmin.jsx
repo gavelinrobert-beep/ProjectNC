@@ -635,19 +635,22 @@ export default function AssetsAdmin() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ position: 'sticky', top: 0, background: '#1a1a1a' }}>
               <tr style={{ borderBottom: '1px solid #444' }}>
+                <th style={{ padding: 8, textAlign: 'left' }}>Reg. No.</th>
                 <th style={{ padding: 8, textAlign: 'left' }}>Type</th>
+                <th style={{ padding: 8, textAlign: 'left' }}>Make/Model</th>
                 <th style={{ padding: 8, textAlign: 'left' }}>Location</th>
                 <th style={{ padding: 8, textAlign: 'left' }}>Status</th>
-                <th style={{ padding: 8, textAlign: 'left' }}>Speed</th>
-                <th style={{ padding: 8, textAlign: 'left' }}>Battery</th>
-                <th style={{ padding: 8, textAlign: 'left' }}>Fuel</th>
                 <th style={{ padding: 8, textAlign: 'left' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {assets.map(asset => (
                 <tr key={asset.id} style={{ borderBottom: '1px solid #333' }}>
+                  <td style={{ padding: 8, fontWeight: 'bold' }}>{asset.registration_number || 'N/A'}</td>
                   <td style={{ padding: 8 }}>{asset.type}</td>
+                  <td style={{ padding: 8, fontSize: 11 }}>
+                    {asset.make && asset.model ? `${asset.make} ${asset.model}` : asset.make || asset.model || 'N/A'}
+                  </td>
                   <td style={{ padding: 8, fontSize: 11 }}>{Number(asset.lat).toFixed(4)}, {Number(asset.lon).toFixed(4)}</td>
                   <td style={{ padding: 8 }}>
                     <span style={{
@@ -659,9 +662,6 @@ export default function AssetsAdmin() {
                       {asset.status}
                     </span>
                   </td>
-                  <td style={{ padding: 8 }}>{asset.speed} km/h</td>
-                  <td style={{ padding: 8 }}>{asset.battery}%</td>
-                  <td style={{ padding: 8 }}>{asset.fuel_type}</td>
                   <td style={{ padding: 8 }}>
                     <button
                       onClick={() => {
