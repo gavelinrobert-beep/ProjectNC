@@ -132,7 +132,7 @@ async def stream_delivery_location(delivery_id: str, request: Request):
                             delivery_id
                         )
                         if vehicle:
-                            yield f"data: {json.dumps({
+                            location_data = {
                                 'type': 'location',
                                 'lat': vehicle['current_lat'],
                                 'lon': vehicle['current_lon'],
@@ -140,7 +140,8 @@ async def stream_delivery_location(delivery_id: str, request: Request):
                                 'heading': vehicle.get('heading'),
                                 'status': vehicle['status'],
                                 'timestamp': datetime.now().isoformat()
-                            })}\n\n"
+                            }
+                            yield f"data: {json.dumps(location_data)}\n\n"
         except Exception as e:
             print(f"[TRACKING] Stream error for {delivery_id}: {e}")
         finally:
