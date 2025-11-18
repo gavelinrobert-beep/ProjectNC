@@ -90,6 +90,7 @@ export const api = {
   resourceStatus: () => send('GET', '/api/metrics/resource-status'),
   performanceMetrics: (period) => send('GET', `/api/metrics/performance?period=${period || '7days'}`),
   metricsSummary: () => send('GET', '/api/metrics/summary'),
+  liveOperations: () => send('GET', '/api/metrics/live-operations'),
 
   // Drivers
   drivers: () => send('GET', '/api/drivers'),

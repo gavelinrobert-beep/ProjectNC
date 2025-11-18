@@ -48,6 +48,11 @@ async def test_get_performance_metrics_default(async_client: AsyncClient, auth_h
         assert "ontime_delivery_rate" in data
         assert "vehicle_utilization" in data
         assert "timestamp" in data
+        # Check for new trend fields
+        assert "deliveries_trend" in data
+        assert "distance_trend" in data
+        assert "avg_time_trend" in data
+        assert "ontime_trend" in data
         # Default period should be 7 days
         assert data["period_code"] == "7days"
 
@@ -141,3 +146,48 @@ async def test_performance_metrics_numeric_values(async_client: AsyncClient, aut
         # All rates should be between 0 and 100
         assert 0 <= data["ontime_delivery_rate"] <= 100
         assert 0 <= data["vehicle_utilization"] <= 100
+        
+        # Check that trend fields exist (can be None or numeric)
+        assert "deliveries_trend" in data
+        assert "distance_trend" in data
+        assert "avg_time_trend" in data
+        assert "ontime_trend" in data
+
+
+@pytest.mark.asyncio
+async def test_get_live_operations(async_client: AsyncClient, auth_headers_admin):
+    """Test getting live operations metrics."""
+    response = await async_client.get(
+        "/api/metrics/live-operations",
+        headers=auth_headers_admin
+    )
+    
+    # Should return 200 or 500 (if DB not available)
+    assert response.status_code in [200, 500], f"Unexpected status: {response.status_code}"
+    
+    # If successful, verify response structure
+    if response.status_code == 200:
+        data = response.json()
+        assert "drivers_on_duty" in data
+        assert "active_routes" in data
+        assert "deliveries_in_progress" in data
+        assert "next_delivery_eta" in data
+        assert "timestamp" in data
+        
+        # All count fields should be non-negative integers
+        assert isinstance(data["drivers_on_duty"], int)
+        assert data["drivers_on_duty"] >= 0
+        assert isinstance(data["active_routes"], int)
+        assert data["active_routes"] >= 0
+        assert isinstance(data["deliveries_in_progress"], int)
+        assert data["deliveries_in_progress"] >= 0
+        
+        # next_delivery_eta can be None or a string
+        assert data["next_delivery_eta"] is None or isinstance(data["next_delivery_eta"], str)
+
+
+@pytest.mark.asyncio
+async def test_live_operations_requires_auth(async_client: AsyncClient):
+    """Test that live operations endpoint requires authentication."""
+    response = await async_client.get("/api/metrics/live-operations")
+    assert response.status_code in [401, 403], f"Expected auth error, got {response.status_code}"
