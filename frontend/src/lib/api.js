@@ -90,6 +90,12 @@ export const api = {
   resourceStatus: () => send('GET', '/api/metrics/resource-status'),
   performanceMetrics: (period) => send('GET', `/api/metrics/performance?period=${period || '7days'}`),
   metricsSummary: () => send('GET', '/api/metrics/summary'),
+
+  // Drivers
+  drivers: () => send('GET', '/api/drivers'),
+  createDriver: (d) => send('POST', '/api/drivers', d),
+  updateDriver: (id, d) => send('PUT', `/api/drivers/${id}`, d),
+  deleteDriver: (id) => send('DELETE', `/api/drivers/${id}`),
 }
 // ============================================
 // INVENTORY API
