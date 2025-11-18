@@ -64,10 +64,10 @@ async def driver_login(payload: DriverLoginRequest, request: Request):
         # Try to find vehicle with registration ending in PIN
         vehicle = await conn.fetchrow(
             """
-            SELECT a.id, a.registration, a.type, d.id as driver_id, d.first_name, d.last_name
+            SELECT a.id, a.registration_number as registration, a.type, d.id as driver_id, d.first_name, d.last_name
             FROM assets a
             LEFT JOIN drivers d ON d.assigned_vehicle_id = a.id
-            WHERE REPLACE(a.registration, ' ', '') LIKE '%' || REPLACE($1, ' ', '')
+            WHERE REPLACE(a.registration_number, ' ', '') LIKE '%' || REPLACE($1, ' ', '')
             AND d.employment_status = 'active'
             LIMIT 1
             """,
@@ -78,7 +78,7 @@ async def driver_login(payload: DriverLoginRequest, request: Request):
             # Fallback: Try matching vehicle ID ending in PIN
             vehicle = await conn.fetchrow(
                 """
-                SELECT a.id, a.registration, a.type, d.id as driver_id, d.first_name, d.last_name
+                SELECT a.id, a.registration_number as registration, a.type, d.id as driver_id, d.first_name, d.last_name
                 FROM assets a
                 LEFT JOIN drivers d ON d.assigned_vehicle_id = a.id
                 WHERE REPLACE(a.id, ' ', '') LIKE '%' || REPLACE($1, ' ', '')
