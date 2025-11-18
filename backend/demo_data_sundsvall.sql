@@ -194,3 +194,76 @@ ON CONFLICT (id) DO NOTHING;
 -- Vehicle VEH-SND-02 (DEF 456) -> PIN: 0002 -> Maria Andersson
 -- Vehicle VEH-SND-03 (GHI 789) -> PIN: 0003 -> Erik Johansson
 -- Vehicle VEH-SND-04 (JKL 012) -> PIN: 0004 -> Sofia Bergström
+
+-- ============================================================================
+-- PHASE 2 INVENTORY DATA
+-- Vehicle Equipment, Cargo, Facility Stock, Fuel Tracking
+-- ============================================================================
+
+-- Vehicle equipment for VEH-SND-01 (ABC 123)
+INSERT INTO inventory (id, name, type, category, category_id, quantity, unit, 
+    assigned_to_asset_id, status, last_inspection_date, next_inspection_due, description, location_id) VALUES
+('INV-VEH-ABC123-GPS', 'GPS Tracker', 'equipment', 'vehicle_equipment', 'vehicle_equipment', 1, 'unit',
+    'VEH-SND-01', 'assigned', '2025-11-10', '2026-05-10', 'Garmin Fleet 790 GPS-enhet', 'VEH-SND-01'),
+('INV-VEH-ABC123-RADIO', 'Communication Radio', 'equipment', 'vehicle_equipment', 'vehicle_equipment', 1, 'unit',
+    'VEH-SND-01', 'assigned', '2025-11-01', '2026-11-01', 'Motorola DP4400e digital radio', 'VEH-SND-01'),
+('INV-VEH-ABC123-EXTINGUISHER', 'Fire Extinguisher', 'equipment', 'vehicle_equipment', 'vehicle_equipment', 1, 'unit',
+    'VEH-SND-01', 'assigned', '2025-10-15', '2026-03-15', '6kg pulversläckare', 'VEH-SND-01'),
+('INV-VEH-DEF456-GPS', 'GPS Tracker', 'equipment', 'vehicle_equipment', 'vehicle_equipment', 1, 'unit',
+    'VEH-SND-02', 'assigned', '2025-11-08', '2026-05-08', 'Garmin Fleet 790 GPS-enhet', 'VEH-SND-02'),
+('INV-VEH-DEF456-RADIO', 'Communication Radio', 'equipment', 'vehicle_equipment', 'vehicle_equipment', 1, 'unit',
+    'VEH-SND-02', 'needs_replacement', '2025-09-15', '2026-09-15', 'Motorola - kräver service', 'VEH-SND-02')
+ON CONFLICT (id) DO NOTHING;
+
+-- Cargo in transit
+INSERT INTO inventory (id, name, type, category, category_id, quantity, unit, 
+    tracking_number, assigned_to_asset_id, status, weight_kg, special_handling, 
+    customer_info, location_id) VALUES
+('INV-CARGO-001', 'Medicinsk utrustning', 'cargo', 'cargo_delivery', 'cargo_delivery', 1, 'package',
+    'AEGIS-SND-001', 'VEH-SND-04', 'in_transit', 15.5, 'fragile',
+    '{"pickup": "Stockholm DC", "delivery": "Sundsvalls sjukhus", "contact": "Dr. Anders Ek"}'::jsonb, 'VEH-SND-04'),
+('INV-CARGO-002', 'Kontorstillbehör', 'cargo', 'cargo_delivery', 'cargo_delivery', 1, 'package',
+    'AEGIS-SND-002', 'VEH-SND-02', 'in_transit', 12.3, NULL,
+    '{"pickup": "Stockholm DC", "delivery": "Birsta Shopping", "contact": "Stefan Holm"}'::jsonb, 'VEH-SND-02'),
+('INV-CARGO-003', 'Industrivaror', 'cargo', 'cargo_delivery', 'cargo_delivery', 3, 'box',
+    'AEGIS-SND-003', NULL, 'awaiting_pickup', 45.0, NULL,
+    '{"pickup": "Stockholm DC", "delivery": "Timrå Industri", "contact": "Lisa Nyström"}'::jsonb, 'FAC-STO-DC')
+ON CONFLICT (id) DO NOTHING;
+
+-- Facility stock at Sundsvall HQ
+INSERT INTO inventory (id, name, type, category, category_id, quantity, unit, 
+    assigned_to_facility_id, location_id, status, min_stock_level, max_stock_level,
+    unit_cost, currency, description) VALUES
+('INV-FAC-SND-DIESEL', 'Diesel Bränsle', 'fuel', 'facility_stock', 'facility_stock', 8000, 'liter',
+    'FAC-SND-HQ', 'FAC-SND-HQ', 'available', 2000, 10000, 18.50, 'SEK', 'Diesel lagertank'),
+('INV-FAC-SND-OIL-FILTER', 'Oljefilter', 'spare_parts', 'facility_stock', 'facility_stock', 25, 'units',
+    'FAC-SND-HQ', 'FAC-SND-HQ', 'available', 10, 50, 145.00, 'SEK', 'Standardfilter Mercedes/VW/Volvo'),
+('INV-FAC-SND-BRAKE-PADS', 'Bromsbelägg', 'spare_parts', 'facility_stock', 'facility_stock', 8, 'sets',
+    'FAC-SND-HQ', 'FAC-SND-HQ', 'available', 5, 20, 850.00, 'SEK', 'Bromsbelägg lätta lastbilar'),
+('INV-FAC-SND-PALLETS', 'EUR-pallar', 'packaging', 'facility_stock', 'facility_stock', 150, 'units',
+    'FAC-SND-HQ', 'FAC-SND-HQ', 'available', 50, 300, 125.00, 'SEK', 'Standardpallar för frakt')
+ON CONFLICT (id) DO NOTHING;
+
+-- Fuel tracking history
+INSERT INTO fuel_tracking (id, asset_id, facility_id, quantity_liters, cost_sek, 
+    odometer_km, fuel_type, driver_id, timestamp, notes) VALUES
+('FUEL-001', 'VEH-SND-01', 'FAC-SND-HQ', 65.0, 1202.50, 45823, 'diesel', 'DRV-SND-01', NOW() - INTERVAL '2 days', 'Tankning efter Stockholmstur'),
+('FUEL-002', 'VEH-SND-02', 'FAC-SND-BIRSTA', 55.0, 1017.50, 38456, 'diesel', 'DRV-SND-02', NOW() - INTERVAL '1 day', 'Rutintankning'),
+('FUEL-003', 'VEH-SND-03', 'FAC-SND-HQ', 420.0, 7770.00, 128934, 'diesel', 'DRV-SND-03', NOW() - INTERVAL '3 days', 'Full tank långtur'),
+('FUEL-004', 'VEH-SND-04', 'FAC-SND-HQ', 58.0, 1073.00, 32187, 'diesel', 'DRV-SND-04', NOW() - INTERVAL '1 day', 'Tankning före akutleverans')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- Updated demo summary
+-- ============================================================================
+-- Facilities: 6 
+-- Drivers: 8
+-- Vehicles: 8 
+-- Customers: 5
+-- Active Deliveries: 5
+-- Completed Deliveries: 20
+-- NEW: Vehicle Equipment Items: 5
+-- NEW: Cargo Items: 3
+-- NEW: Facility Stock Items: 4
+-- NEW: Fuel Records: 4
+-- ============================================================================
