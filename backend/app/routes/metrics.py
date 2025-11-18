@@ -83,6 +83,7 @@ async def get_performance_metrics(
     """
     Get performance metrics for tracking deliveries, distance, and efficiency.
     Supports filtering by period: today, 7days, 30days.
+    Now includes trend data comparing to previous period.
     """
     pool = await get_pool(request.app)
     
@@ -90,16 +91,19 @@ async def get_performance_metrics(
     now = datetime.utcnow()
     if period == "today":
         start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        previous_start = start_date - timedelta(days=1)
         period_label = "Today"
     elif period == "30days":
         start_date = now - timedelta(days=30)
+        previous_start = start_date - timedelta(days=30)
         period_label = "Last 30 Days"
     else:  # default to 7days
         start_date = now - timedelta(days=7)
+        previous_start = start_date - timedelta(days=7)
         period_label = "Last 7 Days"
     
     async with pool.acquire() as conn:
-        # Get completed deliveries/tasks
+        # Get completed deliveries/tasks for current period
         deliveries_result = await conn.fetchrow("""
             SELECT COUNT(*) as completed
             FROM tasks
@@ -108,8 +112,16 @@ async def get_performance_metrics(
         """, start_date)
         deliveries_completed = deliveries_result['completed'] if deliveries_result else 0
         
+        # Get previous period deliveries for trend
+        prev_deliveries_result = await conn.fetchrow("""
+            SELECT COUNT(*) as completed
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_end >= $1 AND actual_end < $2
+        """, previous_start, start_date)
+        prev_deliveries = prev_deliveries_result['completed'] if prev_deliveries_result else 0
+        
         # Get total distance driven from completed tasks
-        # Use actual tracked distance from tasks table
         distance_result = await conn.fetchrow("""
             SELECT SUM(estimated_distance_km) as total_distance
             FROM tasks
@@ -117,6 +129,15 @@ async def get_performance_metrics(
             AND actual_end >= $1
         """, start_date)
         total_distance = distance_result['total_distance'] if distance_result and distance_result['total_distance'] else 0
+        
+        # Get previous period distance
+        prev_distance_result = await conn.fetchrow("""
+            SELECT SUM(estimated_distance_km) as total_distance
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_end >= $1 AND actual_end < $2
+        """, previous_start, start_date)
+        prev_distance = prev_distance_result['total_distance'] if prev_distance_result and prev_distance_result['total_distance'] else 0
         
         # Calculate average delivery time
         avg_time_result = await conn.fetchrow("""
@@ -130,8 +151,19 @@ async def get_performance_metrics(
         """, start_date)
         avg_delivery_time_hours = avg_time_result['avg_hours'] if avg_time_result and avg_time_result['avg_hours'] else 0
         
+        # Get previous period avg time
+        prev_avg_time_result = await conn.fetchrow("""
+            SELECT 
+                AVG(EXTRACT(EPOCH FROM (actual_end - actual_start)) / 3600) as avg_hours
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_start IS NOT NULL
+            AND actual_end IS NOT NULL
+            AND actual_end >= $1 AND actual_end < $2
+        """, previous_start, start_date)
+        prev_avg_time = prev_avg_time_result['avg_hours'] if prev_avg_time_result and prev_avg_time_result['avg_hours'] else 0
+        
         # Calculate on-time delivery rate
-        # Assuming tasks have a scheduled end time
         ontime_result = await conn.fetchrow("""
             SELECT 
                 COUNT(*) as total_completed,
@@ -149,6 +181,24 @@ async def get_performance_metrics(
         ontime_count = ontime_result['ontime_count'] if ontime_result and ontime_result['ontime_count'] else 0
         ontime_rate = (ontime_count / total_completed * 100) if total_completed > 0 else 100
         
+        # Get previous period on-time rate
+        prev_ontime_result = await conn.fetchrow("""
+            SELECT 
+                COUNT(*) as total_completed,
+                SUM(CASE 
+                    WHEN actual_end <= scheduled_end THEN 1 
+                    ELSE 0 
+                END) as ontime_count
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_end >= $1 AND actual_end < $2
+            AND scheduled_end IS NOT NULL
+        """, previous_start, start_date)
+        
+        prev_total = prev_ontime_result['total_completed'] if prev_ontime_result else 0
+        prev_ontime = prev_ontime_result['ontime_count'] if prev_ontime_result and prev_ontime_result['ontime_count'] else 0
+        prev_ontime_rate = (prev_ontime / prev_total * 100) if prev_total > 0 else 100
+        
         # Calculate vehicle utilization (% of time vehicles are in use)
         utilization_result = await conn.fetchrow("""
             SELECT 
@@ -162,14 +212,30 @@ async def get_performance_metrics(
         in_use_count = utilization_result['in_use_count'] if utilization_result else 0
         vehicle_utilization = (in_use_count / total_vehicles * 100) if total_vehicles > 0 else 0
         
+        # Calculate trend percentages
+        def calculate_trend(current, previous):
+            if previous == 0:
+                return None if current == 0 else 100
+            return round(((current - previous) / previous) * 100, 1)
+        
+        deliveries_trend = calculate_trend(deliveries_completed, prev_deliveries)
+        distance_trend = calculate_trend(total_distance, prev_distance)
+        # For avg delivery time, lower is better, so invert the trend
+        avg_time_trend = calculate_trend(prev_avg_time, avg_delivery_time_hours) if prev_avg_time > 0 else None
+        ontime_trend = round(ontime_rate - prev_ontime_rate, 1) if prev_total > 0 else None
+        
         return {
             "period": period_label,
             "period_code": period,
             "start_date": start_date.isoformat(),
             "deliveries_completed": deliveries_completed,
+            "deliveries_trend": deliveries_trend,
             "total_distance_km": round(total_distance, 1),
+            "distance_trend": distance_trend,
             "avg_delivery_time_hours": round(avg_delivery_time_hours, 2),
+            "avg_time_trend": avg_time_trend,
             "ontime_delivery_rate": round(ontime_rate, 1),
+            "ontime_trend": ontime_trend,
             "vehicle_utilization": round(vehicle_utilization, 1),
             "timestamp": datetime.utcnow().isoformat()
         }
@@ -212,5 +278,71 @@ async def get_metrics_summary(
             "performance_7days": performance,
             "active_incidents": active_incidents,
             "active_tasks": active_tasks,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+
+@router.get("/live-operations")
+async def get_live_operations(
+    request: Request,
+    _user: dict = Depends(require_auth)
+):
+    """
+    Get real-time operational status for live operations dashboard card.
+    Returns counts of active drivers, routes, deliveries, and next ETA.
+    """
+    pool = await get_pool(request.app)
+    
+    async with pool.acquire() as conn:
+        # Get count of drivers on duty (active drivers with current shift started)
+        drivers_result = await conn.fetchrow("""
+            SELECT COUNT(*) as on_duty
+            FROM drivers
+            WHERE employment_status = 'active'
+            AND current_shift_start IS NOT NULL
+            AND current_shift_start > NOW() - INTERVAL '24 hours'
+        """)
+        drivers_on_duty = drivers_result['on_duty'] if drivers_result else 0
+        
+        # Get count of active routes (tasks that are in progress)
+        active_routes_result = await conn.fetchrow("""
+            SELECT COUNT(*) as active
+            FROM tasks
+            WHERE status IN ('active', 'in_progress')
+        """)
+        active_routes = active_routes_result['active'] if active_routes_result else 0
+        
+        # Get count of deliveries in progress (shipments in transit or out for delivery)
+        deliveries_result = await conn.fetchrow("""
+            SELECT COUNT(*) as in_progress
+            FROM shipments
+            WHERE status IN ('in_transit', 'out_for_delivery')
+        """)
+        deliveries_in_progress = deliveries_result['in_progress'] if deliveries_result else 0
+        
+        # Get next delivery ETA (earliest scheduled end time from active tasks)
+        next_eta_result = await conn.fetchrow("""
+            SELECT MIN(scheduled_end) as next_eta
+            FROM tasks
+            WHERE status IN ('active', 'in_progress')
+            AND scheduled_end IS NOT NULL
+            AND scheduled_end > NOW()
+        """)
+        
+        next_delivery_eta = None
+        if next_eta_result and next_eta_result['next_eta']:
+            eta_time = next_eta_result['next_eta']
+            # Calculate minutes until ETA
+            time_diff = (eta_time - datetime.utcnow()).total_seconds() / 60
+            if time_diff > 60:
+                next_delivery_eta = f"{int(time_diff / 60)}h {int(time_diff % 60)}m"
+            else:
+                next_delivery_eta = f"{int(time_diff)}m"
+        
+        return {
+            "drivers_on_duty": drivers_on_duty,
+            "active_routes": active_routes,
+            "deliveries_in_progress": deliveries_in_progress,
+            "next_delivery_eta": next_delivery_eta,
             "timestamp": datetime.utcnow().isoformat()
         }

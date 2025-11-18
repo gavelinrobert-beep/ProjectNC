@@ -1,9 +1,19 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BRAND } from '../lib/constants'
 import GlassCard from './GlassCard'
 
-const StatCard = ({ icon, label, value, color, leftStat, rightStat }) => (
-  <GlassCard hover={true} glow={true} padding={14}>
+const StatCard = ({ icon, label, value, color, leftStat, rightStat, onClick }) => (
+  <GlassCard 
+    hover={true} 
+    glow={true} 
+    padding={14}
+    style={{
+      cursor: onClick ? 'pointer' : 'default',
+      transition: 'all 0.2s'
+    }}
+    onClick={onClick}
+  >
     <div style={{
       borderLeft: `4px solid ${color}`,
       paddingLeft: 12,
@@ -53,6 +63,8 @@ const StatCard = ({ icon, label, value, color, leftStat, rightStat }) => (
 )
 
 export default function DashboardStats({ stats, alerts, missions, bases, geofences, assets }) {
+  const navigate = useNavigate()
+
   return (
     <div style={{
       display: 'grid',
@@ -67,35 +79,48 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         color={BRAND.primary}
         leftStat={`🚗 I bruk: ${stats.inUse || 0}`}
         rightStat={`✅ Tillgängliga: ${stats.available || 0}`}
+        onClick={() => navigate('/assets')}
       />
 
-      <StatCard
-        icon="🎯"
-        label="Uppdrag"
-        value={stats.activeMissions}
-        color={BRAND.success}
-        leftStat="📋 Aktiva"
-        rightStat={`✅ Totalt: ${missions.length}`}
-      />
+      {/* Only show Uppdrag if there are active missions */}
+      {stats.activeMissions > 0 && (
+        <StatCard
+          icon="🎯"
+          label="Uppdrag"
+          value={stats.activeMissions}
+          color={BRAND.success}
+          leftStat="📋 Aktiva"
+          rightStat={`✅ Totalt: ${missions.length}`}
+          onClick={() => navigate('/missions')}
+        />
+      )}
 
-      <StatCard
-        icon="🚨"
-        label="Kritiska Larm"
-        value={stats.criticalAlerts}
-        color={BRAND.danger}
-        leftStat={`⚠️ Aktiva: ${alerts.filter(a => !a.acknowledged).length}`}
-        rightStat={`📊 Totalt: ${alerts.length}`}
-      />
+      {/* Only show Kritiska Larm if there are critical alerts */}
+      {stats.criticalAlerts > 0 && (
+        <StatCard
+          icon="🚨"
+          label="Kritiska Larm"
+          value={stats.criticalAlerts}
+          color={BRAND.danger}
+          leftStat={`⚠️ Aktiva: ${alerts.filter(a => !a.acknowledged).length}`}
+          rightStat={`📊 Totalt: ${alerts.length}`}
+        />
+      )}
 
-      <StatCard
-        icon="⛽"
-        label="Låg Bränsle"
-        value={stats.lowFuel}
-        color={BRAND.warning}
-        leftStat="🔴 <20%"
-        rightStat="⚠️ Behöver tankning"
-      />
+      {/* Only show Låg Bränsle if there are low fuel vehicles */}
+      {stats.lowFuel > 0 && (
+        <StatCard
+          icon="⛽"
+          label="Låg Bränsle"
+          value={stats.lowFuel}
+          color={BRAND.warning}
+          leftStat="🔴 <20%"
+          rightStat="⚠️ Behöver tankning"
+          onClick={() => navigate('/assets')}
+        />
+      )}
 
+      {/* Always show maintenance card */}
       <StatCard
         icon="🔧"
         label="Underhåll"
@@ -103,8 +128,10 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         color={BRAND.warning}
         leftStat="🛠️ Behöver service"
         rightStat={`Under service: ${assets.filter(a => a.maintenance_status === 'under_maintenance').length}`}
+        onClick={() => navigate('/assets')}
       />
 
+      {/* Show Baser card */}
       <StatCard
         icon="🏭"
         label="Baser"
@@ -114,14 +141,17 @@ export default function DashboardStats({ stats, alerts, missions, bases, geofenc
         rightStat={`🔴 Militära: ${bases.filter(b => b.type === 'military').length}`}
       />
 
-      <StatCard
-        icon="📍"
-        label="Geofences"
-        value={geofences.length}
-        color={BRAND.info}
-        leftStat="📋 Aktiva områden"
-        rightStat="🔍 Övervakade"
-      />
+      {/* Only show Geofences if there are any */}
+      {geofences.length > 0 && (
+        <StatCard
+          icon="📍"
+          label="Geofences"
+          value={geofences.length}
+          color={BRAND.info}
+          leftStat="📋 Aktiva områden"
+          rightStat="🔍 Övervakade"
+        />
+      )}
     </div>
   )
 }

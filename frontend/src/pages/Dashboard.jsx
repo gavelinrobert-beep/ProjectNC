@@ -6,6 +6,7 @@ import { BRAND } from '../lib/constants'
 import DashboardStats from '../components/DashboardStats'
 import ResourceStatusWidget from '../components/ResourceStatusWidget'
 import PerformanceMetricsWidget from '../components/PerformanceMetricsWidget'
+import LiveOpsCard from '../components/LiveOpsCard'
 
 export default function Dashboard() {
   const [assets, setAssets] = useState([])
@@ -78,6 +79,11 @@ export default function Dashboard() {
       }}>
         <ResourceStatusWidget />
         <PerformanceMetricsWidget />
+      </div>
+
+      {/* Live Operations Card */}
+      <div style={{ marginTop: '1.5rem' }}>
+        <LiveOpsCard />
       </div>
 
       {/* Quick Access Links */}

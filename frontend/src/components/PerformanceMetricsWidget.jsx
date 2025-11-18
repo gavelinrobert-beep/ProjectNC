@@ -60,20 +60,29 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
     )
   }
 
+  const getTrendIndicator = (trend) => {
+    if (trend === null || trend === undefined) return null
+    if (Math.abs(trend) < 5) return { icon: '→', color: '#999', text: '0%' }
+    if (trend > 0) return { icon: '↑', color: '#4CAF50', text: `+${trend}%` }
+    return { icon: '↓', color: '#f44336', text: `${trend}%` }
+  }
+
   const metrics = [
     {
       icon: '📦',
       label: 'Deliveries',
       value: data?.deliveries_completed || 0,
       suffix: '',
-      color: '#2196F3'
+      color: '#2196F3',
+      trend: data?.deliveries_trend
     },
     {
       icon: '🛣️',
       label: 'Distance',
       value: data?.total_distance_km || 0,
       suffix: 'km',
-      color: '#9C27B0'
+      color: '#9C27B0',
+      trend: data?.distance_trend
     },
     {
       icon: '⏱️',
@@ -81,7 +90,8 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
       value: data?.avg_delivery_time_hours || 0,
       suffix: 'hrs',
       color: '#FF9800',
-      format: (v) => v.toFixed(1)
+      format: (v) => v.toFixed(1),
+      trend: data?.avg_time_trend
     },
     {
       icon: '✅',
@@ -89,7 +99,8 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
       value: data?.ontime_delivery_rate || 0,
       suffix: '%',
       color: '#4CAF50',
-      format: (v) => v.toFixed(1)
+      format: (v) => v.toFixed(1),
+      trend: data?.ontime_trend
     },
     {
       icon: '🚛',
@@ -97,7 +108,8 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
       value: data?.vehicle_utilization || 0,
       suffix: '%',
       color: '#00BCD4',
-      format: (v) => v.toFixed(1)
+      format: (v) => v.toFixed(1),
+      trend: null // Current snapshot, no trend
     }
   ]
 
@@ -197,29 +209,47 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
                 {metric.icon}
               </div>
 
-              {/* Value */}
+              {/* Value and Trend */}
               <div style={{
                 display: 'flex',
                 alignItems: 'baseline',
-                gap: '0.25rem',
+                gap: '0.5rem',
                 marginBottom: '0.5rem'
               }}>
-                <span style={{
-                  fontSize: '2rem',
-                  fontWeight: 700,
-                  color: metric.color
-                }}>
-                  {displayValue}
-                </span>
-                {metric.suffix && (
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
                   <span style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    color: '#666'
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    color: metric.color
                   }}>
-                    {metric.suffix}
+                    {displayValue}
                   </span>
-                )}
+                  {metric.suffix && (
+                    <span style={{
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      color: '#666'
+                    }}>
+                      {metric.suffix}
+                    </span>
+                  )}
+                </div>
+                {(() => {
+                  const trendInfo = getTrendIndicator(metric.trend)
+                  return trendInfo && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      color: trendInfo.color
+                    }}>
+                      <span>{trendInfo.icon}</span>
+                      <span>{trendInfo.text}</span>
+                    </div>
+                  )
+                })()}
               </div>
 
               {/* Label */}
