@@ -1,4 +1,4 @@
-# AEGIS Light — Civil Logistics & Situational Awareness Platform
+# SYLON Logistics — Civil Logistics & Situational Awareness Platform
 
 **Version 1.0.0 (Civil MVP) - Q1 2025**
 
@@ -8,7 +8,7 @@
 [![Security Scanning](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml)
 [![codecov](https://codecov.io/gh/gavelinrobert-beep/SYLON/branch/master/graph/badge.svg)](https://codecov.io/gh/gavelinrobert-beep/SYLON)
 
-AEGIS Light is a secure, cloud-based logistics and coordination platform designed for:
+SYLON Logistics is a secure, cloud-based logistics and coordination platform designed for:
 - 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
 - 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations
 - 🚨 **Emergency Response** - Civil defense, incident management, resource coordination
