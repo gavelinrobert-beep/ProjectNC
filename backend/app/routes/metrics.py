@@ -99,12 +99,12 @@ async def get_performance_metrics(
         period_label = "Last 7 Days"
     
     async with pool.acquire() as conn:
-        # Get completed deliveries/missions
+        # Get completed deliveries/tasks
         deliveries_result = await conn.fetchrow("""
             SELECT COUNT(*) as completed
-            FROM missions
+            FROM tasks
             WHERE status = 'completed'
-            AND completed_at >= $1
+            AND actual_end >= $1
         """, start_date)
         deliveries_completed = deliveries_result['completed'] if deliveries_result else 0
         
@@ -121,28 +121,28 @@ async def get_performance_metrics(
         # Calculate average delivery time
         avg_time_result = await conn.fetchrow("""
             SELECT 
-                AVG(EXTRACT(EPOCH FROM (completed_at - started_at)) / 3600) as avg_hours
-            FROM missions
+                AVG(EXTRACT(EPOCH FROM (actual_end - actual_start)) / 3600) as avg_hours
+            FROM tasks
             WHERE status = 'completed'
-            AND started_at IS NOT NULL
-            AND completed_at IS NOT NULL
-            AND completed_at >= $1
+            AND actual_start IS NOT NULL
+            AND actual_end IS NOT NULL
+            AND actual_end >= $1
         """, start_date)
         avg_delivery_time_hours = avg_time_result['avg_hours'] if avg_time_result and avg_time_result['avg_hours'] else 0
         
         # Calculate on-time delivery rate
-        # Assuming missions have a planned completion time
+        # Assuming tasks have a scheduled end time
         ontime_result = await conn.fetchrow("""
             SELECT 
                 COUNT(*) as total_completed,
                 SUM(CASE 
-                    WHEN completed_at <= planned_completion_time THEN 1 
+                    WHEN actual_end <= scheduled_end THEN 1 
                     ELSE 0 
                 END) as ontime_count
-            FROM missions
+            FROM tasks
             WHERE status = 'completed'
-            AND completed_at >= $1
-            AND planned_completion_time IS NOT NULL
+            AND actual_end >= $1
+            AND scheduled_end IS NOT NULL
         """, start_date)
         
         total_completed = ontime_result['total_completed'] if ontime_result else 0
@@ -199,18 +199,18 @@ async def get_metrics_summary(
         """)
         active_incidents = incidents_result['active_incidents'] if incidents_result else 0
         
-        # Get active missions count
-        missions_result = await conn.fetchrow("""
-            SELECT COUNT(*) as active_missions
-            FROM missions
+        # Get active tasks count
+        tasks_result = await conn.fetchrow("""
+            SELECT COUNT(*) as active_tasks
+            FROM tasks
             WHERE status IN ('active', 'in_progress')
         """)
-        active_missions = missions_result['active_missions'] if missions_result else 0
+        active_tasks = tasks_result['active_tasks'] if tasks_result else 0
         
         return {
             "resource_status": resource_status,
             "performance_7days": performance,
             "active_incidents": active_incidents,
-            "active_missions": active_missions,
+            "active_tasks": active_tasks,
             "timestamp": datetime.utcnow().isoformat()
         }
