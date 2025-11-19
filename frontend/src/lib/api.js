@@ -2,7 +2,7 @@
 // Simple API helper for the frontend. Uses VITE_API_BASE or defaults to http://<host>:8000
 import { authHeader } from './auth'
 
-export const API_BASE = (import.meta.env.VITE_API_BASE && import.meta.env.VITE_API_BASE.replace(/\/$/, '')) || `${location.protocol}//${location.hostname}:8000`
+export const API_BASE = ''
 
 console.log('[API] Using API_BASE:', API_BASE)
 
