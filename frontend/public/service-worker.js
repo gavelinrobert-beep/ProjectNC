@@ -1,5 +1,5 @@
 /**
- * AEGIS Light - Service Worker
+ * SYLON Logistics - Service Worker
  * Provides offline capabilities for field operations
  * 
  * Features:
@@ -9,7 +9,7 @@
  * - API request queueing
  */
 
-const CACHE_VERSION = 'aegis-light-v1.0.0';
+const CACHE_VERSION = 'sylon-v1.0.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 const MAP_CACHE = `${CACHE_VERSION}-maps`;
@@ -58,7 +58,7 @@ self.addEventListener('activate', (event) => {
         cacheNames
           .filter((cacheName) => {
             // Delete caches that don't match current version
-            return cacheName.startsWith('aegis-light-') && 
+            return (cacheName.startsWith('sylon-') || cacheName.startsWith('aegis-light-')) && 
                    cacheName !== STATIC_CACHE && 
                    cacheName !== DATA_CACHE &&
                    cacheName !== MAP_CACHE;

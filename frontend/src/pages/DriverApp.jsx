@@ -253,7 +253,7 @@ export default function DriverApp() {
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🚚</div>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#1F2937', margin: 0 }}>
-              Förare App
+              SYLON Field
             </h1>
             <p style={{ color: '#6B7280', marginTop: '0.5rem' }}>
               Logga in med din PIN-kod

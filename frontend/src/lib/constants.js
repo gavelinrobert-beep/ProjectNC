@@ -1,4 +1,4 @@
-// Aegis/frontend/src/lib/constants.js
+// SYLON Logistics/frontend/src/lib/constants.js
 
 export const BRAND = {
   primary: '#00BFFF',

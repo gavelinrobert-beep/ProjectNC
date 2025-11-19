@@ -1,5 +1,5 @@
 """
-Utility functions for Aegis backend.
+Utility functions for SYLON Logistics backend.
 """
 import math
 

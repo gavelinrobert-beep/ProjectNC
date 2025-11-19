@@ -63,7 +63,7 @@ export default function Communications() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           channel: activeChannel,
-          sender: localStorage.getItem('aegis_role') || 'user',
+          sender: localStorage.getItem('sylon_role') || 'user',
           content: newMessage,
           priority: priority,
           encrypted: encrypted

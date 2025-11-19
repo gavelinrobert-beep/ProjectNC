@@ -1,9 +1,9 @@
 {
-  "name": "aegis-light-frontend",
+  "name": "sylon-logistics-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "AEGIS Light - Civil Logistics & Situational Awareness Platform",
+  "description": "SYLON Logistics - Modern operations platform for transport and fleet management",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

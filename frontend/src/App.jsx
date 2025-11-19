@@ -1,5 +1,5 @@
 // frontend/src/App.jsx
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { BRAND } from './lib/constants'
@@ -15,7 +15,6 @@ import Tasks from './pages/Tasks'  // CHANGED: Was Missions
 import Assets from './pages/Assets'
 import Inventory from './pages/InventoryNew'  // Phase 2: Operation-centric inventory
 import Admin from './pages/Admin'
-import Login from './pages/Login'
 import Shipments from './pages/Shipments'
 import Drivers from './pages/Drivers'
 import Customers from './pages/Customers'
@@ -225,8 +224,8 @@ function AppLayout() {
             ☰
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '1.5rem' }}>🛡️</span>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF' }}>AEGIS LIGHT</span>
+            <span style={{ fontSize: '1.5rem' }}>🚛</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF' }}>SYLON LIGHT</span>
           </div>
         </div>
 
@@ -237,7 +236,7 @@ function AppLayout() {
           letterSpacing: '0.5px',
           fontWeight: 500
         }}>
-          Civil Logistics & Situational Awareness Platform
+          Modern Transport & Fleet Management Platform
         </span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -341,7 +340,15 @@ function AppLayout() {
 }
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(!!localStorage.getItem('token'))
+  const [isAuthenticated, setIsAuthenticated] = React.useState(true)
+
+  // Auto-authenticate on app load
+  useEffect(() => {
+    // Set fake token in localStorage
+    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBzeWxvbi5sb2NhbCIsInJvbGUiOiJhZG1pbiJ9.fake')
+    localStorage.setItem('userRole', 'admin')
+    setIsAuthenticated(true)
+  }, [])
 
   return (
     <BrowserRouter>
@@ -366,14 +373,8 @@ export default function App() {
         <Route path="/track/:deliveryId" element={<TrackDelivery />} />
         <Route path="/driver" element={<DriverApp />} />
         
-        {/* Protected routes - require authentication */}
-        <Route path="/*" element={
-          isAuthenticated ? (
-            <AppLayout />
-          ) : (
-            <Login onLogin={() => setIsAuthenticated(true)} />
-          )
-        } />
+        {/* All routes now accessible without login */}
+        <Route path="/*" element={<AppLayout />} />
       </Routes>
     </BrowserRouter>
   )

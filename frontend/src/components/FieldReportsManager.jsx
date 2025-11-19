@@ -1,4 +1,4 @@
-// AEGIS Light - Field Reports Manager Component
+// SYLON Logistics - Field Reports Manager Component
 // Allows field operators to submit and view field reports with photo attachments
 
 import React, { useState, useEffect } from 'react'

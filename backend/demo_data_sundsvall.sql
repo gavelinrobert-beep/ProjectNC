@@ -220,13 +220,13 @@ INSERT INTO inventory (id, name, type, category, category_id, quantity, unit,
     tracking_number, assigned_to_asset_id, status, weight_kg, special_handling, 
     customer_info, location_id) VALUES
 ('INV-CARGO-001', 'Medicinsk utrustning', 'cargo', 'cargo_delivery', 'cargo_delivery', 1, 'package',
-    'AEGIS-SND-001', 'VEH-SND-04', 'in_transit', 15.5, 'fragile',
+    'SYL-SND-001', 'VEH-SND-04', 'in_transit', 15.5, 'fragile',
     '{"pickup": "Stockholm DC", "delivery": "Sundsvalls sjukhus", "contact": "Dr. Anders Ek"}'::jsonb, 'VEH-SND-04'),
 ('INV-CARGO-002', 'Kontorstillbehör', 'cargo', 'cargo_delivery', 'cargo_delivery', 1, 'package',
-    'AEGIS-SND-002', 'VEH-SND-02', 'in_transit', 12.3, NULL,
+    'SYL-SND-002', 'VEH-SND-02', 'in_transit', 12.3, NULL,
     '{"pickup": "Stockholm DC", "delivery": "Birsta Shopping", "contact": "Stefan Holm"}'::jsonb, 'VEH-SND-02'),
 ('INV-CARGO-003', 'Industrivaror', 'cargo', 'cargo_delivery', 'cargo_delivery', 3, 'box',
-    'AEGIS-SND-003', NULL, 'awaiting_pickup', 45.0, NULL,
+    'SYL-SND-003', NULL, 'awaiting_pickup', 45.0, NULL,
     '{"pickup": "Stockholm DC", "delivery": "Timrå Industri", "contact": "Lisa Nyström"}'::jsonb, 'FAC-STO-DC')
 ON CONFLICT (id) DO NOTHING;
 
