@@ -50,15 +50,24 @@ const InventoryNew = () => {
   };
 
   const loadCargoData = async () => {
-    try {
-      const cargo = await fetch('/api/inventory/cargo/in-transit', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      }).then(r => r.json());
-      setCargoItems(cargo);
-    } catch (error) {
-      console.error('Failed to load cargo:', error);
+  try {
+    const response = await fetch('/api/inventory/cargo/in-transit', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+
+    if (!response.ok) {
+      console.error('Failed to load cargo:', response.status);
+      setCargoItems([]);  // Set empty array on error
+      return;
     }
-  };
+
+    const cargo = await response.json();
+    setCargoItems(Array.isArray(cargo) ? cargo : []);  // Ensure it's always an array
+  } catch (error) {
+    console.error('Failed to load cargo:', error);
+    setCargoItems([]);  // Set empty array on error
+  }
+};
 
   const loadVehicleEquipment = async () => {
     try {
@@ -128,7 +137,7 @@ const InventoryNew = () => {
     }
   };
 
-  const filteredCargo = cargoItems.filter(item => {
+  const filteredCargo = (cargoItems || []).filter(item => {
     if (cargoFilter === 'all') return true;
     return item.status === cargoFilter;
   });

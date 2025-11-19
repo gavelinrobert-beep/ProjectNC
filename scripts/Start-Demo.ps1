@@ -1,148 +1,121 @@
-# ============================================
-# AEGIS Light - Demo Startup Script (Windows)
-# ============================================
-# Starts Docker Compose, waits for health checks,
-# then starts ngrok tunnel and displays access URL
+# Start SYLON demo with ngrok tunnel
+param(
+    [switch]$SkipNgrok
+)
 
-Write-Host "`n==================================" -ForegroundColor Cyan
-Write-Host "  AEGIS Light - Demo Startup" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
+Write-Host "Starting SYLON Demo..." -ForegroundColor Cyan
+Write-Host ""
 
 # Check if Docker is running
-Write-Host "`n[1/4] Checking Docker..." -ForegroundColor Yellow
-$dockerRunning = docker info 2>&1
-if ($LASTEXITCODE -ne 0) {
+try {
+    $null = docker info 2>&1
+} catch {
     Write-Host "ERROR: Docker is not running. Please start Docker Desktop." -ForegroundColor Red
     exit 1
 }
-Write-Host "✓ Docker is running" -ForegroundColor Green
 
-# Check if ngrok is installed
-Write-Host "`n[2/4] Checking ngrok..." -ForegroundColor Yellow
-$ngrokInstalled = Get-Command ngrok -ErrorAction SilentlyContinue
-if (-not $ngrokInstalled) {
-    Write-Host "WARNING: ngrok not found. Please install from https://ngrok.com/download" -ForegroundColor Yellow
-    Write-Host "The demo will start without ngrok tunnel." -ForegroundColor Yellow
-    $useNgrok = $false
-} else {
-    Write-Host "✓ ngrok is installed" -ForegroundColor Green
-    $useNgrok = $true
-}
+# Stop existing containers
+Write-Host "Stopping existing containers..." -ForegroundColor Yellow
+docker compose down 2>$null
 
-# Start Docker Compose
-Write-Host "`n[3/4] Starting Docker services..." -ForegroundColor Yellow
-Write-Host "This may take a few minutes on first run..." -ForegroundColor Gray
-
+# Start Docker services
+Write-Host "Starting Docker containers..." -ForegroundColor Yellow
 docker compose up -d
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Failed to start Docker services" -ForegroundColor Red
+    Write-Host "ERROR: Failed to start containers" -ForegroundColor Red
     exit 1
 }
 
-# Wait for services to be healthy
-Write-Host "`n[4/4] Waiting for services to be ready..." -ForegroundColor Yellow
-$maxWait = 120
-$waited = 0
-$healthy = $false
+# Wait for services to be ready
+Write-Host "Waiting for services to start (20 seconds)..." -ForegroundColor Yellow
+Start-Sleep -Seconds 20
 
-while ($waited -lt $maxWait) {
-    Start-Sleep -Seconds 5
-    $waited += 5
-    
-    # Check API health
+# Health check
+Write-Host "Running health check..." -ForegroundColor Yellow
+$healthy = $false
+for ($i = 1; $i -le 10; $i++) {
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:8000/health" -UseBasicParsing -TimeoutSec 2 2>$null
+        $response = Invoke-WebRequest -Uri "http://localhost:8080/api/health" -TimeoutSec 5 -ErrorAction Stop
         if ($response.StatusCode -eq 200) {
             $healthy = $true
+            Write-Host "Services are healthy!" -ForegroundColor Green
             break
         }
     } catch {
-        # Service not ready yet
+        Write-Host "  Health check attempt $i/10..." -ForegroundColor Gray
+        Start-Sleep -Seconds 3
     }
-    
-    Write-Host "  Waiting... ($waited/$maxWait seconds)" -ForegroundColor Gray
 }
 
 if (-not $healthy) {
-    Write-Host "WARNING: Services may not be fully ready yet" -ForegroundColor Yellow
-    Write-Host "You can check status with: docker compose logs" -ForegroundColor Gray
-} else {
-    Write-Host "✓ Services are healthy" -ForegroundColor Green
+    Write-Host "ERROR: Services failed to start healthy. Check logs with:" -ForegroundColor Red
+    Write-Host "  docker compose logs api" -ForegroundColor Gray
+    Write-Host "  docker compose logs frontend" -ForegroundColor Gray
+    exit 1
 }
 
-# Display local URLs
-Write-Host "`n==================================" -ForegroundColor Cyan
-Write-Host "  Local Access URLs" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
-Write-Host "Frontend:  http://localhost:5173" -ForegroundColor White
-Write-Host "API:       http://localhost:8000" -ForegroundColor White
-Write-Host "API Docs:  http://localhost:8000/docs" -ForegroundColor White
+Write-Host ""
 
-# Start ngrok if available
-if ($useNgrok) {
-    Write-Host "`n==================================" -ForegroundColor Cyan
-    Write-Host "  Starting ngrok tunnel..." -ForegroundColor Cyan
-    Write-Host "==================================" -ForegroundColor Cyan
-    
-    # Kill any existing ngrok processes
-    Stop-Process -Name ngrok -Force -ErrorAction SilentlyContinue
-    
-    # Start ngrok in background
-    Start-Process -FilePath "ngrok" -ArgumentList "http 5173 --log=stdout" -WindowStyle Hidden
-    
-    # Wait for ngrok to start
-    Start-Sleep -Seconds 3
-    
+# Start ngrok if not skipped
+if (-not $SkipNgrok) {
+    # Check if ngrok is installed
+    $ngrokInstalled = Get-Command ngrok -ErrorAction SilentlyContinue
+
+    if (-not $ngrokInstalled) {
+        Write-Host "WARNING: ngrok is not installed" -ForegroundColor Yellow
+        Write-Host "Install with: choco install ngrok" -ForegroundColor Gray
+        Write-Host "Or download from: https://ngrok.com/download" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Local access available at: http://localhost:8080" -ForegroundColor White
+        Write-Host "Admin: admin@aegis.local / admin123" -ForegroundColor White
+        exit 0
+    }
+
+    # Kill any existing ngrok
+    Get-Process ngrok -ErrorAction SilentlyContinue | Stop-Process -Force
+
+    Write-Host "Starting ngrok tunnel..." -ForegroundColor Yellow
+    Start-Process "ngrok" -ArgumentList "http", "8080", "--log=stdout" -WindowStyle Hidden
+    Start-Sleep -Seconds 5
+
     # Get ngrok URL
     try {
-        $ngrokApi = Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels" -UseBasicParsing
-        $publicUrl = $ngrokApi.tunnels[0].public_url
-        
-        if ($publicUrl) {
-            Write-Host "`n✓ ngrok tunnel established!" -ForegroundColor Green
-            Write-Host "`nPublic Demo URL:" -ForegroundColor Cyan
-            Write-Host "  $publicUrl" -ForegroundColor Yellow -BackgroundColor DarkGray
-            Write-Host "`nShare this URL with demo participants!" -ForegroundColor White
-        }
+        $tunnels = Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels" -ErrorAction Stop
+        $ngrokUrl = $tunnels.tunnels[0].public_url
+
+        Write-Host ""
+        Write-Host "===============================================" -ForegroundColor Cyan
+        Write-Host " SYLON is LIVE!" -ForegroundColor Green
+        Write-Host "===============================================" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "Demo URL:      $ngrokUrl" -ForegroundColor White
+        Write-Host "Admin Login:   admin@aegis.local / admin123" -ForegroundColor White
+        Write-Host "Driver App:    $ngrokUrl/driver" -ForegroundColor White
+        Write-Host "Driver PIN:    123 (Anders Svensson)" -ForegroundColor White
+        Write-Host ""
+        Write-Host "===============================================" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "ngrok Dashboard: http://localhost:4040" -ForegroundColor Gray
+        Write-Host "API Health:      http://localhost:8080/api/health" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Press Ctrl+C to stop" -ForegroundColor Yellow
+
+        # Open browser
+        Start-Process $ngrokUrl
+
     } catch {
-        Write-Host "WARNING: Could not retrieve ngrok URL" -ForegroundColor Yellow
-        Write-Host "Check ngrok status at: http://localhost:4040" -ForegroundColor Gray
+        Write-Host "WARNING: Could not get ngrok URL" -ForegroundColor Yellow
+        Write-Host "Check ngrok dashboard: http://localhost:4040" -ForegroundColor Gray
     }
+} else {
+    Write-Host ""
+    Write-Host "===============================================" -ForegroundColor Cyan
+    Write-Host " SYLON is LIVE (Local Only)" -ForegroundColor Green
+    Write-Host "===============================================" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Local URL:     http://localhost:8080" -ForegroundColor White
+    Write-Host "Admin Login:   admin@aegis.local / admin123" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Press Ctrl+C to stop" -ForegroundColor Yellow
 }
-
-# Display demo credentials
-Write-Host "`n==================================" -ForegroundColor Cyan
-Write-Host "  Demo Credentials" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
-Write-Host "`nADMIN LOGIN:" -ForegroundColor White
-Write-Host "  Email:    admin@sundsvall.se" -ForegroundColor Gray
-Write-Host "  Password: admin123" -ForegroundColor Gray
-
-Write-Host "`nDRIVER LOGIN (Mobile App):" -ForegroundColor White
-Write-Host "  Driver:   Erik Andersson" -ForegroundColor Gray
-Write-Host "  PIN:      0001" -ForegroundColor Gray
-Write-Host "  Vehicle:  ABC 123" -ForegroundColor Gray
-
-Write-Host "`nPUBLIC TRACKING (No Login):" -ForegroundColor White
-Write-Host "  Tracking: DEL-SND-001" -ForegroundColor Gray
-Write-Host "  URL:      /track/DEL-SND-001" -ForegroundColor Gray
-
-# Display Swedish test data
-Write-Host "`n==================================" -ForegroundColor Cyan
-Write-Host "  Swedish Test Data" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
-Write-Host "Drivers:   Anders Svensson, Erik Andersson" -ForegroundColor Gray
-Write-Host "Vehicles:  ABC 123, DEF 456, GHI 789" -ForegroundColor Gray
-Write-Host "Location:  Sundsvall, Sweden" -ForegroundColor Gray
-
-Write-Host "`n==================================" -ForegroundColor Cyan
-Write-Host "  Controls" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
-Write-Host "Stop demo:     docker compose down" -ForegroundColor White
-Write-Host "View logs:     docker compose logs -f" -ForegroundColor White
-Write-Host "Stop ngrok:    Stop-Process -Name ngrok" -ForegroundColor White
-Write-Host "ngrok status:  http://localhost:4040" -ForegroundColor White
-
-Write-Host "`n✓ Demo is ready!" -ForegroundColor Green
-Write-Host ""

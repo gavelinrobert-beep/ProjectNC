@@ -34,6 +34,7 @@ function Sidebar({ isOpen, toggle }) {
   { name: 'Dashboard', icon: '📊', path: '/', section: 'OPERATIONS' },
   { name: 'Live Map', icon: '🗺️', path: '/operations', section: 'OPERATIONS' },
   { name: 'Tasks & Deliveries', icon: '📋', path: '/tasks', section: 'LOGISTICS' },
+  { name: 'Drivers', icon: '👤', path: '/drivers', section: 'LOGISTICS' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets', section: 'LOGISTICS' },
   { name: 'Inventory', icon: '📦', path: '/inventory', section: 'LOGISTICS' },
   { name: 'Incidents', icon: '🚨', path: '/incidents', section: 'MANAGEMENT' },
