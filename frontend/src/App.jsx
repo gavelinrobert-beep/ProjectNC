@@ -9,7 +9,7 @@ import Dashboard from './pages/Dashboard'
 import Operations from './pages/Operations'
 import Tasks from './pages/Tasks'  // CHANGED: Was Missions
 import Assets from './pages/Assets'
-import Inventory from './pages/Inventory'
+import Inventory from './pages/InventoryNew'  // Phase 2: Operation-centric inventory
 import Admin from './pages/Admin'
 import Login from './pages/Login'
 import Shipments from './pages/Shipments'
