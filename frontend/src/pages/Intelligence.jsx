@@ -86,7 +86,7 @@ export default function Intelligence() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newReport,
-          created_by: localStorage.getItem('aegis_role') || 'analyst'
+          created_by: localStorage.getItem('sylon_role') || 'analyst'
         })
       })
 

@@ -1,5 +1,5 @@
-const KEY_TOKEN = 'aegis_id_token';
-const KEY_ROLE = 'aegis_role';
+const KEY_TOKEN = 'sylon_id_token';
+const KEY_ROLE = 'sylon_role';
 
 // helper: base64 decode for JWT segments (browser-friendly)
 function _b64DecodeUnicode(str) {

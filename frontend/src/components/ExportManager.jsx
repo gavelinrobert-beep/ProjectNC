@@ -1,4 +1,4 @@
-// AEGIS Light - Export Manager Component
+// SYLON Logistics - Export Manager Component
 // Provides CSV and PDF export functionality for all major entities
 
 import React, { useState } from 'react'
@@ -45,7 +45,7 @@ export default function ExportManager({ compact = false }) {
       
       // Get filename from Content-Disposition header or generate one
       const contentDisposition = response.headers.get('Content-Disposition')
-      let filename = `aegis_${option.id}_${new Date().toISOString().split('T')[0]}.csv`
+      let filename = `sylon_${option.id}_${new Date().toISOString().split('T')[0]}.csv`
       
       if (contentDisposition) {
         const matches = contentDisposition.match(/filename="?(.+)"?/)
