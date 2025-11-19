@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import QuickActionButton from './QuickActionButton'
+import RefuelModal from './RefuelModal'
 
 const STATUS_COLORS = {
   available: '#4CAF50',
@@ -29,6 +31,7 @@ export default function ResourceStatusWidget({ refreshInterval = 10000 }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showRefuelModal, setShowRefuelModal] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -277,6 +280,39 @@ export default function ResourceStatusWidget({ refreshInterval = 10000 }) {
           {data?.total || 0}
         </span>
       </div>
+
+      {/* Quick Actions */}
+      <div style={{
+        marginTop: '1.5rem',
+        display: 'flex',
+        gap: '10px',
+        flexWrap: 'wrap'
+      }}>
+        <QuickActionButton
+          icon="⛽"
+          label="Record Refuel"
+          variant="secondary"
+          size="small"
+          onClick={() => setShowRefuelModal(true)}
+        />
+        <QuickActionButton
+          icon="🔧"
+          label="Schedule Maintenance"
+          variant="warning"
+          size="small"
+          onClick={() => alert('Maintenance scheduling coming soon!')}
+        />
+      </div>
+
+      {/* Refuel Modal */}
+      <RefuelModal
+        isOpen={showRefuelModal}
+        onClose={() => setShowRefuelModal(false)}
+        onSuccess={() => {
+          setShowRefuelModal(false);
+          loadData();
+        }}
+      />
 
       <style>
         {`

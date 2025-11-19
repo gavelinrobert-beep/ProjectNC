@@ -775,3 +775,144 @@ async def get_fuel_consumption_report(
             },
             'by_vehicle': by_vehicle
         }
+
+
+@router.get('/fuel/analytics')
+async def get_fuel_analytics(
+    request: Request,
+    period: str = '30days',
+    _user: dict = Depends(require_auth)
+):
+    """
+    Get detailed fuel analytics including weekly consumption, cost trends, and efficiency by vehicle.
+    Returns data for charts and visualizations.
+    """
+    pool = await get_pool(request.app)
+    
+    # Convert period to interval
+    interval_map = {
+        '7days': '7 days',
+        '30days': '30 days',
+        '90days': '90 days'
+    }
+    interval = interval_map.get(period, '30 days')
+    
+    async with pool.acquire() as conn:
+        # Weekly consumption data for bar chart
+        weekly_consumption = await conn.fetch(f"""
+            SELECT 
+                DATE_TRUNC('week', timestamp) as week,
+                SUM(quantity_liters) as total_liters,
+                COUNT(*) as refuel_count
+            FROM fuel_tracking
+            WHERE timestamp >= NOW() - INTERVAL '{interval}'
+            GROUP BY DATE_TRUNC('week', timestamp)
+            ORDER BY week
+        """)
+        
+        weekly_data = [
+            {
+                'week': row['week'].isoformat() if row['week'] else None,
+                'total_liters': round(float(row['total_liters']), 1) if row['total_liters'] else 0,
+                'refuel_count': row['refuel_count']
+            }
+            for row in weekly_consumption
+        ]
+        
+        # Daily cost trends for line chart
+        daily_costs = await conn.fetch(f"""
+            SELECT 
+                DATE(timestamp) as date,
+                SUM(cost_sek) as total_cost,
+                SUM(quantity_liters) as total_liters
+            FROM fuel_tracking
+            WHERE timestamp >= NOW() - INTERVAL '{interval}'
+            GROUP BY DATE(timestamp)
+            ORDER BY date
+        """)
+        
+        cost_trends = [
+            {
+                'date': row['date'].isoformat() if row['date'] else None,
+                'total_cost': round(float(row['total_cost']), 2) if row['total_cost'] else 0,
+                'total_liters': round(float(row['total_liters']), 1) if row['total_liters'] else 0,
+                'cost_per_liter': round(float(row['total_cost']) / float(row['total_liters']), 2) if row['total_liters'] and row['total_cost'] else 0
+            }
+            for row in daily_costs
+        ]
+        
+        # Efficiency by vehicle (km/L) for horizontal bar chart
+        vehicle_efficiency = await conn.fetch(f"""
+            SELECT 
+                a.id,
+                a.name,
+                a.license_plate,
+                COUNT(f.id) as refuel_count,
+                SUM(f.quantity_liters) as total_fuel,
+                COALESCE(
+                    (
+                        SELECT SUM(estimated_distance_km) 
+                        FROM tasks t 
+                        WHERE t.assigned_asset = a.id 
+                        AND t.status = 'completed'
+                        AND t.actual_end >= NOW() - INTERVAL '{interval}'
+                    ), 
+                    0
+                ) as total_distance,
+                CASE 
+                    WHEN SUM(f.quantity_liters) > 0 THEN
+                        (
+                            SELECT SUM(estimated_distance_km) 
+                            FROM tasks t 
+                            WHERE t.assigned_asset = a.id 
+                            AND t.status = 'completed'
+                            AND t.actual_end >= NOW() - INTERVAL '{interval}'
+                        ) / SUM(f.quantity_liters)
+                    ELSE 0
+                END as km_per_liter
+            FROM assets a
+            LEFT JOIN fuel_tracking f ON f.asset_id = a.id 
+                AND f.timestamp >= NOW() - INTERVAL '{interval}'
+            WHERE a.asset_type IN ('vehicle', 'truck', 'van', 'car')
+            GROUP BY a.id, a.name, a.license_plate
+            HAVING COUNT(f.id) > 0
+            ORDER BY km_per_liter DESC
+        """)
+        
+        efficiency_data = [
+            {
+                'vehicle_id': row['id'],
+                'vehicle_name': row['name'],
+                'license_plate': row['license_plate'],
+                'refuel_count': row['refuel_count'],
+                'total_fuel': round(float(row['total_fuel']), 1) if row['total_fuel'] else 0,
+                'total_distance': round(float(row['total_distance']), 1) if row['total_distance'] else 0,
+                'km_per_liter': round(float(row['km_per_liter']), 2) if row['km_per_liter'] else 0
+            }
+            for row in vehicle_efficiency
+        ]
+        
+        # Overall summary
+        summary = await conn.fetchrow(f"""
+            SELECT 
+                SUM(quantity_liters) as total_fuel,
+                SUM(cost_sek) as total_cost,
+                COUNT(*) as total_refuels,
+                AVG(cost_sek / NULLIF(quantity_liters, 0)) as avg_cost_per_liter
+            FROM fuel_tracking
+            WHERE timestamp >= NOW() - INTERVAL '{interval}'
+        """)
+        
+        return {
+            'period': period,
+            'weekly_consumption': weekly_data,
+            'cost_trends': cost_trends,
+            'vehicle_efficiency': efficiency_data,
+            'summary': {
+                'total_fuel': round(float(summary['total_fuel']), 1) if summary['total_fuel'] else 0,
+                'total_cost': round(float(summary['total_cost']), 2) if summary['total_cost'] else 0,
+                'total_refuels': summary['total_refuels'],
+                'avg_cost_per_liter': round(float(summary['avg_cost_per_liter']), 2) if summary['avg_cost_per_liter'] else 0
+            },
+            'timestamp': datetime.utcnow().isoformat()
+        }

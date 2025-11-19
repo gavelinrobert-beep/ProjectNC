@@ -164,6 +164,92 @@ async def api_info():
     }
 
 
+@app.get("/api/search", tags=["Search"])
+async def global_search(q: str):
+    """
+    Global search across all entities: vehicles, drivers, packages, facilities.
+    Returns categorized results based on the query string.
+    """
+    from .database import get_pool
+    from fastapi import Request
+    
+    if not q or len(q) < 2:
+        return {
+            "query": q,
+            "vehicles": [],
+            "drivers": [],
+            "packages": [],
+            "facilities": [],
+            "inventory": []
+        }
+    
+    pool = await get_pool(app)
+    search_term = f"%{q.lower()}%"
+    
+    async with pool.acquire() as conn:
+        # Search vehicles/assets
+        vehicles = await conn.fetch("""
+            SELECT id, name, license_plate, asset_type, status, manufacturer, model
+            FROM assets
+            WHERE LOWER(name) LIKE $1 
+            OR LOWER(license_plate) LIKE $1
+            OR LOWER(id) LIKE $1
+            LIMIT 10
+        """, search_term)
+        
+        # Search drivers
+        drivers = await conn.fetch("""
+            SELECT id, name, email, phone, status, license_number
+            FROM drivers
+            WHERE LOWER(name) LIKE $1
+            OR LOWER(email) LIKE $1
+            OR LOWER(phone) LIKE $1
+            OR LOWER(license_number) LIKE $1
+            LIMIT 10
+        """, search_term)
+        
+        # Search shipments/packages
+        packages = await conn.fetch("""
+            SELECT id, tracking_number, status, sender_name, recipient_name, 
+                   pickup_address, delivery_address
+            FROM shipments
+            WHERE LOWER(tracking_number) LIKE $1
+            OR LOWER(sender_name) LIKE $1
+            OR LOWER(recipient_name) LIKE $1
+            OR LOWER(id) LIKE $1
+            LIMIT 10
+        """, search_term)
+        
+        # Search facilities
+        facilities = await conn.fetch("""
+            SELECT id, name, type, lat, lon, description
+            FROM facilities
+            WHERE LOWER(name) LIKE $1
+            OR LOWER(type) LIKE $1
+            OR LOWER(description) LIKE $1
+            OR LOWER(id) LIKE $1
+            LIMIT 10
+        """, search_term)
+        
+        # Search inventory items
+        inventory_items = await conn.fetch("""
+            SELECT id, name, category, quantity, unit, location_id
+            FROM inventory
+            WHERE LOWER(name) LIKE $1
+            OR LOWER(category) LIKE $1
+            LIMIT 10
+        """, search_term)
+        
+        return {
+            "query": q,
+            "vehicles": [dict(row) for row in vehicles],
+            "drivers": [dict(row) for row in drivers],
+            "packages": [dict(row) for row in packages],
+            "facilities": [dict(row) for row in facilities],
+            "inventory": [dict(row) for row in inventory_items]
+        }
+
+
 @app.get("/health", tags=["Health"])
 async def health():
     """Health check endpoint"""

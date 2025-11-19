@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import QuickActionButton from './QuickActionButton'
+import TrackPackageModal from './TrackPackageModal'
 
 export default function LiveOpsCard({ refreshInterval = 10000 }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showTrackModal, setShowTrackModal] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -214,6 +217,35 @@ export default function LiveOpsCard({ refreshInterval = 10000 }) {
           No active deliveries at the moment
         </div>
       )}
+
+      {/* Quick Actions */}
+      <div style={{
+        marginTop: '1.5rem',
+        display: 'flex',
+        gap: '10px',
+        flexWrap: 'wrap'
+      }}>
+        <QuickActionButton
+          icon="📦"
+          label="Track Package"
+          variant="primary"
+          size="small"
+          onClick={() => setShowTrackModal(true)}
+        />
+        <QuickActionButton
+          icon="➕"
+          label="Create Delivery"
+          variant="secondary"
+          size="small"
+          onClick={() => alert('Create delivery modal coming soon!')}
+        />
+      </div>
+
+      {/* Track Package Modal */}
+      <TrackPackageModal
+        isOpen={showTrackModal}
+        onClose={() => setShowTrackModal(false)}
+      />
 
       <style>
         {`

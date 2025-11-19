@@ -346,3 +346,120 @@ async def get_live_operations(
             "next_delivery_eta": next_delivery_eta,
             "timestamp": datetime.utcnow().isoformat()
         }
+
+
+@router.get("/performance/history")
+async def get_performance_history(
+    request: Request,
+    period: str = "7days",  # Options: 7days, 30days
+    _user: dict = Depends(require_auth)
+):
+    """
+    Get historical performance metrics for trend charts.
+    Returns daily data points: date, deliveries, distance_km, avg_time_hrs, on_time_rate
+    """
+    pool = await get_pool(request.app)
+    
+    # Calculate date range based on period
+    now = datetime.utcnow()
+    if period == "30days":
+        start_date = now - timedelta(days=30)
+        days = 30
+    else:  # default to 7days
+        start_date = now - timedelta(days=7)
+        days = 7
+    
+    async with pool.acquire() as conn:
+        # Get daily aggregated data
+        history_data = await conn.fetch("""
+            SELECT 
+                DATE(actual_end) as date,
+                COUNT(*) as deliveries,
+                COALESCE(SUM(estimated_distance_km), 0) as distance_km,
+                COALESCE(AVG(EXTRACT(EPOCH FROM (actual_end - actual_start)) / 3600), 0) as avg_time_hrs,
+                COALESCE(
+                    SUM(CASE WHEN actual_end <= scheduled_end THEN 1 ELSE 0 END)::float / 
+                    NULLIF(COUNT(*), 0) * 100, 
+                    0
+                ) as on_time_rate
+            FROM tasks
+            WHERE status = 'completed'
+            AND actual_end >= $1
+            AND actual_start IS NOT NULL
+            AND actual_end IS NOT NULL
+            GROUP BY DATE(actual_end)
+            ORDER BY DATE(actual_end)
+        """, start_date)
+        
+        # Convert to list of dictionaries
+        history = []
+        for row in history_data:
+            history.append({
+                "date": row['date'].isoformat() if row['date'] else None,
+                "deliveries": row['deliveries'],
+                "distance_km": round(float(row['distance_km']), 1),
+                "avg_time_hrs": round(float(row['avg_time_hrs']), 2),
+                "on_time_rate": round(float(row['on_time_rate']), 1)
+            })
+        
+        return {
+            "period": period,
+            "start_date": start_date.isoformat(),
+            "end_date": now.isoformat(),
+            "history": history,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+
+@router.get("/fleet/utilization-history")
+async def get_fleet_utilization_history(
+    request: Request,
+    _user: dict = Depends(require_auth)
+):
+    """
+    Get fleet utilization history for the last 7 days with hourly snapshots.
+    Returns vehicle status distribution over time.
+    """
+    pool = await get_pool(request.app)
+    
+    # For now, return current status as we don't have historical tracking
+    # In production, you would track status changes in a separate table
+    now = datetime.utcnow()
+    start_date = now - timedelta(days=7)
+    
+    async with pool.acquire() as conn:
+        # Get current status distribution
+        status_counts = await conn.fetch("""
+            SELECT 
+                status,
+                COUNT(*) as count
+            FROM assets
+            WHERE asset_type IN ('vehicle', 'truck', 'van', 'car')
+            GROUP BY status
+        """)
+        
+        status_dict = {row['status']: row['count'] for row in status_counts}
+        
+        # Generate mock hourly data points for demonstration
+        # In production, this would come from a status_history table
+        history = []
+        for day in range(7):
+            current_date = start_date + timedelta(days=day)
+            for hour in range(0, 24, 3):  # Every 3 hours
+                timestamp = current_date + timedelta(hours=hour)
+                history.append({
+                    "timestamp": timestamp.isoformat(),
+                    "in_use": status_dict.get('in_use', 0),
+                    "available": status_dict.get('available', 0),
+                    "maintenance": status_dict.get('maintenance', 0),
+                    "parked": status_dict.get('parked', 0),
+                    "out_of_service": status_dict.get('out_of_service', 0)
+                })
+        
+        return {
+            "period": "7days",
+            "start_date": start_date.isoformat(),
+            "end_date": now.isoformat(),
+            "history": history,
+            "timestamp": datetime.utcnow().isoformat()
+        }
