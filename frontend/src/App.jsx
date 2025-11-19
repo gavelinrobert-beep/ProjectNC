@@ -1,8 +1,12 @@
 // frontend/src/App.jsx
 import React, { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { BRAND } from './lib/constants'
 import './modern-override.css'
+
+// Components
+import GlobalSearch from './components/GlobalSearch'
 
 // Pages
 import Dashboard from './pages/Dashboard'
@@ -340,6 +344,22 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {/* Global Search Component - Available on all authenticated routes */}
+      {isAuthenticated && <GlobalSearch />}
+      
+      {/* Toast Notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#1a1a1a',
+            color: '#e0e0e0',
+            border: '1px solid #333',
+          },
+        }}
+      />
+      
       <Routes>
         {/* Public routes - no authentication required */}
         <Route path="/track/:deliveryId" element={<TrackDelivery />} />

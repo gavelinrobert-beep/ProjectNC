@@ -7,6 +7,9 @@ import DashboardStats from '../components/DashboardStats'
 import ResourceStatusWidget from '../components/ResourceStatusWidget'
 import PerformanceMetricsWidget from '../components/PerformanceMetricsWidget'
 import LiveOpsCard from '../components/LiveOpsCard'
+import PerformanceChart from '../components/PerformanceChart'
+import FuelConsumptionChart from '../components/FuelConsumptionChart'
+import FleetUtilizationChart from '../components/FleetUtilizationChart'
 
 export default function Dashboard() {
   const [assets, setAssets] = useState([])
@@ -84,6 +87,22 @@ export default function Dashboard() {
       {/* Live Operations Card */}
       <div style={{ marginTop: '1.5rem' }}>
         <LiveOpsCard />
+      </div>
+
+      {/* Performance Charts */}
+      <div style={{ marginTop: '2rem' }}>
+        <PerformanceChart />
+      </div>
+
+      {/* Fleet Utilization and Fuel Charts */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+        gap: '1.5rem',
+        marginTop: '2rem'
+      }}>
+        <FleetUtilizationChart />
+        <FuelConsumptionChart />
       </div>
 
       {/* Quick Access Links */}
