@@ -8,9 +8,9 @@ import json
 import math
 from datetime import datetime
 
-from ..models import MissionIn, MissionOut
-from ..auth import require_admin
-from ..database import get_pool
+from ..shared.models import MissionIn, MissionOut
+from ..shared.auth import require_admin
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 

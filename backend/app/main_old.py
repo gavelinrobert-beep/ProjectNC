@@ -5,34 +5,36 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import database functions from shared
-from .shared.database import get_pool, init_database, populate_from_constants
+# Import database functions
+from .database import get_pool, init_database, populate_from_constants
 
-# Import modular routers
-from .logistics.routes import router as logistics_router
-from .fleet.routes import router as fleet_router
-from .works.routes import router as works_router
-from .field.routes import router as field_router
-from .sites.routes import router as sites_router
-
-# Import existing route modules that haven't been migrated yet
+# Import routers - Civilian terminology (primary)
 from .routes.auth import router as auth_router
+from .routes.assets import router as assets_router
+from .routes.facilities import router as facilities_router
+from .routes.zones import router as zones_router
 from .routes.alerts import router as alerts_router
 from .routes.health import router as health_router
 from .routes.tasks import router as tasks_router
+from .routes.inventory import router as inventory_router
 from .routes.exports import router as exports_router
 from .routes.field_reports import router as field_reports_router
+from .routes.customers import router as customers_router
+from .routes.drivers import router as drivers_router
+from .routes.shipments import router as shipments_router
 from .routes.weather import router as weather_router
 from .routes.routing import router as routing_router
 from .routes.incidents import router as incidents_router
 from .routes.metrics import router as metrics_router
+# Week 1 Commercial MVP routes
 from .routes.tracking import router as tracking_router
 from .routes.driver import router as driver_router
+# Works module - Construction/contracting operations
+from .works.routes import router as works_router
 # Legacy route aliases for backward compatibility (deprecated)
 from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
 from .routes.missions import router as missions_router
-from .routes.zones import router as zones_router
 
 
 # Lifespan context manager for startup/shutdown events
@@ -67,9 +69,9 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app with lifespan
 app = FastAPI(
-    title="SYLON Systems API",
-    description="Modular Logistics & Operations Management Platform",
-    version="2.0.0",
+    title="AEGIS Light API",
+    description="Civil Logistics & Situational Awareness Platform",
+    version="1.0.0",
     lifespan=lifespan
 )
 
@@ -89,35 +91,34 @@ app.add_middleware(
 
 
 # ============================================================================
-# MODULAR ROUTES - New Architecture
-# ============================================================================
-app.include_router(logistics_router, tags=["Logistics"])
-app.include_router(fleet_router, tags=["Fleet"])
-app.include_router(works_router, tags=["Works"])
-app.include_router(field_router, tags=["Field"])
-app.include_router(sites_router, tags=["Sites"])
-
-# ============================================================================
-# SHARED & CROSS-MODULE ROUTES
+# PRIMARY ROUTES - Civilian Terminology
 # ============================================================================
 app.include_router(auth_router, tags=["Authentication"])
 app.include_router(health_router, tags=["Health"])
+app.include_router(facilities_router, tags=["Facilities"])
 app.include_router(tasks_router, tags=["Tasks"])
+app.include_router(assets_router, tags=["Assets"])
+app.include_router(inventory_router, tags=["Inventory"])
+app.include_router(zones_router, tags=["Zones"])
 app.include_router(alerts_router, tags=["Alerts"])
 app.include_router(field_reports_router, tags=["Field Reports"])
 app.include_router(exports_router, tags=["Exports"])
+app.include_router(customers_router, tags=["Customers"])
+app.include_router(drivers_router, tags=["Drivers"])
+app.include_router(shipments_router, tags=["Shipments"])
 app.include_router(weather_router, tags=["Weather"])
 app.include_router(routing_router, tags=["Routing"])
 app.include_router(incidents_router, tags=["Incidents"])
 app.include_router(metrics_router, tags=["Metrics"])
-app.include_router(zones_router, tags=["Zones"])
-
 # ============================================================================
-# PUBLIC & DRIVER APP ROUTES
+# WEEK 1 COMMERCIAL MVP - Public & Driver Routes
 # ============================================================================
 app.include_router(tracking_router, tags=["Public Tracking"])
 app.include_router(driver_router, tags=["Driver App"])
-
+# ============================================================================
+# WORKS MODULE - Construction/Contracting Operations
+# ============================================================================
+app.include_router(works_router, tags=["Works"])
 # ============================================================================
 # DEPRECATED ROUTES - Backward Compatibility Only
 # ============================================================================
@@ -130,31 +131,23 @@ app.include_router(missions_router, tags=["Missions (Deprecated)"])
 async def root():
     """API root endpoint"""
     return {
-        "name": "SYLON Systems API",
-        "version": "2.0.0",
-        "description": "Modular Logistics & Operations Management Platform",
+        "name": "AEGIS Light API",
+        "version": "1.0.0",
+        "description": "Civil Logistics & Situational Awareness Platform",
         "documentation": "/docs",
         "status": "operational",
-        "modules": {
-            "logistics": {
-                "shipments": "/api/shipments",
-                "customers": "/api/customers"
-            },
-            "fleet": {
-                "drivers": "/api/drivers",
-                "assets": "/api/assets"
-            },
-            "works": {
-                "projects": "/api/v1/works/projects",
-                "work_orders": "/api/v1/works/work-orders"
-            },
-            "field": {
-                "sync": "/api/field/sync",
-                "sessions": "/api/field/sessions"
-            },
-            "sites": {
+        "endpoints": {
+            "primary": {
                 "facilities": "/api/facilities",
-                "inventory": "/api/inventory"
+                "tasks": "/api/tasks",
+                "assets": "/api/assets",
+                "inventory": "/api/inventory",
+                "alerts": "/api/alerts"
+            },
+            "deprecated": {
+                "bases": "/api/bases (use /api/facilities)",
+                "geofences": "/api/geofences (use /api/zones)",
+                "missions": "/api/missions (use /api/tasks)"
             }
         }
     }
@@ -164,17 +157,15 @@ async def root():
 async def api_info():
     """API information endpoint"""
     return {
-        "name": "SYLON Systems API",
-        "version": "2.0.0",
-        "description": "Modular RESTful API for logistics and asset management",
-        "architecture": "5-Module Design: Logistics, Fleet, Works, Field, Sites",
+        "name": "AEGIS Light API",
+        "version": "1.0.0",
+        "description": "RESTful API for logistics and asset management",
         "features": [
             "Real-time asset tracking",
             "Task management and routing",
             "Inventory control",
-            "Shipment tracking",
-            "Driver management",
-            "Field operations support"
+            "Geofencing and alerts",
+            "Field reporting"
         ]
     }
 
@@ -185,7 +176,7 @@ async def global_search(q: str):
     Global search across all entities: vehicles, drivers, packages, facilities.
     Returns categorized results based on the query string.
     """
-    from .shared.database import get_pool
+    from .database import get_pool
     from fastapi import Request
     
     if not q or len(q) < 2:

@@ -7,8 +7,8 @@ import csv
 from fastapi import APIRouter, HTTPException, Response, Depends
 from fastapi.responses import StreamingResponse
 from typing import List
-from ..database import get_pool
-from ..auth import require_admin
+from ..shared.database import get_pool
+from ..shared.auth import require_admin
 
 router = APIRouter(prefix="/api", tags=["alerts"])
 

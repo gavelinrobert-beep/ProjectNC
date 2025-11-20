@@ -10,8 +10,8 @@ from uuid import uuid4
 import json
 import base64
 
-from ..auth import bearer_role, get_current_user
-from ..database import get_pool
+from ..shared.auth import bearer_role, get_current_user
+from ..shared.database import get_pool
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/field-reports", tags=["field-reports"])

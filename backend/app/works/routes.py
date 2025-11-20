@@ -7,8 +7,8 @@ from typing import Optional, List
 from datetime import datetime
 import uuid
 
-from ..database import get_pool
-from ..auth import require_auth
+from ..shared.database import get_pool
+from ..shared.auth import require_auth
 from .models import (
     ProjectCreate, ProjectUpdate, ProjectResponse, ProjectStatistics,
     WorkOrderCreate, WorkOrderUpdate, WorkOrderResponse,
