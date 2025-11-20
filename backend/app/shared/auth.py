@@ -6,7 +6,7 @@ import jwt
 from datetime import datetime, timedelta, UTC
 from fastapi import Depends, Header, HTTPException
 from passlib.context import CryptContext
-from .config import JWT_SECRET, JWT_EXP_MIN
+from ..config import JWT_SECRET, JWT_EXP_MIN
 
 pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

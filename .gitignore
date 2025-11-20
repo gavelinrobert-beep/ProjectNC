@@ -46,6 +46,9 @@ logs/
 tmp/
 temp/
 *.tmp
+*_old.py
+*_temp.py
+*_backup.py
 
 # Database
 *.db

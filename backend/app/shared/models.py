@@ -1,10 +1,26 @@
 """
 Shared Pydantic models used across multiple modules.
 Includes authentication, tasks, geofences, and incident models.
+Also re-exports module-specific models for backward compatibility.
 """
 from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Literal
 from datetime import datetime, date
+
+# Import module-specific models for re-export
+from ..logistics.models import (
+    CustomerIn, CustomerOut,
+    ShipmentIn, ShipmentOut, ShipmentEvent, ProofOfDelivery, ShipmentItem
+)
+from ..fleet.models import (
+    DriverIn, DriverOut, DriverHoursLog,
+    AssetIn, AssetOut
+)
+from ..sites.models import (
+    FacilityIn, FacilityOut, BaseIn,
+    InventoryItemIn, InventoryItemOut,
+    InventoryTransactionIn, InventoryTransactionOut
+)
 
 
 # ============================================================================
