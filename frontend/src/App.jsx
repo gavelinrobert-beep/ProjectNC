@@ -25,6 +25,12 @@ import Training from './pages/Training'
 // Week 1 Commercial MVP - Public & Driver Pages
 import TrackDelivery from './pages/TrackDelivery'
 import DriverApp from './pages/DriverApp'
+// Works Module Pages
+import WorksDashboard from './pages/Works/WorksDashboard'
+import ProjectList from './pages/Works/ProjectList'
+import WorkOrderBoard from './pages/Works/WorkOrderBoard'
+import MachineHours from './pages/Works/MachineHours'
+import ChangeOrders from './pages/Works/ChangeOrders'
 
 function Sidebar({ isOpen, toggle }) {
   const location = useLocation()
@@ -36,6 +42,11 @@ function Sidebar({ isOpen, toggle }) {
   { name: 'Drivers', icon: '👤', path: '/drivers', section: 'LOGISTICS' },
   { name: 'Fleet & Resources', icon: '🚛', path: '/assets', section: 'LOGISTICS' },
   { name: 'Inventory', icon: '📦', path: '/inventory', section: 'LOGISTICS' },
+  { name: 'Works', icon: '🏗️', path: '/works', section: 'WORKS' },
+  { name: 'Projects', icon: '📁', path: '/works/projects', section: 'WORKS' },
+  { name: 'Work Orders', icon: '📋', path: '/works/work-orders', section: 'WORKS' },
+  { name: 'Machine Hours', icon: '⏱️', path: '/works/machine-hours', section: 'WORKS' },
+  { name: 'Change Orders', icon: '📝', path: '/works/change-orders', section: 'WORKS' },
   { name: 'Incidents', icon: '🚨', path: '/incidents', section: 'MANAGEMENT' },
   { name: 'Reports & Metrics', icon: '📈', path: '/metrics', section: 'MANAGEMENT' },
   { name: 'Administration', icon: '⚙️', path: '/admin', section: 'MANAGEMENT' }
@@ -300,6 +311,13 @@ function AppLayout() {
           <Route path="/incidents" element={<Incidents />} />
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/admin" element={<Admin />} />
+          
+          {/* Works Module Routes */}
+          <Route path="/works" element={<WorksDashboard />} />
+          <Route path="/works/projects" element={<ProjectList />} />
+          <Route path="/works/work-orders" element={<WorkOrderBoard />} />
+          <Route path="/works/machine-hours" element={<MachineHours />} />
+          <Route path="/works/change-orders" element={<ChangeOrders />} />
           
           {/* Redirects for backward compatibility */}
           <Route path="/shipments" element={<Navigate to="/tasks" replace />} />

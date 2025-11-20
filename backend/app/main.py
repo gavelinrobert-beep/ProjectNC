@@ -29,6 +29,8 @@ from .routes.metrics import router as metrics_router
 # Week 1 Commercial MVP routes
 from .routes.tracking import router as tracking_router
 from .routes.driver import router as driver_router
+# Works module - Construction/contracting operations
+from .works.routes import router as works_router
 # Legacy route aliases for backward compatibility (deprecated)
 from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
@@ -113,6 +115,10 @@ app.include_router(metrics_router, tags=["Metrics"])
 # ============================================================================
 app.include_router(tracking_router, tags=["Public Tracking"])
 app.include_router(driver_router, tags=["Driver App"])
+# ============================================================================
+# WORKS MODULE - Construction/Contracting Operations
+# ============================================================================
+app.include_router(works_router, tags=["Works"])
 # ============================================================================
 # DEPRECATED ROUTES - Backward Compatibility Only
 # ============================================================================
