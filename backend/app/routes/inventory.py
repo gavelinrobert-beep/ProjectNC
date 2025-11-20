@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 import uuid
-from ..database import get_pool
-from ..auth import require_auth
+from ..shared.database import get_pool
+from ..shared.auth import require_auth
 
 router = APIRouter(prefix='/api/inventory', tags=['inventory'])
 

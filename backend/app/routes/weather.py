@@ -93,7 +93,7 @@ async def weather_by_facility(facility_id: str, request: Request):
     GET /weather/{facility_id}
     Lookup facility by ID in database and fetch weather.
     """
-    from ..database import get_pool
+    from ..shared.database import get_pool
 
     print(f"[WEATHER] Looking up facility_id: {facility_id}")
 

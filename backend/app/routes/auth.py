@@ -2,9 +2,9 @@
 Authentication routes (login).
 """
 from fastapi import APIRouter, HTTPException, Request, Depends
-from ..models import LoginIn, LoginOut
-from ..auth import make_token, pwd
-from ..database import get_pool
+from ..shared.models import LoginIn, LoginOut
+from ..shared.auth import make_token, pwd
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api", tags=["auth"])
 

@@ -10,9 +10,9 @@ from typing import List
 from uuid import uuid4
 import json
 
-from ..models import BaseIn
-from ..auth import require_admin
-from ..database import get_pool
+from ..shared.models import BaseIn
+from ..shared.auth import require_admin
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api", tags=["bases-deprecated"])
 

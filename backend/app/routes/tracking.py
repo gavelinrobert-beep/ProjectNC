@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from typing import Optional
 from datetime import datetime
 
-from ..database import get_pool
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/track", tags=["tracking"])
 

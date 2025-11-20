@@ -10,8 +10,8 @@ import csv
 import io
 import json
 
-from ..auth import require_admin, bearer_role
-from ..database import get_pool
+from ..shared.auth import require_admin, bearer_role
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api/exports", tags=["exports"])
 
