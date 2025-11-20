@@ -184,4 +184,316 @@ export const getInventoryAlerts = async () => {
   return response.json();
 };
 
+// ============================================================================
+// WORKS MODULE API - Construction/Contracting Operations
+// ============================================================================
+
+// Projects
+export const getWorksProjects = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/projects?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch projects');
+  return response.json();
+};
+
+export const getWorksProject = async (projectId) => {
+  const url = `${API_BASE}/api/v1/works/projects/${projectId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch project');
+  return response.json();
+};
+
+export const createWorksProject = async (project) => {
+  const url = `${API_BASE}/api/v1/works/projects`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(project),
+  });
+  if (!response.ok) throw new Error('Failed to create project');
+  return response.json();
+};
+
+export const updateWorksProject = async (projectId, project) => {
+  const url = `${API_BASE}/api/v1/works/projects/${projectId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(project),
+  });
+  if (!response.ok) throw new Error('Failed to update project');
+  return response.json();
+};
+
+export const deleteWorksProject = async (projectId) => {
+  const url = `${API_BASE}/api/v1/works/projects/${projectId}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to delete project');
+};
+
+export const getWorksProjectStatistics = async (projectId) => {
+  const url = `${API_BASE}/api/v1/works/projects/${projectId}/statistics`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch project statistics');
+  return response.json();
+};
+
+// Work Orders
+export const getWorksWorkOrders = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/work-orders?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch work orders');
+  return response.json();
+};
+
+export const getWorksWorkOrder = async (workOrderId) => {
+  const url = `${API_BASE}/api/v1/works/work-orders/${workOrderId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch work order');
+  return response.json();
+};
+
+export const createWorksWorkOrder = async (workOrder) => {
+  const url = `${API_BASE}/api/v1/works/work-orders`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(workOrder),
+  });
+  if (!response.ok) throw new Error('Failed to create work order');
+  return response.json();
+};
+
+export const updateWorksWorkOrder = async (workOrderId, workOrder) => {
+  const url = `${API_BASE}/api/v1/works/work-orders/${workOrderId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(workOrder),
+  });
+  if (!response.ok) throw new Error('Failed to update work order');
+  return response.json();
+};
+
+export const deleteWorksWorkOrder = async (workOrderId) => {
+  const url = `${API_BASE}/api/v1/works/work-orders/${workOrderId}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to delete work order');
+};
+
+export const startWorksWorkOrder = async (workOrderId) => {
+  const url = `${API_BASE}/api/v1/works/work-orders/${workOrderId}/start`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to start work order');
+  return response.json();
+};
+
+export const completeWorksWorkOrder = async (workOrderId) => {
+  const url = `${API_BASE}/api/v1/works/work-orders/${workOrderId}/complete`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to complete work order');
+  return response.json();
+};
+
+// Machine Hours
+export const getWorksMachineHours = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/machine-hours?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch machine hours');
+  return response.json();
+};
+
+export const getWorksMachineHoursById = async (machineHoursId) => {
+  const url = `${API_BASE}/api/v1/works/machine-hours/${machineHoursId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch machine hours');
+  return response.json();
+};
+
+export const createWorksMachineHours = async (machineHours) => {
+  const url = `${API_BASE}/api/v1/works/machine-hours`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(machineHours),
+  });
+  if (!response.ok) throw new Error('Failed to create machine hours entry');
+  return response.json();
+};
+
+export const updateWorksMachineHours = async (machineHoursId, machineHours) => {
+  const url = `${API_BASE}/api/v1/works/machine-hours/${machineHoursId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(machineHours),
+  });
+  if (!response.ok) throw new Error('Failed to update machine hours entry');
+  return response.json();
+};
+
+export const getWorksProjectMachineHours = async (projectId) => {
+  const url = `${API_BASE}/api/v1/works/projects/${projectId}/machine-hours`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch project machine hours');
+  return response.json();
+};
+
+// Change Orders (ÄTA)
+export const getWorksChangeOrders = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/change-orders?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch change orders');
+  return response.json();
+};
+
+export const getWorksChangeOrder = async (changeOrderId) => {
+  const url = `${API_BASE}/api/v1/works/change-orders/${changeOrderId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch change order');
+  return response.json();
+};
+
+export const createWorksChangeOrder = async (changeOrder) => {
+  const url = `${API_BASE}/api/v1/works/change-orders`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(changeOrder),
+  });
+  if (!response.ok) throw new Error('Failed to create change order');
+  return response.json();
+};
+
+export const updateWorksChangeOrder = async (changeOrderId, changeOrder) => {
+  const url = `${API_BASE}/api/v1/works/change-orders/${changeOrderId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(changeOrder),
+  });
+  if (!response.ok) throw new Error('Failed to update change order');
+  return response.json();
+};
+
+export const submitWorksChangeOrder = async (changeOrderId) => {
+  const url = `${API_BASE}/api/v1/works/change-orders/${changeOrderId}/submit`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to submit change order');
+  return response.json();
+};
+
+export const approveWorksChangeOrder = async (changeOrderId) => {
+  const url = `${API_BASE}/api/v1/works/change-orders/${changeOrderId}/approve`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to approve change order');
+  return response.json();
+};
+
+export const rejectWorksChangeOrder = async (changeOrderId) => {
+  const url = `${API_BASE}/api/v1/works/change-orders/${changeOrderId}/reject`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to reject change order');
+  return response.json();
+};
+
+// Winter Maintenance
+export const getWorksWinterMaintenance = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/winter-maintenance?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch winter maintenance entries');
+  return response.json();
+};
+
+export const getWorksWinterMaintenanceById = async (winterMaintenanceId) => {
+  const url = `${API_BASE}/api/v1/works/winter-maintenance/${winterMaintenanceId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch winter maintenance entry');
+  return response.json();
+};
+
+export const createWorksWinterMaintenance = async (winterMaintenance) => {
+  const url = `${API_BASE}/api/v1/works/winter-maintenance`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(winterMaintenance),
+  });
+  if (!response.ok) throw new Error('Failed to create winter maintenance entry');
+  return response.json();
+};
+
+export const updateWorksWinterMaintenance = async (winterMaintenanceId, winterMaintenance) => {
+  const url = `${API_BASE}/api/v1/works/winter-maintenance/${winterMaintenanceId}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(winterMaintenance),
+  });
+  if (!response.ok) throw new Error('Failed to update winter maintenance entry');
+  return response.json();
+};
+
+// Documentation
+export const getWorksDocumentation = async (filters = {}) => {
+  const params = new URLSearchParams(filters);
+  const url = `${API_BASE}/api/v1/works/documentation?${params}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch documentation');
+  return response.json();
+};
+
+export const getWorksDocumentationById = async (documentationId) => {
+  const url = `${API_BASE}/api/v1/works/documentation/${documentationId}`;
+  const response = await fetch(url, { headers: authHeader() });
+  if (!response.ok) throw new Error('Failed to fetch document');
+  return response.json();
+};
+
+export const uploadWorksDocumentation = async (documentation) => {
+  const url = `${API_BASE}/api/v1/works/documentation`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    body: JSON.stringify(documentation),
+  });
+  if (!response.ok) throw new Error('Failed to upload document');
+  return response.json();
+};
+
+export const deleteWorksDocumentation = async (documentationId) => {
+  const url = `${API_BASE}/api/v1/works/documentation/${documentationId}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: authHeader(),
+  });
+  if (!response.ok) throw new Error('Failed to delete document');
+};
+
 export default api;
