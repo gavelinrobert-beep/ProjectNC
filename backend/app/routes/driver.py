@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, date
 
-from ..database import get_pool
+from ..shared.database import get_pool
 from .tracking import broadcast_location_update
 
 router = APIRouter(prefix="/api/driver", tags=["driver"])

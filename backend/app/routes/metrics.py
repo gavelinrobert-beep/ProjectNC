@@ -5,8 +5,8 @@ Provides resource status, performance metrics, and other analytics data.
 from fastapi import APIRouter, Request, Depends
 from typing import Optional
 from datetime import datetime, timedelta
-from ..database import get_pool
-from ..auth import require_auth
+from ..shared.database import get_pool
+from ..shared.auth import require_auth
 
 router = APIRouter(prefix="/api/metrics", tags=["metrics"])
 

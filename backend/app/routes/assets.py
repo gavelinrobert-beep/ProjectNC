@@ -5,9 +5,9 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import List
 from uuid import uuid4
 
-from ..models import AssetIn
-from ..auth import require_admin
-from ..database import get_pool
+from ..shared.models import AssetIn
+from ..shared.auth import require_admin
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api", tags=["assets"])
 

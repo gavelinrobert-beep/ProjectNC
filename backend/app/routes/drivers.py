@@ -6,9 +6,9 @@ from typing import List
 from uuid import uuid4
 from datetime import date
 
-from ..models import DriverIn, DriverOut
-from ..auth import require_admin
-from ..database import get_pool
+from ..shared.models import DriverIn, DriverOut
+from ..shared.auth import require_admin
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api/drivers", tags=["drivers"])
 

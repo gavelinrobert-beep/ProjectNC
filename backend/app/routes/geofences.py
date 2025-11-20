@@ -5,9 +5,9 @@ Polygon is expected as a list of [lat, lon] pairs.
 import json
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
-from ..models import GeofenceIn
-from ..auth import require_admin
-from ..database import get_pool
+from ..shared.models import GeofenceIn
+from ..shared.auth import require_admin
+from ..shared.database import get_pool
 
 router = APIRouter(prefix="/api", tags=["geofences"])
 

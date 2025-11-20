@@ -8,8 +8,8 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 import json
 
-from ..database import get_pool
-from ..auth import require_auth, get_current_user
+from ..shared.database import get_pool
+from ..shared.auth import require_auth, get_current_user
 
 router = APIRouter(prefix="/api", tags=["incidents"])
 
