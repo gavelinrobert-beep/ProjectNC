@@ -63,13 +63,23 @@ async def get_current_user(authorization: str = Header(None)) -> dict:
 
 
 def require_auth(authorization: str = Header(None)) -> dict:
-    """Bypass authentication - allow all requests"""
-    return {
-        'sub': 'admin@aegis.local',
-        'role': 'admin',
-        'email': 'admin@aegis.local'
-    }
-
+    """
+    Authenticate requests using JWT tokens.
+    In development mode, bypasses authentication for testing.
+    """
+    # Development bypass - TODO: Remove in production
+    import os
+    if os.getenv("DEVELOPMENT_MODE", "false").lower() == "true":
+        return {
+            'sub': 'admin@sylon.local',
+            'role': 'admin',
+            'email': 'admin@sylon.local'
+        }
+    
+    # Production authentication
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
+    
     try:
         token = authorization.replace("Bearer ", "")
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])

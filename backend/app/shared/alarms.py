@@ -6,7 +6,14 @@ import asyncio
 
 async def create_alarm(conn, asset_id: str, alarm_type: str, geofence_id: str = None, extra_data: str = "", alert_subs=None):
     """Create an alarm with type and color information."""
-    alarm_info = ALARM_TYPES.get(alarm_type, ALARM_TYPES["system_normal"])
+    # Default alarm info for unknown types
+    default_alarm = {
+        "name": "System Alert",
+        "color": "#808080",
+        "severity": "medium",
+        "icon": "ℹ️"
+    }
+    alarm_info = ALARM_TYPES.get(alarm_type, default_alarm)
     rule = f"{alarm_info['icon']} {alarm_info['name']}"
     if extra_data:
         rule += f" - {extra_data}"
