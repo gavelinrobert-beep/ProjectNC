@@ -66,8 +66,10 @@ def require_auth(authorization: str = Header(None)) -> dict:
     """
     Authenticate requests using JWT tokens.
     In development mode, bypasses authentication for testing.
+    
+    SECURITY WARNING: Set DEVELOPMENT_MODE=false in production!
     """
-    # Development bypass - TODO: Remove in production
+    # Development bypass - MUST be disabled in production
     import os
     if os.getenv("DEVELOPMENT_MODE", "false").lower() == "true":
         return {
