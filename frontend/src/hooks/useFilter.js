@@ -62,7 +62,7 @@ export function useFilter(data, config = {}) {
     }
 
     return result
-  }, [data, searchQuery, statusFilter, typeFilter, categoryFilter, stockLevelFilter, dateRange, config])
+  }, [data, searchQuery, statusFilter, typeFilter, categoryFilter, stockLevelFilter, dateRange]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     filteredData,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 export default function SearchBar({ placeholder = "Search...", onSearch, debounceMs = 300 }) {
   const [value, setValue] = useState('')
@@ -9,7 +9,7 @@ export default function SearchBar({ placeholder = "Search...", onSearch, debounc
     }, debounceMs)
 
     return () => clearTimeout(timer)
-  }, [value, debounceMs, onSearch])
+  }, [value, debounceMs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="relative">

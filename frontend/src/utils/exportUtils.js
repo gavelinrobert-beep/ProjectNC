@@ -4,7 +4,10 @@
  * @param {string} filename - Filename without extension
  */
 export function exportToCSV(data, filename) {
-  if (!data || data.length === 0) return
+  if (!data || data.length === 0) {
+    console.warn('No data to export')
+    return
+  }
 
   const headers = Object.keys(data[0])
   const csvContent = [
