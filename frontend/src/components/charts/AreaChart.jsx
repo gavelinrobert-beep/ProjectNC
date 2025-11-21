@@ -1,13 +1,17 @@
 import { AreaChart as RechartsArea, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { useState, useEffect } from 'react'
 
 export default function AreaChart({ data, xKey, yKey, title, color = '#8B5CF6', height = 300 }) {
+  // Generate unique ID to avoid gradient conflicts when multiple AreaCharts use same yKey
+  const [gradientId] = useState(() => `gradient-${yKey}-${Math.random().toString(36).substr(2, 9)}`)
+  
   return (
     <div className="bg-white rounded-lg shadow p-4">
       {title && <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>}
       <ResponsiveContainer width="100%" height={height}>
         <RechartsArea data={data}>
           <defs>
-            <linearGradient id={`gradient-${yKey}`} x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={color} stopOpacity={0.8}/>
               <stop offset="95%" stopColor={color} stopOpacity={0.1}/>
             </linearGradient>
@@ -28,7 +32,7 @@ export default function AreaChart({ data, xKey, yKey, title, color = '#8B5CF6', 
             dataKey={yKey} 
             stroke={color} 
             strokeWidth={2}
-            fill={`url(#gradient-${yKey})`}
+            fill={`url(#${gradientId})`}
           />
         </RechartsArea>
       </ResponsiveContainer>

@@ -4,13 +4,10 @@
 
 /**
  * Generate trend data for the last N days
- * @param {Array} data - Original data array
- * @param {string} dateKey - Key for date field
- * @param {string} valueKey - Key for value field
  * @param {number} days - Number of days to generate (default: 7)
- * @returns {Array} Array of trend data objects
+ * @returns {Array} Array of trend data objects with date and value
  */
-export function generateTrendData(data, dateKey, valueKey, days = 7) {
+export function generateTrendData(days = 7) {
   // Generate mock trend data for last N days
   const result = []
   for (let i = days - 1; i >= 0; i--) {
