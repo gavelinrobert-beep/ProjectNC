@@ -24,6 +24,7 @@ export const fleetApi = {
   getDriverBehavior: (driverId, params) => axios.get(`${BASE_URL}/api/fleet/driver-behavior/${driverId}`, { params }),
 
   // Maintenance
+  getMaintenance: () => axios.get(`${BASE_URL}/api/fleet/maintenance`),
   getMaintenanceEvents: (vehicleId) => axios.get(`${BASE_URL}/api/fleet/maintenance/${vehicleId}`),
   createMaintenanceEvent: (data) => axios.post(`${BASE_URL}/api/fleet/maintenance`, data),
   updateMaintenanceEvent: (id, data) => axios.put(`${BASE_URL}/api/fleet/maintenance/${id}`, data),
