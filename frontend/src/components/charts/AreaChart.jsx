@@ -1,9 +1,10 @@
 import { AreaChart as RechartsArea, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function AreaChart({ data, xKey, yKey, title, color = '#8B5CF6', height = 300 }) {
   // Generate unique ID to avoid gradient conflicts when multiple AreaCharts use same yKey
-  const [gradientId] = useState(() => `gradient-${yKey}-${Math.random().toString(36).substr(2, 9)}`)
+  // Using timestamp + random for better uniqueness in production
+  const [gradientId] = useState(() => `gradient-${yKey}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
   
   return (
     <div className="bg-white rounded-lg shadow p-4">
