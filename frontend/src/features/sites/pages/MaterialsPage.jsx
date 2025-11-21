@@ -5,7 +5,6 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
-import { getStatusLabel } from '../../../utils/statusHelpers'
 
 export default function MaterialsPage() {
   const { data: materials, loading, error, refetch } = useApi(() => sitesApi.getMaterials())
