@@ -30,7 +30,7 @@ export default function RoutesPage() {
     },
     {
       id: 2,
-      name: 'Göteborg North',
+      name: 'Stockholm North',
       path: [
         [59.3193, 18.0486],
         [59.3093, 18.0586],
@@ -193,6 +193,8 @@ export default function RoutesPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Route Visualization</h2>
         <MapView
+          center={[59.3293, 18.0686]}
+          zoom={12}
           routes={routePaths}
           markers={vehicleMarkers}
           height={400}

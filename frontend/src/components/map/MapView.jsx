@@ -24,17 +24,6 @@ export default function MapView({
   geofences = [],
   height = 500
 }) {
-  
-  // Custom icon based on marker status
-  const getMarkerColor = (status) => {
-    switch(status) {
-      case 'active': return '#10B981' // green
-      case 'idle': return '#F59E0B' // yellow
-      case 'maintenance': return '#EF4444' // red
-      default: return '#4A90E2' // blue
-    }
-  }
-
   return (
     <div className="rounded-lg overflow-hidden shadow-lg">
       <MapContainer
