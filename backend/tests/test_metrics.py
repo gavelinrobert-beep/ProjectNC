@@ -1,5 +1,5 @@
 """
-Test metrics endpoints to verify performance tracking works correctly.
+Test metrics.py endpoints to verify performance tracking works correctly.
 """
 import pytest
 from httpx import AsyncClient
@@ -7,9 +7,9 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_get_resource_status(async_client: AsyncClient, auth_headers_admin):
-    """Test getting resource status metrics."""
+    """Test getting resource status metrics.py."""
     response = await async_client.get(
-        "/api/metrics/resource-status",
+        "/api/metrics.py/resource-status",
         headers=auth_headers_admin
     )
     
@@ -28,9 +28,9 @@ async def test_get_resource_status(async_client: AsyncClient, auth_headers_admin
 
 @pytest.mark.asyncio
 async def test_get_performance_metrics_default(async_client: AsyncClient, auth_headers_admin):
-    """Test getting performance metrics with default period (7 days)."""
+    """Test getting performance metrics.py with default period (7 days)."""
     response = await async_client.get(
-        "/api/metrics/performance",
+        "/api/metrics.py/performance",
         headers=auth_headers_admin
     )
     
@@ -59,9 +59,9 @@ async def test_get_performance_metrics_default(async_client: AsyncClient, auth_h
 
 @pytest.mark.asyncio
 async def test_get_performance_metrics_today(async_client: AsyncClient, auth_headers_admin):
-    """Test getting performance metrics for today."""
+    """Test getting performance metrics.py for today."""
     response = await async_client.get(
-        "/api/metrics/performance?period=today",
+        "/api/metrics.py/performance?period=today",
         headers=auth_headers_admin
     )
     
@@ -75,9 +75,9 @@ async def test_get_performance_metrics_today(async_client: AsyncClient, auth_hea
 
 @pytest.mark.asyncio
 async def test_get_performance_metrics_30days(async_client: AsyncClient, auth_headers_admin):
-    """Test getting performance metrics for 30 days."""
+    """Test getting performance metrics.py for 30 days."""
     response = await async_client.get(
-        "/api/metrics/performance?period=30days",
+        "/api/metrics.py/performance?period=30days",
         headers=auth_headers_admin
     )
     
@@ -91,9 +91,9 @@ async def test_get_performance_metrics_30days(async_client: AsyncClient, auth_he
 
 @pytest.mark.asyncio
 async def test_get_metrics_summary(async_client: AsyncClient, auth_headers_admin):
-    """Test getting metrics summary combining resource status and performance."""
+    """Test getting metrics.py summary combining resource status and performance."""
     response = await async_client.get(
-        "/api/metrics/summary",
+        "/api/metrics.py/summary",
         headers=auth_headers_admin
     )
     
@@ -112,25 +112,25 @@ async def test_get_metrics_summary(async_client: AsyncClient, auth_headers_admin
 
 @pytest.mark.asyncio
 async def test_metrics_requires_auth(async_client: AsyncClient):
-    """Test that metrics endpoints require authentication."""
+    """Test that metrics.py endpoints require authentication."""
     # Test resource-status without auth
-    resource_response = await async_client.get("/api/metrics/resource-status")
+    resource_response = await async_client.get("/api/metrics.py/resource-status")
     assert resource_response.status_code in [401, 403], f"Expected auth error, got {resource_response.status_code}"
     
     # Test performance without auth
-    performance_response = await async_client.get("/api/metrics/performance")
+    performance_response = await async_client.get("/api/metrics.py/performance")
     assert performance_response.status_code in [401, 403], f"Expected auth error, got {performance_response.status_code}"
     
     # Test summary without auth
-    summary_response = await async_client.get("/api/metrics/summary")
+    summary_response = await async_client.get("/api/metrics.py/summary")
     assert summary_response.status_code in [401, 403], f"Expected auth error, got {summary_response.status_code}"
 
 
 @pytest.mark.asyncio
 async def test_performance_metrics_numeric_values(async_client: AsyncClient, auth_headers_admin):
-    """Test that performance metrics return valid numeric values."""
+    """Test that performance metrics.py return valid numeric values."""
     response = await async_client.get(
-        "/api/metrics/performance",
+        "/api/metrics.py/performance",
         headers=auth_headers_admin
     )
     
@@ -156,9 +156,9 @@ async def test_performance_metrics_numeric_values(async_client: AsyncClient, aut
 
 @pytest.mark.asyncio
 async def test_get_live_operations(async_client: AsyncClient, auth_headers_admin):
-    """Test getting live operations metrics."""
+    """Test getting live operations metrics.py."""
     response = await async_client.get(
-        "/api/metrics/live-operations",
+        "/api/metrics.py/live-operations",
         headers=auth_headers_admin
     )
     
@@ -189,5 +189,5 @@ async def test_get_live_operations(async_client: AsyncClient, auth_headers_admin
 @pytest.mark.asyncio
 async def test_live_operations_requires_auth(async_client: AsyncClient):
     """Test that live operations endpoint requires authentication."""
-    response = await async_client.get("/api/metrics/live-operations")
+    response = await async_client.get("/api/metrics.py/live-operations")
     assert response.status_code in [401, 403], f"Expected auth error, got {response.status_code}"

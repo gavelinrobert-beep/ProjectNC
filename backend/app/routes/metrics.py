@@ -1,6 +1,6 @@
 """
 Metrics API endpoints for dashboard widgets and performance tracking.
-Provides resource status, performance metrics, and other analytics data.
+Provides resource status, performance metrics.py, and other analytics data.
 """
 from fastapi import APIRouter, Request, Depends
 from typing import Optional
@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from ..shared.database import get_pool
 from ..shared.auth import require_auth
 
-router = APIRouter(prefix="/api/metrics", tags=["metrics"])
+router = APIRouter(prefix="/api/metrics.py", tags=["metrics.py"])
 
 
 @router.get("/resource-status")
@@ -18,7 +18,7 @@ async def get_resource_status(
 ):
     """
     Get fleet resource status for the dashboard widget.
-    Returns counts for different asset statuses and utilization metrics.
+    Returns counts for different asset statuses and utilization metrics.py.
     """
     pool = await get_pool(request.app)
     
@@ -81,7 +81,7 @@ async def get_performance_metrics(
     _user: dict = Depends(require_auth)
 ):
     """
-    Get performance metrics for tracking deliveries, distance, and efficiency.
+    Get performance metrics.py for tracking deliveries, distance, and efficiency.
     Supports filtering by period: today, 7days, 30days.
     Now includes trend data comparing to previous period.
     """
@@ -247,12 +247,12 @@ async def get_metrics_summary(
     _user: dict = Depends(require_auth)
 ):
     """
-    Get a summary of key metrics for the dashboard.
+    Get a summary of key metrics.py for the dashboard.
     Combines resource status and recent performance data.
     """
     pool = await get_pool(request.app)
     
-    # Get resource status and performance metrics
+    # Get resource status and performance metrics.py
     resource_status = await get_resource_status(request, _user)
     performance = await get_performance_metrics(request, "7days", _user)
     
@@ -355,7 +355,7 @@ async def get_performance_history(
     _user: dict = Depends(require_auth)
 ):
     """
-    Get historical performance metrics for trend charts.
+    Get historical performance metrics.py for trend charts.
     Returns daily data points: date, deliveries, distance_km, avg_time_hrs, on_time_rate
     """
     pool = await get_pool(request.app)

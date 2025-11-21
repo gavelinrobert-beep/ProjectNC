@@ -142,7 +142,7 @@ async def create_mission(payload: MissionIn, request: Request):
                 raise HTTPException(status_code=404, detail="Asset not found")
             asset_speed = asset['speed'] if asset['speed'] > 0 else 50.0
 
-        # Calculate mission metrics (use actual distance if available from routing)
+        # Calculate mission metrics.py (use actual distance if available from routing)
         if actual_distance_km:
             # Calculate duration based on actual road distance
             duration_hours = actual_distance_km / asset_speed if asset_speed > 0 else 0
@@ -236,7 +236,7 @@ async def update_mission(mission_id: str, payload: MissionIn, request: Request):
             if asset:
                 asset_speed = asset['speed'] if asset['speed'] > 0 else 50.0
 
-        # Recalculate metrics
+        # Recalculate metrics.py
         metrics = calculate_mission_metrics(waypoints_data, asset_speed)
 
         # Update timestamps based on status changes

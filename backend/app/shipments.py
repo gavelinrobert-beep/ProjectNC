@@ -887,7 +887,7 @@ async def get_shipments_overview(request: Request):
 @router.get("/stats/performance")
 async def get_shipment_performance(request: Request, days: int = 30):
     """
-    Get shipment performance metrics.
+    Get shipment performance metrics.py.
     Shows delivery success rate, average delivery time, etc.
 
     - **days**: Number of days to analyze (default: 30)

@@ -190,7 +190,7 @@ def test_mission_endpoint_requires_auth(test_client: TestClient, mock_mission_pa
 
 @pytest.mark.asyncio
 async def test_mission_metrics_calculation(async_client: AsyncClient, auth_headers_admin):
-    """Test that mission metrics (distance, duration) are calculated correctly."""
+    """Test that mission metrics.py (distance, duration) are calculated correctly."""
     payload = {
         "name": "Test Metrics Mission",
         "description": "Test distance and duration calculation",
@@ -210,5 +210,5 @@ async def test_mission_metrics_calculation(async_client: AsyncClient, auth_heade
     
     if response.status_code in [200, 201]:
         data = response.json()
-        # Should have calculated metrics
+        # Should have calculated metrics.py
         assert "estimated_duration_minutes" in data or "estimated_distance_km" in data

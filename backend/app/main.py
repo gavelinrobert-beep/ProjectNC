@@ -28,6 +28,7 @@ from .routes.incidents import router as incidents_router
 from .routes.metrics import router as metrics_router
 from .routes.tracking import router as tracking_router
 from .routes.driver import router as driver_router
+from app.routers import logistics, fleet, sites, works, metrics
 # Legacy route aliases for backward compatibility (deprecated)
 from .routes.bases import router as bases_router
 from .routes.geofences import router as geofences_router
@@ -96,7 +97,11 @@ app.include_router(fleet_router, tags=["Fleet"])
 app.include_router(works_router, tags=["Works"])
 app.include_router(field_router, tags=["Field"])
 app.include_router(sites_router, tags=["Sites"])
-
+app.include_router(logistics.router)
+app.include_router(fleet.router)
+app.include_router(sites.router)
+app.include_router(works.router)
+app.include_router(metrics.router)
 # ============================================================================
 # SHARED & CROSS-MODULE ROUTES
 # ============================================================================
