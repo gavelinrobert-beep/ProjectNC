@@ -7,11 +7,51 @@ import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import MapView from '../../../components/map/MapView'
 
 export default function DepotsPage() {
   const { data: depots, loading, error, refetch } = useApi(() => sitesApi.getDepots())
   const [selectedDepot, setSelectedDepot] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  // Mock depot locations (Stockholm area)
+  const depotLocations = [
+    {
+      id: 1,
+      name: 'Stockholm Depot',
+      lat: 59.3293,
+      lng: 18.0686,
+      address: 'Stockholm South Industrial Area',
+      capacity: 1000
+    },
+    {
+      id: 2,
+      name: 'Göteborg Depot',
+      lat: 57.7089,
+      lng: 11.9746,
+      address: 'Göteborg North Harbor',
+      capacity: 800
+    }
+  ]
+
+  const depotGeofences = [
+    {
+      id: 1,
+      name: 'Stockholm Depot Zone',
+      lat: 59.3293,
+      lng: 18.0686,
+      radius: 500,
+      color: '#10B981'
+    },
+    {
+      id: 2,
+      name: 'Göteborg Depot Zone',
+      lat: 57.7089,
+      lng: 11.9746,
+      radius: 500,
+      color: '#4A90E2'
+    }
+  ]
 
   const handleViewDetails = (depot) => {
     setSelectedDepot(depot)
@@ -84,6 +124,18 @@ export default function DepotsPage() {
           <div className="text-sm text-gray-500">Avg Capacity Utilization</div>
           <div className="text-2xl font-bold text-blue-600">{avgUtilization}%</div>
         </div>
+      </div>
+
+      {/* Depot Locations Map */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Depot Locations</h2>
+        <MapView
+          center={[59.3293, 18.0686]}
+          zoom={6}
+          depots={depotLocations}
+          geofences={depotGeofences}
+          height={450}
+        />
       </div>
 
       {/* Depot Grid */}
