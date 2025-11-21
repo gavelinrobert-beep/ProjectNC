@@ -5,6 +5,10 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function InventoryPage() {
   const { data: inventory, loading, error, refetch } = useApi(() => sitesApi.getAllInventory())
@@ -16,6 +20,20 @@ export default function InventoryPage() {
     if (item.quantity <= (item.reorder_level || 0)) return 'low_stock'
     return 'in_stock'
   }
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    categoryFilter,
+    setCategoryFilter,
+    stockLevelFilter,
+    setStockLevelFilter,
+    clearFilters
+  } = useFilter(inventory, {
+    searchFields: ['item_name', 'sku', 'description'],
+    getStockStatus
+  })
 
   const getStockStatusColor = (status) => {
     switch (status) {
@@ -162,10 +180,60 @@ export default function InventoryPage() {
         </div>
       </div>
 
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search inventory..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Category"
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            options={Array.from(new Set(inventory?.map(i => i.category).filter(Boolean) || [])).map(cat => ({
+              value: cat,
+              label: cat
+            }))}
+          />
+
+          <FilterDropdown
+            label="Stock Level"
+            value={stockLevelFilter}
+            onChange={setStockLevelFilter}
+            options={[
+              { value: 'in_stock', label: 'In Stock' },
+              { value: 'low_stock', label: 'Low Stock' },
+              { value: 'out_of_stock', label: 'Out of Stock' }
+            ]}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'inventory')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'inventory')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== inventory?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {inventory?.length || 0} items
+          </div>
+        )}
+      </div>
+
       {/* Table */}
       <Table
         columns={columns}
-        data={inventory || []}
+        data={filteredData || []}
         loading={loading}
         onRowClick={(row) => {
           setSelectedItem(row)
