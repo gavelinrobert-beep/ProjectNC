@@ -1,51 +1,36 @@
+import axios from 'axios'
+
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-class ApiClient {
-  async request(endpoint, options = {}) {
-    const token = localStorage.getItem('auth_token')
-    
-    const config = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-        ...options.headers
-      }
-    }
-    
-    const response = await fetch(`${API_BASE}${endpoint}`, config)
-    
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ 
-        message: response.statusText 
-      }))
-      throw new Error(error.message || `HTTP ${response.status}`)
-    }
-    
-    return response.json()
+const apiClient = axios.create({
+  baseURL: API_BASE,
+  headers: {
+    'Content-Type': 'application/json'
   }
-  
-  get(endpoint) {
-    return this.request(endpoint, { method: 'GET' })
-  }
-  
-  post(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  }
-  
-  put(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-  }
-  
-  delete(endpoint) {
-    return this.request(endpoint, { method: 'DELETE' })
-  }
-}
+})
 
-export const apiClient = new ApiClient()
+// Request interceptor
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Response interceptor
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // On 401 errors, force a hard redirect to login page to clear all state
+    // Using window.location instead of React Router to ensure complete state reset
+    if (error.response?.status === 401 && window.location.pathname !== '/login') {
+      localStorage.removeItem('token')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
+
+export default apiClient
+export { apiClient }
