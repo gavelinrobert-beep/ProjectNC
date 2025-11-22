@@ -150,6 +150,8 @@ export default function DepotsPage() {
           geofences={depotGeofences}
           height={450}
         />
+      </div>
+
       {/* Search and Filter Toolbar */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

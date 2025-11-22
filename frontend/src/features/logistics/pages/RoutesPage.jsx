@@ -214,6 +214,8 @@ export default function RoutesPage() {
           markers={vehicleMarkers}
           height={400}
         />
+      </div>
+
       {/* Search and Filter Toolbar */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
