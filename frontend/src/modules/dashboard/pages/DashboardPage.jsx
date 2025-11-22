@@ -117,10 +117,13 @@ export default function DashboardPage() {
     })
   }
   
-  // Sort by time descending
+  // Sort by time descending, filtering out items without timestamps
   recentActivity.sort((a, b) => {
-    const timeA = new Date(a.time || 0)
-    const timeB = new Date(b.time || 0)
+    if (!a.time && !b.time) return 0
+    if (!a.time) return 1
+    if (!b.time) return -1
+    const timeA = new Date(a.time)
+    const timeB = new Date(b.time)
     return timeB - timeA
   })
 

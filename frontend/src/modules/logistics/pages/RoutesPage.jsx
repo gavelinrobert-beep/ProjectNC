@@ -383,7 +383,7 @@ export default function RoutesPage() {
                 </div>
               </div>
             )}
-            {selectedRoute.stops && selectedRoute.stops.length > 0 && !selectedRoute.deliveries && (
+            {selectedRoute.stops && selectedRoute.stops.length > 0 && (!selectedRoute.deliveries || selectedRoute.deliveries.length === 0) && (
               <div>
                 <label className="text-sm font-medium text-gray-700">Stops ({selectedRoute.stops.length})</label>
                 <div className="mt-2 space-y-2">
