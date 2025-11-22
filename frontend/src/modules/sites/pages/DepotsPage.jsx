@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { sitesApi } from '../../../features/sites/api/sitesApi'
-import { useApi } from '../../../hooks/useApi'
+import { useDepots } from '../hooks/useDepots'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
@@ -14,7 +13,7 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function DepotsPage() {
-  const { data: depots, loading, error, refetch } = useApi(() => sitesApi.getDepots())
+  const { data: depots, isLoading: loading, error, refetch } = useDepots()
   const [selectedDepot, setSelectedDepot] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -82,7 +81,7 @@ export default function DepotsPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Depots</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>

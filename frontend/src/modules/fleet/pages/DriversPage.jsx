@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { fleetApi } from '../../../features/fleet/api/fleetApi'
-import { useApi } from '../../../hooks/useApi'
+import { useDrivers } from '../hooks/useDrivers'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
@@ -13,7 +12,7 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function DriversPage() {
-  const { data: drivers, loading, error, refetch } = useApi(() => fleetApi.getDrivers())
+  const { data: drivers, isLoading: loading, error, refetch } = useDrivers()
   const [selectedDriver, setSelectedDriver] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -86,7 +85,7 @@ export default function DriversPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Drivers</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>

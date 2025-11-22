@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { fleetApi } from '../../../features/fleet/api/fleetApi'
-import { useApi } from '../../../hooks/useApi'
+import { useVehicles } from '../hooks/useVehicles'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
@@ -13,7 +12,7 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function VehiclesPage() {
-  const { data: vehicles, loading, error, refetch } = useApi(() => fleetApi.getVehicles())
+  const { data: vehicles, isLoading: loading, error, refetch } = useVehicles()
   const [selectedVehicle, setSelectedVehicle] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -45,7 +44,7 @@ export default function VehiclesPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Vehicles</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>
