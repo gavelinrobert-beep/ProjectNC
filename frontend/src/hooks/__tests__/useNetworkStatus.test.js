@@ -47,7 +47,7 @@ describe('useNetworkStatus', () => {
     
     await waitFor(() => {
       expect(result.current).toBe(true)
-      expect(toast.success).toHaveBeenCalledWith('Connection restored')
+      expect(toast.success).toHaveBeenCalledWith('Connection restored', { duration: 3000 })
     })
   })
 
@@ -61,7 +61,32 @@ describe('useNetworkStatus', () => {
     
     await waitFor(() => {
       expect(result.current).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith('No internet connection', { duration: 10000 })
+      expect(toast.error).toHaveBeenCalledWith('No internet connection', { duration: 5000 })
+    })
+  })
+
+  it('dismisses offline toast when connection is restored', async () => {
+    toast.error.mockReturnValue('toast-id')
+    const { result } = renderHook(() => useNetworkStatus())
+    
+    // Simulate going offline first
+    if (offlineHandler) {
+      offlineHandler()
+    }
+    
+    await waitFor(() => {
+      expect(result.current).toBe(false)
+    })
+    
+    // Then simulate going online
+    if (onlineHandler) {
+      onlineHandler()
+    }
+    
+    await waitFor(() => {
+      expect(result.current).toBe(true)
+      expect(toast.dismiss).toHaveBeenCalledWith('toast-id')
+      expect(toast.success).toHaveBeenCalledWith('Connection restored', { duration: 3000 })
     })
   })
 })
