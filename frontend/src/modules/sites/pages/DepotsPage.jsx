@@ -95,6 +95,17 @@ export default function DepotsPage() {
 
   return (
     <div className="p-6">
+      {/* Module indicator */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+          Sites Module
+        </span>
+        <span className="text-gray-300">•</span>
+        <span className="text-xs text-gray-600">
+          Manage depot locations and operations
+        </span>
+      </div>
+
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
