@@ -53,7 +53,7 @@ export default function MaintenancePage() {
     {
       key: 'cost',
       label: 'Cost',
-      render: (value) => value ? `$${value.toFixed(2)}` : 'N/A'
+      render: (value) => formatCurrency(value, 'USD')
     },
     {
       key: 'actions',
@@ -238,7 +238,7 @@ export default function MaintenancePage() {
             {selectedMaintenance.cost && (
               <div>
                 <label className="text-sm font-medium text-gray-700">Cost</label>
-                <p className="text-gray-900">${selectedMaintenance.cost.toFixed(2)}</p>
+                <p className="text-gray-900">{formatCurrency(selectedMaintenance.cost, 'USD')}</p>
               </div>
             )}
             {selectedMaintenance.description && (
