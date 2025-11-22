@@ -176,6 +176,30 @@ export default function VehiclesPage() {
                       <span className="font-medium text-gray-900">{vehicle.odometer} km</span>
                     </div>
                   )}
+                  {vehicle.current_driver_id && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Driver:</span>
+                      <span className="font-medium text-gray-900 flex items-center gap-1">
+                        <span>👤</span>
+                        {vehicle.driver_name || vehicle.current_driver_id}
+                      </span>
+                    </div>
+                  )}
+                  {vehicle.home_facility_id && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Home Depot:</span>
+                      <span className="font-medium text-gray-900 flex items-center gap-1">
+                        <span>🏢</span>
+                        {vehicle.depot_name || vehicle.home_facility_id}
+                      </span>
+                    </div>
+                  )}
+                  {vehicle.current_route && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Current Route:</span>
+                      <span className="font-medium text-blue-600">{vehicle.current_route}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2 pt-2">
                   <Button 
@@ -234,6 +258,38 @@ export default function VehiclesPage() {
               <div className="mt-1">
                 <StatusBadge status={selectedVehicle.status} />
               </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Current Assignment</label>
+              <div className="mt-1 space-y-2">
+                {selectedVehicle.current_driver_id ? (
+                  <p className="text-gray-900 flex items-center gap-2">
+                    <span>👤</span>
+                    <span>Driver: {selectedVehicle.driver_name || selectedVehicle.current_driver_id}</span>
+                  </p>
+                ) : (
+                  <p className="text-gray-400">No driver assigned</p>
+                )}
+                {selectedVehicle.current_route && (
+                  <p className="text-gray-900">Route: {selectedVehicle.current_route}</p>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Home Depot</label>
+              {selectedVehicle.home_facility_id ? (
+                <div className="mt-1">
+                  <p className="text-gray-900 flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>{selectedVehicle.depot_name || selectedVehicle.home_facility_id}</span>
+                  </p>
+                  {selectedVehicle.depot_address && (
+                    <p className="text-sm text-gray-600 mt-1">{selectedVehicle.depot_address}</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-400 mt-1">No home depot assigned</p>
+              )}
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Fuel Level</label>

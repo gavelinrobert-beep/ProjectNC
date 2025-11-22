@@ -44,6 +44,30 @@ export default function DeliveriesPage() {
       render: (value) => value || 'N/A'
     },
     {
+      key: 'assigned_vehicle_id',
+      label: 'Vehicle',
+      render: (value, row) => value ? (
+        <span className="flex items-center gap-1">
+          <span>🚛</span>
+          <span className="text-sm">{row.vehicle_registration || value}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">Unassigned</span>
+      )
+    },
+    {
+      key: 'assigned_driver_id',
+      label: 'Driver',
+      render: (value, row) => value ? (
+        <span className="flex items-center gap-1">
+          <span>👤</span>
+          <span className="text-sm">{row.driver_name || value}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">Unassigned</span>
+      )
+    },
+    {
       key: 'status',
       label: 'Status',
       render: (value) => <StatusBadge status={value} />
@@ -229,6 +253,32 @@ export default function DeliveriesPage() {
               <div className="mt-1">
                 <StatusBadge status={selectedDelivery.status} />
               </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Assigned Vehicle</label>
+              <p className="text-gray-900">
+                {selectedDelivery.assigned_vehicle_id ? (
+                  <span className="flex items-center gap-2">
+                    <span>🚛</span>
+                    <span>{selectedDelivery.vehicle_registration || selectedDelivery.assigned_vehicle_id}</span>
+                  </span>
+                ) : (
+                  <span className="text-gray-400">Not assigned</span>
+                )}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Assigned Driver</label>
+              <p className="text-gray-900">
+                {selectedDelivery.assigned_driver_id ? (
+                  <span className="flex items-center gap-2">
+                    <span>👤</span>
+                    <span>{selectedDelivery.driver_name || selectedDelivery.assigned_driver_id}</span>
+                  </span>
+                ) : (
+                  <span className="text-gray-400">Not assigned</span>
+                )}
+              </p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Scheduled Date</label>
