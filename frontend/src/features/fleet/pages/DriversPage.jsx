@@ -5,13 +5,28 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function DriversPage() {
   const { data: drivers, loading, error, refetch } = useApi(() => fleetApi.getDrivers())
   const [selectedDriver, setSelectedDriver] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    clearFilters
+  } = useFilter(drivers, {
+    searchFields: ['name', 'license_number', 'email', 'phone']
+  })
 
   const columns = [
     {
@@ -131,10 +146,50 @@ export default function DriversPage() {
         </div>
       </div>
 
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search drivers..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Status"
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'on_break', label: 'On Break' },
+              { value: 'off_duty', label: 'Off Duty' }
+            ]}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear Filters
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'drivers')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'drivers')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== drivers?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {drivers?.length || 0} drivers
+          </div>
+        )}
+      </div>
+
       {/* Table */}
       <Table
         columns={columns}
-        data={drivers || []}
+        data={filteredData || []}
         loading={loading}
         onRowClick={(row) => {
           setSelectedDriver(row)

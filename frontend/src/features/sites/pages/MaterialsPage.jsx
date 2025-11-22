@@ -5,11 +5,26 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function MaterialsPage() {
   const { data: materials, loading, error, refetch } = useApi(() => sitesApi.getMaterials())
   const [selectedMaterial, setSelectedMaterial] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    categoryFilter,
+    setCategoryFilter,
+    clearFilters
+  } = useFilter(materials, {
+    searchFields: ['name', 'supplier', 'category']
+  })
 
   const columns = [
     {
@@ -123,10 +138,49 @@ export default function MaterialsPage() {
         </div>
       </div>
 
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search materials..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Category"
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            options={Array.from(new Set(materials?.map(m => m.category).filter(Boolean) || [])).map(cat => ({
+              value: cat,
+              label: cat
+            }))}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear Filters
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'materials')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'materials')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== materials?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {materials?.length || 0} materials
+          </div>
+        )}
+      </div>
+
       {/* Table */}
       <Table
         columns={columns}
-        data={materials || []}
+        data={filteredData || []}
         loading={loading}
         onRowClick={(row) => {
           setSelectedMaterial(row)

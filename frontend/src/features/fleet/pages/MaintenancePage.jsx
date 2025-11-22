@@ -5,13 +5,31 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function MaintenancePage() {
   const { data: maintenance, loading, error, refetch } = useApi(() => fleetApi.getMaintenance())
   const [selectedMaintenance, setSelectedMaintenance] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    typeFilter,
+    setTypeFilter,
+    clearFilters
+  } = useFilter(maintenance, {
+    searchFields: ['vehicle_id', 'description'],
+    dateField: 'scheduled_date'
+  })
 
   const columns = [
     {
@@ -132,10 +150,61 @@ export default function MaintenancePage() {
         </div>
       </div>
 
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search maintenance records..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Status"
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: 'scheduled', label: 'Scheduled' },
+              { value: 'in_progress', label: 'In Progress' },
+              { value: 'completed', label: 'Completed' }
+            ]}
+          />
+
+          <FilterDropdown
+            label="Type"
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: 'routine', label: 'Routine' },
+              { value: 'repair', label: 'Repair' },
+              { value: 'inspection', label: 'Inspection' }
+            ]}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'maintenance')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'maintenance')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== maintenance?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {maintenance?.length || 0} records
+          </div>
+        )}
+      </div>
+
       {/* Table */}
       <Table
         columns={columns}
-        data={maintenance || []}
+        data={filteredData || []}
         loading={loading}
         onRowClick={(row) => {
           setSelectedMaintenance(row)

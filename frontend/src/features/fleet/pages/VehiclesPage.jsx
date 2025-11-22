@@ -5,13 +5,30 @@ import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function VehiclesPage() {
   const { data: vehicles, loading, error, refetch } = useApi(() => fleetApi.getVehicles())
   const [selectedVehicle, setSelectedVehicle] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    typeFilter,
+    setTypeFilter,
+    clearFilters
+  } = useFilter(vehicles, {
+    searchFields: ['registration_number', 'type']
+  })
 
   const handleViewDetails = (vehicle) => {
     setSelectedVehicle(vehicle)
@@ -90,8 +107,59 @@ export default function VehiclesPage() {
         </div>
       </div>
 
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search vehicles..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Status"
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'maintenance', label: 'Maintenance' },
+              { value: 'idle', label: 'Idle' }
+            ]}
+          />
+
+          <FilterDropdown
+            label="Type"
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: 'truck', label: 'Truck' },
+              { value: 'van', label: 'Van' },
+              { value: 'car', label: 'Car' }
+            ]}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'vehicles')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'vehicles')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== vehicles?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {vehicles?.length || 0} vehicles
+          </div>
+        )}
+      </div>
+
       {/* Vehicle Grid */}
-      {!vehicles || vehicles.length === 0 ? (
+      {!filteredData || filteredData.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -104,7 +172,7 @@ export default function VehiclesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {vehicles.map((vehicle) => (
+          {filteredData.map((vehicle) => (
             <Card key={vehicle.id} hover onClick={() => handleViewDetails(vehicle)}>
               <div className="space-y-3">
                 <div className="flex justify-between items-start">
