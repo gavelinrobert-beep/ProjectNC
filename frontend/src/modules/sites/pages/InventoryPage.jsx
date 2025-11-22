@@ -30,7 +30,7 @@ export default function InventoryPage() {
     setStockLevelFilter,
     clearFilters
   } = useFilter(inventory, {
-    searchFields: ['item_name', 'sku', 'description'],
+    searchFields: ['name', 'sku', 'category'],
     getStockStatus
   })
 
