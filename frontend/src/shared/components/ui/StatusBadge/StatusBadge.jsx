@@ -1,5 +1,5 @@
 import { STATUS_COLORS } from '../../../constants/design'
-import { getStatusConfig } from '../../../../utils/statusHelpers'
+import { getStatusConfig } from '../../../utils/statusHelpers'
 
 export default function StatusBadge({ status, children }) {
   const config = getStatusConfig(status)

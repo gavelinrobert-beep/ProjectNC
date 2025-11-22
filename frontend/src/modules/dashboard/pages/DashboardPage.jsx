@@ -19,6 +19,7 @@ import { useRoutes } from '../../logistics/hooks/useRoutes'
 import { useVehicles } from '../../fleet/hooks/useVehicles'
 import { useDepots } from '../../sites/hooks/useDepots'
 import { formatDateTime } from '../../../shared/utils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DashboardPage() {
   const [assets, setAssets] = useState([])
@@ -153,15 +154,15 @@ export default function DashboardPage() {
 
   const isLoading = loading || deliveriesLoading || routesLoading || vehiclesLoading || depotsLoading
   
-  if (isLoading) return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading...</div>
+  if (isLoading) return <div className="p-6 text-center text-primary-600">Loading...</div>
 
   return (
-    <div style={{ maxWidth: '1400px' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem', color: '#e0e0e0' }}>
+    <div className="max-w-7xl">
+      <div className="mb-8">
+        <h1 className={TEXT.h1 + ' mb-2'}>
           📊 Dashboard - Executive Overview
         </h1>
-        <p style={{ color: '#718096', fontSize: '1rem' }}>
+        <p className={TEXT.body}>
           Real-time resource status and system overview
         </p>
       </div>
@@ -244,98 +245,51 @@ export default function DashboardPage() {
       </div>
 
       {/* Live Operations Card */}
-      <div style={{ marginTop: '1.5rem' }}>
+      <div className="mt-6">
         <LiveOpsCard />
       </div>
 
       {/* Performance Charts */}
-      <div style={{ marginTop: '2rem' }}>
+      <div className="mt-8">
         <PerformanceChart />
       </div>
 
       {/* Fleet Utilization and Fuel Charts */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-        gap: '1.5rem',
-        marginTop: '2rem'
-      }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         <FleetUtilizationChart />
         <FuelConsumptionChart />
       </div>
 
       {/* Recent Activity Feed */}
-      <div style={{ marginTop: '2rem' }}>
-        <div style={{
-          background: '#1a1f2e',
-          border: '2px solid #2d3748',
-          borderRadius: '10px',
-          padding: '1.5rem'
-        }}>
-          <h2 style={{ 
-            fontSize: '1.5rem', 
-            marginBottom: '1rem', 
-            color: '#e0e0e0',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
+      <div className="mt-8">
+        <div className={CARD.base + ' p-6'}>
+          <h2 className={TEXT.h3 + ' mb-4 flex items-center gap-2'}>
             <span>📋</span>
             Recent Activity
           </h2>
-          <div style={{ 
-            display: 'grid', 
-            gap: '0.75rem',
-            maxHeight: '400px',
-            overflowY: 'auto'
-          }}>
+          <div className="grid gap-3 max-h-96 overflow-y-auto">
             {recentActivity.length > 0 ? (
               recentActivity.slice(0, 10).map((activity, idx) => (
                 <div 
                   key={idx}
-                  style={{
-                    background: '#252d3d',
-                    border: '1px solid #2d3748',
-                    borderRadius: '8px',
-                    padding: '1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    transition: 'all 0.2s'
-                  }}
+                  className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center gap-4 transition hover:shadow-sm"
                 >
-                  <span style={{ fontSize: '1.5rem' }}>{activity.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ 
-                      fontWeight: '600', 
-                      color: '#e0e0e0',
-                      marginBottom: '0.25rem'
-                    }}>
+                  <span className="text-2xl">{activity.icon}</span>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 mb-1">
                       {activity.title}
                     </div>
-                    <div style={{ 
-                      fontSize: '0.875rem', 
-                      color: '#a0aec0'
-                    }}>
+                    <div className={TEXT.bodySmall}>
                       {activity.description}
                     </div>
                   </div>
-                  <div style={{ 
-                    fontSize: '0.75rem', 
-                    color: '#718096',
-                    textAlign: 'right',
-                    minWidth: '100px'
-                  }}>
+                  <div className={TEXT.caption + ' text-right min-w-24'}>
                     {activity.time ? formatDateTime(activity.time) : 'Just now'}
                   </div>
                 </div>
               ))
             ) : (
-              <div style={{ 
-                textAlign: 'center', 
-                padding: '2rem', 
-                color: '#718096' 
-              }}>
+              <div className="text-center py-8 text-gray-500">
                 No recent activity
               </div>
             )}
@@ -344,37 +298,32 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Access Links */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '1rem',
-        marginTop: '2rem'
-      }}>
-        <Link to="/operations" style={quickLinkStyle}>
-          <span style={{ fontSize: '2.5rem' }}>🗺️</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <Link to="/operations" className={CARD.interactive + ' p-5 flex items-center gap-4 no-underline'}>
+          <span className="text-4xl">🗺️</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>View Resource Map</h3>
-            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#718096' }}>
+            <h3 className={TEXT.h5 + ' m-0'}>View Resource Map</h3>
+            <p className={TEXT.caption + ' mt-1'}>
               Track all resources and locations
             </p>
           </div>
         </Link>
 
-        <Link to="/missions" style={quickLinkStyle}>
-          <span style={{ fontSize: '2.5rem' }}>📋</span>
+        <Link to="/missions" className={CARD.interactive + ' p-5 flex items-center gap-4 no-underline'}>
+          <span className="text-4xl">📋</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Manage Tasks</h3>
-            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#718096' }}>
+            <h3 className={TEXT.h5 + ' m-0'}>Manage Tasks</h3>
+            <p className={TEXT.caption + ' mt-1'}>
               Plan and coordinate work assignments
             </p>
           </div>
         </Link>
 
-        <Link to="/assets" style={quickLinkStyle}>
-          <span style={{ fontSize: '2.5rem' }}>🚛</span>
+        <Link to="/assets" className={CARD.interactive + ' p-5 flex items-center gap-4 no-underline'}>
+          <span className="text-4xl">🚛</span>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Assets & Logistics</h3>
-            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#718096' }}>
+            <h3 className={TEXT.h5 + ' m-0'}>Assets & Logistics</h3>
+            <p className={TEXT.caption + ' mt-1'}>
               Track fleet and supplies
             </p>
           </div>
@@ -382,17 +331,4 @@ export default function DashboardPage() {
       </div>
     </div>
   )
-}
-
-const quickLinkStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem',
-  padding: '1.25rem',
-  background: '#1a1f2e',
-  border: '2px solid #2d3748',
-  borderRadius: '10px',
-  textDecoration: 'none',
-  color: '#e0e0e0',
-  transition: 'all 0.2s'
 }
