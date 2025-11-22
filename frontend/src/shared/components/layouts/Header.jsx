@@ -1,6 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export default function Header({ onToggleSidebar }) {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login')
+  }
+
   return (
     <header style={{
       display: 'flex',
@@ -52,14 +62,10 @@ export default function Header({ onToggleSidebar }) {
           color: '#FFFFFF',
           fontWeight: 500
         }}>
-          👤 {localStorage.getItem('user') || 'admin'}
+          👤 {user?.email || user?.name || 'admin'}
         </span>
         <button
-          onClick={() => {
-            localStorage.clear()
-            sessionStorage.clear()
-            window.location.reload()
-          }}
+          onClick={handleLogout}
           style={{
             padding: '0.4rem 0.8rem',
             background: '#FFFFFF',

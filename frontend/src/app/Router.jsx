@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from '../shared/components/layouts/MainLayout'
 import { ROUTES } from '../shared/constants/routes'
+import ProtectedRoute from '../components/auth/ProtectedRoute'
+import LoginPage from '../pages/LoginPage'
 
 // Dashboard
 import DashboardPage from '../modules/dashboard/pages/DashboardPage'
@@ -36,41 +38,46 @@ import FieldApp from '../features/field/pages/DriverApp'
 export default function Router() {
   return (
     <Routes>
+      {/* Login route (public) */}
+      <Route path="/login" element={<LoginPage />} />
+
       {/* Field app has its own layout */}
       <Route path="/field" element={<FieldApp />} />
 
-      {/* Main app routes with shared layout */}
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-        <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-        <Route path={ROUTES.OPERATIONS} element={<OperationsPage />} />
-        
-        {/* Logistics */}
-        <Route path={ROUTES.LOGISTICS.DELIVERIES} element={<DeliveriesPage />} />
-        <Route path={ROUTES.LOGISTICS.ROUTES} element={<RoutesPage />} />
-        <Route path={ROUTES.LOGISTICS.CUSTOMERS} element={<CustomersPage />} />
-        
-        {/* Fleet */}
-        <Route path={ROUTES.FLEET.VEHICLES} element={<VehiclesPage />} />
-        <Route path={ROUTES.FLEET.DRIVERS} element={<DriversPage />} />
-        <Route path={ROUTES.FLEET.MAINTENANCE} element={<MaintenancePage />} />
-        
-        {/* Sites */}
-        <Route path={ROUTES.SITES.DEPOTS} element={<DepotsPage />} />
-        <Route path={ROUTES.SITES.INVENTORY} element={<InventoryPage />} />
-        <Route path={ROUTES.SITES.MATERIALS} element={<MaterialsPage />} />
-        
-        {/* Works */}
-        <Route path={ROUTES.WORKS.DASHBOARD} element={<WorksDashboardPage />} />
-        <Route path={ROUTES.WORKS.PROJECTS} element={<ProjectsPage />} />
-        <Route path={ROUTES.WORKS.WORK_ORDERS} element={<WorkOrdersPage />} />
-        <Route path={ROUTES.WORKS.MACHINE_HOURS} element={<MachineHoursPage />} />
-        <Route path={ROUTES.WORKS.CHANGE_ORDERS} element={<ChangeOrdersPage />} />
+      {/* Main app routes with shared layout - ALL PROTECTED */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
+          <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          <Route path={ROUTES.OPERATIONS} element={<OperationsPage />} />
+          
+          {/* Logistics */}
+          <Route path={ROUTES.LOGISTICS.DELIVERIES} element={<DeliveriesPage />} />
+          <Route path={ROUTES.LOGISTICS.ROUTES} element={<RoutesPage />} />
+          <Route path={ROUTES.LOGISTICS.CUSTOMERS} element={<CustomersPage />} />
+          
+          {/* Fleet */}
+          <Route path={ROUTES.FLEET.VEHICLES} element={<VehiclesPage />} />
+          <Route path={ROUTES.FLEET.DRIVERS} element={<DriversPage />} />
+          <Route path={ROUTES.FLEET.MAINTENANCE} element={<MaintenancePage />} />
+          
+          {/* Sites */}
+          <Route path={ROUTES.SITES.DEPOTS} element={<DepotsPage />} />
+          <Route path={ROUTES.SITES.INVENTORY} element={<InventoryPage />} />
+          <Route path={ROUTES.SITES.MATERIALS} element={<MaterialsPage />} />
+          
+          {/* Works */}
+          <Route path={ROUTES.WORKS.DASHBOARD} element={<WorksDashboardPage />} />
+          <Route path={ROUTES.WORKS.PROJECTS} element={<ProjectsPage />} />
+          <Route path={ROUTES.WORKS.WORK_ORDERS} element={<WorkOrdersPage />} />
+          <Route path={ROUTES.WORKS.MACHINE_HOURS} element={<MachineHoursPage />} />
+          <Route path={ROUTES.WORKS.CHANGE_ORDERS} element={<ChangeOrdersPage />} />
 
-        {/* Legacy redirects */}
-        <Route path="/inventory" element={<Navigate to={ROUTES.SITES.INVENTORY} replace />} />
-        <Route path="/drivers" element={<Navigate to={ROUTES.FLEET.DRIVERS} replace />} />
-        <Route path="/shipments" element={<Navigate to={ROUTES.LOGISTICS.DELIVERIES} replace />} />
+          {/* Legacy redirects */}
+          <Route path="/inventory" element={<Navigate to={ROUTES.SITES.INVENTORY} replace />} />
+          <Route path="/drivers" element={<Navigate to={ROUTES.FLEET.DRIVERS} replace />} />
+          <Route path="/shipments" element={<Navigate to={ROUTES.LOGISTICS.DELIVERIES} replace />} />
+        </Route>
       </Route>
     </Routes>
   )
