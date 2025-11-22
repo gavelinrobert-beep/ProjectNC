@@ -9,6 +9,7 @@ import { EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/compone
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DepotsPage() {
   const { data: depots, isLoading: loading, error, refetch } = useDepots()
@@ -97,8 +98,8 @@ export default function DepotsPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Depots</h1>
-          <p className="text-gray-600 mt-2">Manage depot locations and facilities</p>
+          <h1 className={TEXT.h1}>Depots</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage depot locations and facilities</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -112,17 +113,17 @@ export default function DepotsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Depots</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Total Depots</div>
           <div className="text-2xl font-bold text-gray-900">{totalDepots}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Active</div>
-          <div className="text-2xl font-bold text-green-600">{activeDepots}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Active</div>
+          <div className="text-2xl font-bold text-success-600">{activeDepots}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Avg Capacity Utilization</div>
-          <div className="text-2xl font-bold text-blue-600">{avgUtilization}%</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Avg Capacity Utilization</div>
+          <div className="text-2xl font-bold text-primary-600">{avgUtilization}%</div>
         </div>
       </div>
 
@@ -139,7 +140,7 @@ export default function DepotsPage() {
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <SearchBar
@@ -193,7 +194,7 @@ export default function DepotsPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{depot.name || depot.id}</h3>
-                    <p className="text-sm text-gray-500">{depot.address || 'No address'}</p>
+                    <p className={TEXT.caption}>{depot.address || 'No address'}</p>
                   </div>
                   <span className={`px-2 py-1 text-xs font-semibold rounded-full ${depot.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                     {depot.is_active !== false ? 'Active' : 'Inactive'}
@@ -314,14 +315,14 @@ export default function DepotsPage() {
                     <span>🛣️</span>
                     Active Routes
                   </span>
-                  <span className="font-semibold text-blue-600">{selectedDepot.active_routes_count || 0}</span>
+                  <span className="font-semibold text-primary-600">{selectedDepot.active_routes_count || 0}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 flex items-center gap-1">
                     <span>📦</span>
                     Pending Deliveries
                   </span>
-                  <span className="font-semibold text-yellow-600">{selectedDepot.pending_deliveries_count || 0}</span>
+                  <span className="font-semibold text-warning-600">{selectedDepot.pending_deliveries_count || 0}</span>
                 </div>
               </div>
             </div>

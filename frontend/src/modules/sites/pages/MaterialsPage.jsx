@@ -9,6 +9,7 @@ import { ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
 import { formatCurrency } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function MaterialsPage() {
   const { data: materials, isLoading: loading, error, refetch } = useMaterials()
@@ -98,8 +99,8 @@ export default function MaterialsPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Materials</h1>
-          <p className="text-gray-600 mt-2">Manage material types and specifications</p>
+          <h1 className={TEXT.h1}>Materials</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage material types and specifications</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -113,22 +114,22 @@ export default function MaterialsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Material Types</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Total Material Types</div>
           <div className="text-2xl font-bold text-gray-900">{totalMaterials}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Categories</div>
-          <div className="text-2xl font-bold text-blue-600">{categoriesCount}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Categories</div>
+          <div className="text-2xl font-bold text-primary-600">{categoriesCount}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Average Unit Cost</div>
-          <div className="text-2xl font-bold text-green-600">${avgCost.toFixed(2)}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Average Unit Cost</div>
+          <div className="text-2xl font-bold text-success-600">${avgCost.toFixed(2)}</div>
         </div>
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <SearchBar

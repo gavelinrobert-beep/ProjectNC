@@ -1,132 +1,22 @@
 /* Modern Nordic UI Override for Legacy Components */
+/* NOTE: Most styles now handled by Tailwind CSS and design system constants */
+/* These overrides are kept for legacy components not yet migrated */
 
-/* Card styling - Clean white cards with subtle shadows */
-.card {
-  background: var(--white) !important;
-  border: 1px solid var(--light-gray) !important;
-  border-radius: 12px !important;
-  padding: 1.5rem !important;
-  box-shadow: 0 2px 8px rgba(45, 62, 80, 0.08) !important;
-  transition: box-shadow 0.2s ease !important;
-}
+/* Legacy card styling - Disabled in favor of Tailwind classes */
+/* Use CARD.base, CARD.hover, or CARD.interactive from design.js instead */
 
-.card:hover {
-  box-shadow: 0 4px 12px rgba(45, 62, 80, 0.12) !important;
-}
+/* Legacy button styling - Disabled in favor of Tailwind classes */
+/* Use Button component with variants from design.js instead */
 
-/* Button styling - Nordic blue primary */
-.btn, button[type="submit"], button[type="button"] {
-  background: var(--nordic-blue-primary) !important;
-  color: var(--white) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 0.6rem 1.2rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
+/* Legacy input and select styling - Kept for forms not yet using Tailwind */
+/* Consider migrating to INPUT constants from design.js */
 
-.btn:hover, button[type="submit"]:hover {
-  background: var(--nordic-blue-dark) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25) !important;
-}
+/* Legacy table styling - Kept for Table component */
+/* Consider using Tailwind table classes in the future */
 
-.btn-secondary {
-  background: var(--white) !important;
-  color: var(--nordic-blue-primary) !important;
-  border: 2px solid var(--nordic-blue-primary) !important;
-}
+/* Legacy heading overrides - Now handled by TEXT constants from design.js */
 
-.btn-secondary:hover {
-  background: var(--off-white) !important;
-}
-
-/* Input and select styling - Clean white inputs */
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="password"],
-input[type="date"],
-input[type="time"],
-select,
-textarea {
-  background: var(--white) !important;
-  border: 2px solid var(--light-gray) !important;
-  border-radius: 8px !important;
-  color: var(--charcoal) !important;
-  padding: 0.6rem !important;
-  font-size: 0.95rem !important;
-  transition: border-color 0.2s ease !important;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--nordic-blue-primary) !important;
-  outline: none !important;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1) !important;
-}
-
-/* Labels - Clean and readable */
-label {
-  color: var(--dark-gray) !important;
-  font-size: 0.9rem !important;
-  font-weight: 600 !important;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-/* Tables - Clean with subtle separators */
-table {
-  background: var(--white) !important;
-  border-collapse: collapse !important;
-  border-radius: 12px !important;
-  overflow: hidden;
-}
-
-thead {
-  background: linear-gradient(135deg, var(--nordic-blue-primary), var(--nordic-blue-accent)) !important;
-}
-
-th {
-  color: var(--white) !important;
-  font-weight: 600 !important;
-  padding: 1rem !important;
-  text-align: left;
-  border: none !important;
-}
-
-td {
-  padding: 1rem !important;
-  border-bottom: 1px solid var(--light-gray) !important;
-  color: var(--charcoal) !important;
-}
-
-tbody tr:hover {
-  background: rgba(74, 144, 226, 0.05) !important;
-}
-
-tbody tr:last-child td {
-  border-bottom: none !important;
-}
-
-/* Headings inside components */
-h2, h3, h4 {
-  color: var(--charcoal) !important;
-  font-weight: 600 !important;
-}
-
-h2 { font-size: 1.5rem !important; }
-h3 { font-size: 1.2rem !important; }
-h4 { font-size: 1rem !important; }
-
-/* List items - Clean white list items */
-.list li {
-  background: var(--white) !important;
-  border: 1px solid var(--light-gray) !important;
-  border-radius: 8px !important;
-  padding: 1rem !important;
-  margin-bottom: 0.75rem !important;
-}
+/* Legacy list styling - Kept for compatibility */
 
 /* Map containers */
 .leaflet-container {

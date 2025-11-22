@@ -1,4 +1,8 @@
-/* frontend/src/index.css - Nordic Blue Theme */
+/* frontend/src/index.css - Unified Design System with Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +10,7 @@
 }
 
 :root {
-  /* Nordic Blue Color Palette */
+  /* Legacy color variables for backwards compatibility */
   --nordic-blue-primary: #4A90E2;
   --nordic-blue-dark: #2C5F8D;
   --nordic-blue-light: #6BAED6;

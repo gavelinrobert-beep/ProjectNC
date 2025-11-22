@@ -9,6 +9,7 @@ import { StatusBadge, EmptyState, ErrorMessage, TableSkeleton } from '../../../s
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function VehiclesPage() {
   const { data: vehicles, isLoading: loading, error, refetch } = useVehicles()
@@ -61,8 +62,8 @@ export default function VehiclesPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Vehicles</h1>
-          <p className="text-gray-600 mt-2">Manage fleet vehicles and live tracking</p>
+          <h1 className={TEXT.h1}>Vehicles</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage fleet vehicles and live tracking</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -76,26 +77,26 @@ export default function VehiclesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Vehicles</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Total Vehicles</div>
           <div className="text-2xl font-bold text-gray-900">{totalVehicles}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Active</div>
-          <div className="text-2xl font-bold text-green-600">{activeVehicles}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Active</div>
+          <div className="text-2xl font-bold text-success-600">{activeVehicles}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">In Maintenance</div>
-          <div className="text-2xl font-bold text-yellow-600">{maintenanceVehicles}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>In Maintenance</div>
+          <div className="text-2xl font-bold text-warning-600">{maintenanceVehicles}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Average Fuel Level</div>
-          <div className="text-2xl font-bold text-blue-600">{avgFuelLevel}%</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Average Fuel Level</div>
+          <div className="text-2xl font-bold text-primary-600">{avgFuelLevel}%</div>
         </div>
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-2">
             <SearchBar
@@ -246,24 +247,24 @@ export default function VehiclesPage() {
         {selectedVehicle && (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Registration Number</label>
-              <p className="text-gray-900">{selectedVehicle.registration_number || 'N/A'}</p>
+              <label className={TEXT.label}>Registration Number</label>
+              <p className={TEXT.body}>{selectedVehicle.registration_number || 'N/A'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Type</label>
-              <p className="text-gray-900">{selectedVehicle.type || 'N/A'}</p>
+              <label className={TEXT.label}>Type</label>
+              <p className={TEXT.body}>{selectedVehicle.type || 'N/A'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Status</label>
+              <label className={TEXT.label}>Status</label>
               <div className="mt-1">
                 <StatusBadge status={selectedVehicle.status} />
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Current Assignment</label>
+              <label className={TEXT.label}>Current Assignment</label>
               <div className="mt-1 space-y-2">
                 {selectedVehicle.current_driver_id ? (
-                  <p className="text-gray-900 flex items-center gap-2">
+                  <p className={TEXT.body + ' flex items-center gap-2'}>
                     <span>👤</span>
                     <span>Driver: {selectedVehicle.driver_name || selectedVehicle.current_driver_id}</span>
                   </p>
@@ -271,20 +272,20 @@ export default function VehiclesPage() {
                   <p className="text-gray-400">No driver assigned</p>
                 )}
                 {selectedVehicle.current_route && (
-                  <p className="text-gray-900">Route: {selectedVehicle.current_route}</p>
+                  <p className={TEXT.body}>Route: {selectedVehicle.current_route}</p>
                 )}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Home Depot</label>
+              <label className={TEXT.label}>Home Depot</label>
               {selectedVehicle.home_facility_id ? (
                 <div className="mt-1">
-                  <p className="text-gray-900 flex items-center gap-2">
+                  <p className={TEXT.body + ' flex items-center gap-2'}>
                     <span>🏢</span>
                     <span>{selectedVehicle.depot_name || selectedVehicle.home_facility_id}</span>
                   </p>
                   {selectedVehicle.depot_address && (
-                    <p className="text-sm text-gray-600 mt-1">{selectedVehicle.depot_address}</p>
+                    <p className={TEXT.bodySmall + ' mt-1'}>{selectedVehicle.depot_address}</p>
                   )}
                 </div>
               ) : (
@@ -292,25 +293,25 @@ export default function VehiclesPage() {
               )}
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Fuel Level</label>
-              <p className="text-gray-900">{selectedVehicle.fuel_level || 0}%</p>
+              <label className={TEXT.label}>Fuel Level</label>
+              <p className={TEXT.body}>{selectedVehicle.fuel_level || 0}%</p>
             </div>
             {selectedVehicle.odometer && (
               <div>
-                <label className="text-sm font-medium text-gray-700">Odometer</label>
-                <p className="text-gray-900">{selectedVehicle.odometer} km</p>
+                <label className={TEXT.label}>Odometer</label>
+                <p className={TEXT.body}>{selectedVehicle.odometer} km</p>
               </div>
             )}
             {selectedVehicle.lat && selectedVehicle.lon && (
               <div>
-                <label className="text-sm font-medium text-gray-700">Location</label>
-                <p className="text-gray-900">{selectedVehicle.lat.toFixed(6)}, {selectedVehicle.lon.toFixed(6)}</p>
+                <label className={TEXT.label}>Location</label>
+                <p className={TEXT.body}>{selectedVehicle.lat.toFixed(6)}, {selectedVehicle.lon.toFixed(6)}</p>
               </div>
             )}
             {selectedVehicle.updated_at && (
               <div>
-                <label className="text-sm font-medium text-gray-700">Last Updated</label>
-                <p className="text-gray-900">{formatDateTime(selectedVehicle.updated_at)}</p>
+                <label className={TEXT.label}>Last Updated</label>
+                <p className={TEXT.body}>{formatDateTime(selectedVehicle.updated_at)}</p>
               </div>
             )}
           </div>

@@ -9,6 +9,7 @@ import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/compon
 import { formatDate, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DriversPage() {
   const { data: drivers, isLoading: loading, error, refetch } = useDrivers()
@@ -96,8 +97,8 @@ export default function DriversPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Drivers</h1>
-          <p className="text-gray-600 mt-2">Manage drivers and behavior analytics</p>
+          <h1 className={TEXT.h1}>Drivers</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage drivers and behavior analytics</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -111,26 +112,26 @@ export default function DriversPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Drivers</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Total Drivers</div>
           <div className="text-2xl font-bold text-gray-900">{totalDrivers}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Active</div>
-          <div className="text-2xl font-bold text-green-600">{activeDrivers}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Active</div>
+          <div className="text-2xl font-bold text-success-600">{activeDrivers}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">On Break</div>
-          <div className="text-2xl font-bold text-yellow-600">{onBreakDrivers}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>On Break</div>
+          <div className="text-2xl font-bold text-warning-600">{onBreakDrivers}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Off Duty</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Off Duty</div>
           <div className="text-2xl font-bold text-gray-600">{offDutyDrivers}</div>
         </div>
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <SearchBar

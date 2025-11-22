@@ -9,6 +9,7 @@ import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/compon
 import { formatDate, formatCurrency, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function MaintenancePage() {
   const { data: maintenance, isLoading: loading, error, refetch } = useMaintenance()
@@ -100,8 +101,8 @@ export default function MaintenancePage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Maintenance</h1>
-          <p className="text-gray-600 mt-2">Track vehicle maintenance and service schedules</p>
+          <h1 className={TEXT.h1}>Maintenance</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Track vehicle maintenance and service schedules</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -115,26 +116,26 @@ export default function MaintenancePage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Records</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Total Records</div>
           <div className="text-2xl font-bold text-gray-900">{totalRecords}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Scheduled</div>
-          <div className="text-2xl font-bold text-blue-600">{scheduledRecords}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Scheduled</div>
+          <div className="text-2xl font-bold text-primary-600">{scheduledRecords}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">In Progress</div>
-          <div className="text-2xl font-bold text-yellow-600">{inProgressRecords}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>In Progress</div>
+          <div className="text-2xl font-bold text-warning-600">{inProgressRecords}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Completed</div>
-          <div className="text-2xl font-bold text-green-600">{completedRecords}</div>
+        <div className={CARD.p4}>
+          <div className={TEXT.caption}>Completed</div>
+          <div className="text-2xl font-bold text-success-600">{completedRecords}</div>
         </div>
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-2">
             <SearchBar
