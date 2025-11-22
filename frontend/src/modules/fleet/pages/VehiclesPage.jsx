@@ -25,7 +25,7 @@ export default function VehiclesPage() {
     setTypeFilter,
     clearFilters
   } = useFilter(vehicles, {
-    searchFields: ['registration_number', 'type']
+    searchFields: ['name', 'plate', 'type']
   })
 
   const handleViewDetails = (vehicle) => {

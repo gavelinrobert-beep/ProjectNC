@@ -72,7 +72,7 @@ export default function RoutesPage() {
     setStatusFilter,
     clearFilters
   } = useFilter(routes, {
-    searchFields: ['name', 'driver', 'vehicle'],
+    searchFields: ['name', 'driver_name', 'vehicle_name'],
     dateField: 'start_time'
   })
 

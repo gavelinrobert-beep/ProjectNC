@@ -61,7 +61,7 @@ export default function DepotsPage() {
     setStatusFilter,
     clearFilters
   } = useFilter(depots, {
-    searchFields: ['name', 'address', 'city']
+    searchFields: ['name', 'address', 'manager']
   })
 
   const handleViewDetails = (depot) => {

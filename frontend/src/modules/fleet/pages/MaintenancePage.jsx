@@ -25,7 +25,7 @@ export default function MaintenancePage() {
     setTypeFilter,
     clearFilters
   } = useFilter(maintenance, {
-    searchFields: ['vehicle_id', 'description'],
+    searchFields: ['vehicle_name', 'description', 'type'],
     dateField: 'scheduled_date'
   })
 
