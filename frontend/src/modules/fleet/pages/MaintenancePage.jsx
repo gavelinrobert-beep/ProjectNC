@@ -3,11 +3,10 @@ import { useMaintenance } from '../hooks/useMaintenance'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
-import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { formatDate } from '../../../utils/dateUtils'
-import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { formatDate, formatCurrency, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -39,7 +38,7 @@ export default function MaintenancePage() {
     {
       key: 'type',
       label: 'Maintenance Type',
-      render: (value) => getStatusLabel(value || 'routine')
+      render: (value) => getStatusConfig(value || 'routine').label
     },
     {
       key: 'scheduled_date',
@@ -49,11 +48,7 @@ export default function MaintenancePage() {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(value)}`}>
-          {getStatusLabel(value)}
-        </span>
-      )
+      render: (value) => <StatusBadge status={value} />
     },
     {
       key: 'cost',
@@ -79,29 +74,18 @@ export default function MaintenancePage() {
     }
   ]
 
-  if (error) {
+  if (loading) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-semibold text-red-900">Error Loading Maintenance Records</h3>
-          </div>
-          <p className="text-red-800 mb-4">{error.message}</p>
-          <Button variant="danger" onClick={refetch}>
-            🔄 Retry
-          </Button>
-        </div>
+        <TableSkeleton rows={5} columns={6} />
       </div>
     )
   }
 
-  if (loading) {
+  if (error) {
     return (
       <div className="p-6">
-        <LoadingSpinner size="lg" text="Loading maintenance records..." />
+        <ErrorMessage error={error} retry={refetch} />
       </div>
     )
   }
@@ -233,14 +217,12 @@ export default function MaintenancePage() {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Maintenance Type</label>
-              <p className="text-gray-900">{getStatusLabel(selectedMaintenance.type || 'routine')}</p>
+              <p className="text-gray-900">{getStatusConfig(selectedMaintenance.type || 'routine').label}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Status</label>
               <div className="mt-1">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedMaintenance.status)}`}>
-                  {getStatusLabel(selectedMaintenance.status)}
-                </span>
+                <StatusBadge status={selectedMaintenance.status} />
               </div>
             </div>
             <div>

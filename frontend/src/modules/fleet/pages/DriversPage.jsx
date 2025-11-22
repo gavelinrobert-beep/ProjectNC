@@ -3,11 +3,10 @@ import { useDrivers } from '../hooks/useDrivers'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
-import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { formatDate } from '../../../utils/dateUtils'
-import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { formatDate, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -40,11 +39,7 @@ export default function DriversPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(value)}`}>
-          {getStatusLabel(value)}
-        </span>
-      )
+      render: (value) => <StatusBadge status={value} />
     },
     {
       key: 'email',
@@ -75,29 +70,18 @@ export default function DriversPage() {
     }
   ]
 
-  if (error) {
+  if (loading) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-semibold text-red-900">Error Loading Drivers</h3>
-          </div>
-          <p className="text-red-800 mb-4">{error.message}</p>
-          <Button variant="danger" onClick={refetch}>
-            🔄 Retry
-          </Button>
-        </div>
+        <TableSkeleton rows={5} columns={5} />
       </div>
     )
   }
 
-  if (loading) {
+  if (error) {
     return (
       <div className="p-6">
-        <LoadingSpinner size="lg" text="Loading drivers..." />
+        <ErrorMessage error={error} retry={refetch} />
       </div>
     )
   }
@@ -227,9 +211,7 @@ export default function DriversPage() {
             <div>
               <label className="text-sm font-medium text-gray-700">Status</label>
               <div className="mt-1">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedDriver.status)}`}>
-                  {getStatusLabel(selectedDriver.status)}
-                </span>
+                <StatusBadge status={selectedDriver.status} />
               </div>
             </div>
             <div>
@@ -251,7 +233,7 @@ export default function DriversPage() {
             {selectedDriver.employment_status && (
               <div>
                 <label className="text-sm font-medium text-gray-700">Employment Status</label>
-                <p className="text-gray-900">{getStatusLabel(selectedDriver.employment_status)}</p>
+                <p className="text-gray-900">{getStatusConfig(selectedDriver.employment_status).label}</p>
               </div>
             )}
             {selectedDriver.role && (
