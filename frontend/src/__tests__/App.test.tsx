@@ -5,7 +5,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - App.jsx exists but TypeScript doesn't recognize it
-import App from '../App';
+import App from '../app/App';
 
 describe('App Component', () => {
   it('renders without crashing', () => {
