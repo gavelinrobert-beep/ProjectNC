@@ -5,9 +5,13 @@ import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
+import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
 import MapView from '../../../components/map/MapView'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function DepotsPage() {
   const { data: depots, loading, error, refetch } = useApi(() => sitesApi.getDepots())
@@ -52,6 +56,16 @@ export default function DepotsPage() {
       color: '#4A90E2'
     }
   ]
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    clearFilters
+  } = useFilter(depots, {
+    searchFields: ['name', 'address', 'city']
+  })
 
   const handleViewDetails = (depot) => {
     setSelectedDepot(depot)
@@ -136,10 +150,47 @@ export default function DepotsPage() {
           geofences={depotGeofences}
           height={450}
         />
+      {/* Search and Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search depots..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+          
+          <FilterDropdown
+            label="Status"
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'inactive', label: 'Inactive' }
+            ]}
+          />
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear Filters
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'depots')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'depots')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== depots?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {depots?.length || 0} depots
+          </div>
+        )}
       </div>
 
       {/* Depot Grid */}
-      {!depots || depots.length === 0 ? (
+      {!filteredData || filteredData.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -152,7 +203,7 @@ export default function DepotsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {depots.map((depot) => (
+          {filteredData.map((depot) => (
             <Card key={depot.id} hover onClick={() => handleViewDetails(depot)}>
               <div className="space-y-3">
                 <div className="flex justify-between items-start">

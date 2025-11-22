@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getWorksProjects, getWorksWorkOrders, getWorksMachineHours, getWorksChangeOrders } from '../../lib/api';
 import toast from 'react-hot-toast';
+import BarChart from '../../components/charts/BarChart';
+import LineChart from '../../components/charts/LineChart';
+import AreaChart from '../../components/charts/AreaChart';
 
 const WorksDashboard = () => {
   const [stats, setStats] = useState({
@@ -147,6 +150,54 @@ const WorksDashboard = () => {
             <span>New ÄTA</span>
           </Link>
         </div>
+      </div>
+
+      {/* Analytics Charts */}
+      <div style={{ marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#1F2937' }}>
+          Analytics
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <BarChart
+            data={[
+              { project: 'Project A', progress: 85 },
+              { project: 'Project B', progress: 60 },
+              { project: 'Project C', progress: 45 },
+              { project: 'Project D', progress: 30 },
+            ]}
+            xKey="project"
+            yKey="progress"
+            title="Project Progress (%)"
+            color="#10B981"
+            height={250}
+          />
+          <LineChart
+            data={[
+              { month: 'Jan', budget: 50000, spent: 45000 },
+              { month: 'Feb', budget: 55000, spent: 52000 },
+              { month: 'Mar', budget: 60000, spent: 58000 },
+              { month: 'Apr', budget: 65000, spent: 61000 },
+            ]}
+            xKey="month"
+            yKey="spent"
+            title="Budget vs Spent"
+            color="#3B82F6"
+            height={250}
+          />
+        </div>
+        <AreaChart
+          data={[
+            { week: 'Week 1', hours: 120 },
+            { week: 'Week 2', hours: 145 },
+            { week: 'Week 3', hours: 130 },
+            { week: 'Week 4', hours: 160 },
+          ]}
+          xKey="week"
+          yKey="hours"
+          title="Machine Hours (Monthly)"
+          color="#8B5CF6"
+          height={250}
+        />
       </div>
 
       {/* Recent Projects and Work Orders */}

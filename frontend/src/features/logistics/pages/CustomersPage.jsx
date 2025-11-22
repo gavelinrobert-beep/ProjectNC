@@ -5,12 +5,24 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import SearchBar from '../../../components/ui/SearchBar'
 import { formatDate } from '../../../utils/dateUtils'
+import { useFilter } from '../../../hooks/useFilter'
+import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function CustomersPage() {
   const { data: customers, loading, error, refetch } = useApi(() => logisticsApi.getCustomers())
   const [selectedCustomer, setSelectedCustomer] = useState(null)
   const [showModal, setShowModal] = useState(false)
+
+  const {
+    filteredData,
+    searchQuery,
+    setSearchQuery,
+    clearFilters
+  } = useFilter(customers, {
+    searchFields: ['name', 'email', 'phone', 'address']
+  })
 
   const columns = [
     {
@@ -138,10 +150,39 @@ export default function CustomersPage() {
         </div>
       </div>
 
+      {/* Search and Export Toolbar */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar
+              placeholder="Search customers..."
+              onSearch={setSearchQuery}
+            />
+          </div>
+
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={clearFilters} size="sm">
+              Clear Search
+            </Button>
+            <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'customers')} size="sm">
+              📥 CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportToJSON(filteredData, 'customers')} size="sm">
+              📥 JSON
+            </Button>
+          </div>
+        </div>
+        {filteredData.length !== customers?.length && (
+          <div className="mt-3 text-sm text-gray-600">
+            Showing {filteredData.length} of {customers?.length || 0} customers
+          </div>
+        )}
+      </div>
+
       {/* Table */}
       <Table
         columns={columns}
-        data={customers || []}
+        data={filteredData || []}
         loading={loading}
         onRowClick={(row) => {
           setSelectedCustomer(row)

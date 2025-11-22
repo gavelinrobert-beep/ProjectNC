@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import MissionPlanner from '../components/MissionPlanner'
+import LineChart from '../components/charts/LineChart'
 
 export default function Missions() {
   const [missions, setMissions] = useState([])
@@ -149,6 +150,26 @@ export default function Missions() {
             {tab.label}
           </button>
         ))}
+      </div>
+
+      {/* Analytics Section */}
+      <div style={{ marginBottom: '2rem' }}>
+        <LineChart
+          data={[
+            { date: 'Mon', count: 5 },
+            { date: 'Tue', count: 8 },
+            { date: 'Wed', count: 6 },
+            { date: 'Thu', count: 10 },
+            { date: 'Fri', count: 12 },
+            { date: 'Sat', count: 4 },
+            { date: 'Sun', count: 3 },
+          ]}
+          xKey="date"
+          yKey="count"
+          title="Missions Completed Over Time"
+          color="#63b3ed"
+          height={250}
+        />
       </div>
 
       {/* Mission List or Empty State */}
