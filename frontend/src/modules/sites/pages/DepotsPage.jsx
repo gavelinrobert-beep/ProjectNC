@@ -113,15 +113,15 @@ export default function DepotsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Depots</div>
           <div className="text-2xl font-bold text-gray-900">{totalDepots}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Active</div>
           <div className="text-2xl font-bold text-success-600">{activeDepots}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Avg Capacity Utilization</div>
           <div className="text-2xl font-bold text-primary-600">{avgUtilization}%</div>
         </div>

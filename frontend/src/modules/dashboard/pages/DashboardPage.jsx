@@ -262,7 +262,7 @@ export default function DashboardPage() {
 
       {/* Recent Activity Feed */}
       <div className="mt-8">
-        <div className={CARD.base + ' p-6'}>
+        <div className={CARD.p6}>
           <h2 className={TEXT.h3 + ' mb-4 flex items-center gap-2'}>
             <span>📋</span>
             Recent Activity

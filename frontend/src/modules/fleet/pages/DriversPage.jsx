@@ -112,19 +112,19 @@ export default function DriversPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Drivers</div>
           <div className="text-2xl font-bold text-gray-900">{totalDrivers}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Active</div>
           <div className="text-2xl font-bold text-success-600">{activeDrivers}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>On Break</div>
           <div className="text-2xl font-bold text-warning-600">{onBreakDrivers}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Off Duty</div>
           <div className="text-2xl font-bold text-gray-600">{offDutyDrivers}</div>
         </div>

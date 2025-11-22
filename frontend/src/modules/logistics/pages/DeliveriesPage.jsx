@@ -149,23 +149,23 @@ export default function DeliveriesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Deliveries</div>
           <div className="text-2xl font-bold text-gray-900">{deliveries?.length || 0}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Pending</div>
           <div className="text-2xl font-bold text-warning-600">
             {deliveries?.filter(d => d.status === 'pending').length || 0}
           </div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>In Transit</div>
           <div className="text-2xl font-bold text-primary-600">
             {deliveries?.filter(d => d.status === 'in_transit').length || 0}
           </div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Delivered</div>
           <div className="text-2xl font-bold text-success-600">
             {deliveries?.filter(d => d.status === 'delivered').length || 0}

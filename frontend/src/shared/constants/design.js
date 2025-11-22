@@ -39,21 +39,21 @@ export const SHADOW = {
 // Typography hierarchy
 export const TEXT = {
   // Headings
-  h1: 'text-4xl font-bold text-gray-900',
-  h2: 'text-3xl font-bold text-gray-900',
-  h3: 'text-2xl font-bold text-gray-900',
-  h4: 'text-xl font-semibold text-gray-900',
-  h5: 'text-lg font-semibold text-gray-900',
+  h1: 'text-4xl font-bold text-neutral-900',
+  h2: 'text-3xl font-bold text-neutral-900',
+  h3: 'text-2xl font-bold text-neutral-900',
+  h4: 'text-xl font-semibold text-neutral-900',
+  h5: 'text-lg font-semibold text-neutral-900',
   
   // Body
-  body: 'text-base text-gray-700',
-  bodyLarge: 'text-lg text-gray-700',
-  bodySmall: 'text-sm text-gray-600',
+  body: 'text-base text-neutral-700',
+  bodyLarge: 'text-lg text-neutral-700',
+  bodySmall: 'text-sm text-neutral-600',
   
   // Misc
-  caption: 'text-xs text-gray-500',
-  label: 'text-sm font-medium text-gray-700',
-  link: 'text-primary-600 hover:text-primary-700 underline',
+  caption: 'text-xs text-neutral-500',
+  label: 'text-sm font-medium text-neutral-700',
+  link: 'text-primary-600 hover:text-primary-700 focus:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 underline',
 }
 
 // Button variants
@@ -95,6 +95,9 @@ export const CARD = {
   base: 'bg-white rounded-lg shadow',
   hover: 'bg-white rounded-lg shadow hover:shadow-md transition-shadow',
   interactive: 'bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition-shadow',
+  // Common padding combinations
+  p4: 'bg-white rounded-lg shadow p-4',
+  p6: 'bg-white rounded-lg shadow p-6',
 }
 
 // Input styles

@@ -201,19 +201,19 @@ export default function RoutesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Routes</div>
           <div className="text-2xl font-bold text-gray-900">{totalRoutes}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Active Today</div>
           <div className="text-2xl font-bold text-primary-600">{activeToday}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Completed</div>
           <div className="text-2xl font-bold text-success-600">{completedRoutes}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Average Stops</div>
           <div className="text-2xl font-bold text-gray-900">{avgStops}</div>
         </div>

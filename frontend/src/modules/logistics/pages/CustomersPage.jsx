@@ -119,19 +119,19 @@ export default function CustomersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Customers</div>
           <div className="text-2xl font-bold text-gray-900">{totalCustomers}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Active</div>
           <div className="text-2xl font-bold text-success-600">{activeCustomers}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Deliveries</div>
           <div className="text-2xl font-bold text-primary-600">{totalDeliveries}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Top Customer</div>
           <div className="text-lg font-bold text-gray-900 truncate">
             {topCustomer?.name || 'N/A'}

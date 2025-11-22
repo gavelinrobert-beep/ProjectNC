@@ -151,19 +151,19 @@ export default function InventoryPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Items</div>
           <div className="text-2xl font-bold text-gray-900">{totalItems}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Low Stock</div>
           <div className="text-2xl font-bold text-warning-600">{lowStockItems}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Out of Stock</div>
           <div className="text-2xl font-bold text-danger-600">{outOfStockItems}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Value</div>
           <div className="text-2xl font-bold text-primary-600">${totalValue.toFixed(2)}</div>
         </div>

@@ -77,19 +77,19 @@ export default function VehiclesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Vehicles</div>
           <div className="text-2xl font-bold text-gray-900">{totalVehicles}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Active</div>
           <div className="text-2xl font-bold text-success-600">{activeVehicles}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>In Maintenance</div>
           <div className="text-2xl font-bold text-warning-600">{maintenanceVehicles}</div>
         </div>
-        <div className={CARD.base + ' p-4'}>
+        <div className={CARD.p4}>
           <div className={TEXT.caption}>Average Fuel Level</div>
           <div className="text-2xl font-bold text-primary-600">{avgFuelLevel}%</div>
         </div>
