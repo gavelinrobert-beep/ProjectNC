@@ -214,6 +214,18 @@ export default function DepotsPage() {
                       </span>
                     </div>
                   )}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">🚛 Vehicles:</span>
+                    <span className="font-medium text-gray-900">{depot.vehicles_count || 0}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">🛣️ Active Routes:</span>
+                    <span className="font-medium text-gray-900">{depot.active_routes_count || 0}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">📦 Pending Deliveries:</span>
+                    <span className="font-medium text-gray-900">{depot.pending_deliveries_count || 0}</span>
+                  </div>
                 </div>
                 <div className="flex gap-2 pt-2">
                   <Button 
@@ -285,6 +297,45 @@ export default function DepotsPage() {
               <div>
                 <label className="text-sm font-medium text-gray-700">Current Usage</label>
                 <p className="text-gray-900">{selectedDepot.current_usage} units</p>
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Resource Summary</label>
+              <div className="mt-2 bg-gray-50 rounded-lg p-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 flex items-center gap-1">
+                    <span>🚛</span>
+                    Vehicles Stored
+                  </span>
+                  <span className="font-semibold text-gray-900">{selectedDepot.vehicles_count || 0}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 flex items-center gap-1">
+                    <span>🛣️</span>
+                    Active Routes
+                  </span>
+                  <span className="font-semibold text-blue-600">{selectedDepot.active_routes_count || 0}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 flex items-center gap-1">
+                    <span>📦</span>
+                    Pending Deliveries
+                  </span>
+                  <span className="font-semibold text-yellow-600">{selectedDepot.pending_deliveries_count || 0}</span>
+                </div>
+              </div>
+            </div>
+            {selectedDepot.top_inventory && selectedDepot.top_inventory.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-700">Top Inventory Items</label>
+                <div className="mt-2 space-y-2">
+                  {selectedDepot.top_inventory.map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-2 bg-gray-50 rounded text-sm">
+                      <span className="text-gray-700">{item.name}</span>
+                      <span className="font-medium text-gray-900">{item.quantity} units</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {selectedDepot.lat && selectedDepot.lon && (

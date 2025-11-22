@@ -83,19 +83,50 @@ export default function RoutesPage() {
       render: (value, row) => value || `Route #${row.id}`
     },
     {
-      key: 'driver',
-      label: 'Driver',
-      render: (value) => value || 'Unassigned'
-    },
-    {
-      key: 'vehicle',
+      key: 'assigned_vehicle_id',
       label: 'Vehicle',
-      render: (value) => value || 'Unassigned'
+      render: (value, row) => value ? (
+        <span className="flex items-center gap-1">
+          <span>🚛</span>
+          <span className="text-sm">{row.vehicle_registration || value}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">Unassigned</span>
+      )
     },
     {
-      key: 'stops',
-      label: 'Stops',
-      render: (value) => value?.length || 0
+      key: 'assigned_driver_id',
+      label: 'Driver',
+      render: (value, row) => value ? (
+        <span className="flex items-center gap-1">
+          <span>👤</span>
+          <span className="text-sm">{row.driver_name || value}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">Unassigned</span>
+      )
+    },
+    {
+      key: 'start_depot',
+      label: 'Start Depot',
+      render: (value, row) => row.start_depot_id ? (
+        <span className="flex items-center gap-1">
+          <span>🏢</span>
+          <span className="text-sm">{row.start_depot_name || row.start_depot_id}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">-</span>
+      )
+    },
+    {
+      key: 'deliveries',
+      label: 'Deliveries',
+      render: (value) => (
+        <span className="flex items-center gap-1">
+          <span>📦</span>
+          <span className="font-medium">{value?.length || 0}</span>
+        </span>
+      )
     },
     {
       key: 'status',
@@ -278,12 +309,50 @@ export default function RoutesPage() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Driver</label>
-              <p className="text-gray-900">{selectedRoute.driver || 'Unassigned'}</p>
+              <label className="text-sm font-medium text-gray-700">Vehicle</label>
+              {selectedRoute.assigned_vehicle_id ? (
+                <p className="text-gray-900 flex items-center gap-2">
+                  <span>🚛</span>
+                  <span>{selectedRoute.vehicle_registration || selectedRoute.assigned_vehicle_id}</span>
+                </p>
+              ) : (
+                <p className="text-gray-400">No vehicle assigned</p>
+              )}
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Vehicle</label>
-              <p className="text-gray-900">{selectedRoute.vehicle || 'Unassigned'}</p>
+              <label className="text-sm font-medium text-gray-700">Driver</label>
+              {selectedRoute.assigned_driver_id ? (
+                <p className="text-gray-900 flex items-center gap-2">
+                  <span>👤</span>
+                  <span>{selectedRoute.driver_name || selectedRoute.assigned_driver_id}</span>
+                </p>
+              ) : (
+                <p className="text-gray-400">No driver assigned</p>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Start Depot</label>
+                {selectedRoute.start_depot_id ? (
+                  <p className="text-gray-900 flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>{selectedRoute.start_depot_name || selectedRoute.start_depot_id}</span>
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Not set</p>
+                )}
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">End Depot</label>
+                {selectedRoute.end_depot_id ? (
+                  <p className="text-gray-900 flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>{selectedRoute.end_depot_name || selectedRoute.end_depot_id}</span>
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Not set</p>
+                )}
+              </div>
             </div>
             {selectedRoute.start_time && (
               <div>
@@ -297,7 +366,24 @@ export default function RoutesPage() {
                 <p className="text-gray-900">{formatDateTime(selectedRoute.end_time)}</p>
               </div>
             )}
-            {selectedRoute.stops && selectedRoute.stops.length > 0 && (
+            {selectedRoute.deliveries && selectedRoute.deliveries.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-700">Deliveries on Route ({selectedRoute.deliveries.length})</label>
+                <div className="mt-2 space-y-2">
+                  {selectedRoute.deliveries.map((delivery, idx) => (
+                    <div key={idx} className="p-2 bg-gray-50 rounded text-sm">
+                      <div className="flex items-center gap-2">
+                        <span>📦</span>
+                        <span className="font-medium">Delivery #{delivery.id}</span>
+                      </div>
+                      <div className="text-gray-600 ml-6">{delivery.customer_name || 'Customer'}</div>
+                      <div className="text-gray-500 ml-6 text-xs">{delivery.delivery_address || 'N/A'}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {selectedRoute.stops && selectedRoute.stops.length > 0 && (!selectedRoute.deliveries || selectedRoute.deliveries.length === 0) && (
               <div>
                 <label className="text-sm font-medium text-gray-700">Stops ({selectedRoute.stops.length})</label>
                 <div className="mt-2 space-y-2">
