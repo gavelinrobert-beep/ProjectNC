@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { depotService } from '../services/depotService'
 
 export function useDepots() {
@@ -26,6 +27,7 @@ export function useCreateDepot() {
     mutationFn: depotService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['depots'] })
+      toast.success('Depot created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateDepot() {
     mutationFn: ({ id, data }) => depotService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['depots'] })
+      toast.success('Depot updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteDepot() {
     mutationFn: depotService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['depots'] })
+      toast.success('Depot deleted successfully')
     }
   })
 }

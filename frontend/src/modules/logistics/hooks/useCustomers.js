@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { customerService } from '../services/customerService'
 
 export function useCustomers() {
@@ -26,6 +27,7 @@ export function useCreateCustomer() {
     mutationFn: customerService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] })
+      toast.success('Customer created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateCustomer() {
     mutationFn: ({ id, data }) => customerService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] })
+      toast.success('Customer updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteCustomer() {
     mutationFn: customerService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] })
+      toast.success('Customer deleted successfully')
     }
   })
 }

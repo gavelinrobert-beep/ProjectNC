@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import { useNetworkStatus } from '../../../hooks/useNetworkStatus'
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const isOnline = useNetworkStatus()
 
   return (
     <div style={{
@@ -17,6 +19,23 @@ export default function MainLayout() {
       color: '#2D3E50',
       transition: 'grid-template-columns 0.3s ease'
     }}>
+      {!isOnline && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          background: '#ff4444',
+          color: 'white',
+          padding: '0.5rem',
+          textAlign: 'center',
+          zIndex: 9999,
+          fontWeight: 'bold'
+        }}>
+          ⚠️ No internet connection - Some features may not work
+        </div>
+      )}
+
       <div style={{ gridArea: 'topbar' }}>
         <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       </div>
