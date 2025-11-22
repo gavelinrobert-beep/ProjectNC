@@ -8,6 +8,7 @@ import { ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function CustomersPage() {
   const { data: customers, isLoading: loading, error, refetch } = useCustomers()
@@ -103,8 +104,8 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Customers</h1>
-          <p className="text-gray-600 mt-2">Manage customer information and contacts</p>
+          <h1 className={TEXT.h1}>Customers</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage customer information and contacts</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -118,28 +119,28 @@ export default function CustomersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Customers</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Total Customers</div>
           <div className="text-2xl font-bold text-gray-900">{totalCustomers}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Active</div>
-          <div className="text-2xl font-bold text-green-600">{activeCustomers}</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Active</div>
+          <div className="text-2xl font-bold text-success-600">{activeCustomers}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Deliveries</div>
-          <div className="text-2xl font-bold text-blue-600">{totalDeliveries}</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Total Deliveries</div>
+          <div className="text-2xl font-bold text-primary-600">{totalDeliveries}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Top Customer</div>
-          <div className="text-lg font-bold text-purple-600 truncate">
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Top Customer</div>
+          <div className="text-lg font-bold text-gray-900 truncate">
             {topCustomer?.name || 'N/A'}
           </div>
         </div>
       </div>
 
       {/* Search and Export Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <SearchBar

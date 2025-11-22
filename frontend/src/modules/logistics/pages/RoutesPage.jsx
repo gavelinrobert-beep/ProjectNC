@@ -10,6 +10,7 @@ import { formatDateTime } from '../../../shared/utils'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function RoutesPage() {
   const { data: routes, isLoading: loading, error, refetch } = useRoutes()
@@ -185,8 +186,8 @@ export default function RoutesPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Routes</h1>
-          <p className="text-gray-600 mt-2">Plan and optimize delivery routes</p>
+          <h1 className={TEXT.h1}>Routes</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Plan and optimize delivery routes</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -200,27 +201,27 @@ export default function RoutesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Routes</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Total Routes</div>
           <div className="text-2xl font-bold text-gray-900">{totalRoutes}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Active Today</div>
-          <div className="text-2xl font-bold text-blue-600">{activeToday}</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Active Today</div>
+          <div className="text-2xl font-bold text-primary-600">{activeToday}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Completed</div>
-          <div className="text-2xl font-bold text-green-600">{completedRoutes}</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Completed</div>
+          <div className="text-2xl font-bold text-success-600">{completedRoutes}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Average Stops</div>
-          <div className="text-2xl font-bold text-purple-600">{avgStops}</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Average Stops</div>
+          <div className="text-2xl font-bold text-gray-900">{avgStops}</div>
         </div>
       </div>
 
       {/* Route Map Visualization */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Route Visualization</h2>
+        <h2 className={TEXT.h4 + ' mb-4'}>Route Visualization</h2>
         <MapView
           center={[59.3293, 18.0686]}
           zoom={12}
@@ -231,7 +232,7 @@ export default function RoutesPage() {
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <SearchBar

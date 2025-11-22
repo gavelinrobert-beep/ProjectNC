@@ -9,6 +9,7 @@ import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/compon
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
+import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DeliveriesPage() {
   const { data: deliveries, isLoading: loading, error, refetch } = useDeliveries()
@@ -133,8 +134,8 @@ export default function DeliveriesPage() {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Deliveries</h1>
-          <p className="text-gray-600 mt-2">Manage deliveries and proof of delivery</p>
+          <h1 className={TEXT.h1}>Deliveries</h1>
+          <p className={TEXT.bodySmall + ' mt-2'}>Manage deliveries and proof of delivery</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
@@ -148,32 +149,32 @@ export default function DeliveriesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Total Deliveries</div>
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Total Deliveries</div>
           <div className="text-2xl font-bold text-gray-900">{deliveries?.length || 0}</div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Pending</div>
-          <div className="text-2xl font-bold text-yellow-600">
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Pending</div>
+          <div className="text-2xl font-bold text-warning-600">
             {deliveries?.filter(d => d.status === 'pending').length || 0}
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">In Transit</div>
-          <div className="text-2xl font-bold text-blue-600">
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>In Transit</div>
+          <div className="text-2xl font-bold text-primary-600">
             {deliveries?.filter(d => d.status === 'in_transit').length || 0}
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <div className="text-sm text-gray-500">Delivered</div>
-          <div className="text-2xl font-bold text-green-600">
+        <div className={CARD.base + ' p-4'}>
+          <div className={TEXT.caption}>Delivered</div>
+          <div className="text-2xl font-bold text-success-600">
             {deliveries?.filter(d => d.status === 'delivered').length || 0}
           </div>
         </div>
       </div>
 
       {/* Search and Filter Toolbar */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className={CARD.base + ' p-4 mb-6'}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <SearchBar
@@ -241,22 +242,22 @@ export default function DeliveriesPage() {
         {selectedDelivery && (
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Customer</label>
-              <p className="text-gray-900">{selectedDelivery.customer_name}</p>
+              <label className={TEXT.label}>Customer</label>
+              <p className={TEXT.body}>{selectedDelivery.customer_name}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Address</label>
-              <p className="text-gray-900">{selectedDelivery.delivery_address || 'N/A'}</p>
+              <label className={TEXT.label}>Address</label>
+              <p className={TEXT.body}>{selectedDelivery.delivery_address || 'N/A'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Status</label>
+              <label className={TEXT.label}>Status</label>
               <div className="mt-1">
                 <StatusBadge status={selectedDelivery.status} />
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Assigned Vehicle</label>
-              <p className="text-gray-900">
+              <label className={TEXT.label}>Assigned Vehicle</label>
+              <p className={TEXT.body}>
                 {selectedDelivery.assigned_vehicle_id ? (
                   <span className="flex items-center gap-2">
                     <span>🚛</span>
@@ -268,8 +269,8 @@ export default function DeliveriesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Assigned Driver</label>
-              <p className="text-gray-900">
+              <label className={TEXT.label}>Assigned Driver</label>
+              <p className={TEXT.body}>
                 {selectedDelivery.assigned_driver_id ? (
                   <span className="flex items-center gap-2">
                     <span>👤</span>
@@ -281,13 +282,13 @@ export default function DeliveriesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Scheduled Date</label>
-              <p className="text-gray-900">{formatDateTime(selectedDelivery.scheduled_date)}</p>
+              <label className={TEXT.label}>Scheduled Date</label>
+              <p className={TEXT.body}>{formatDateTime(selectedDelivery.scheduled_date)}</p>
             </div>
             {selectedDelivery.notes && (
               <div>
-                <label className="text-sm font-medium text-gray-700">Notes</label>
-                <p className="text-gray-900">{selectedDelivery.notes}</p>
+                <label className={TEXT.label}>Notes</label>
+                <p className={TEXT.body}>{selectedDelivery.notes}</p>
               </div>
             )}
           </div>
