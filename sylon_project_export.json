@@ -1,0 +1,121 @@
+{
+  "project_name": "SYLON Core Overhaul",
+  "repo": "gavelinrobert-beep/SYLON",
+  "columns": [
+    "Backlog",
+    "In Progress",
+    "Review",
+    "Done"
+  ],
+  "epics": [
+    {
+      "id": "E1",
+      "name": "System Architecture & Code Structure (P0)"
+    },
+    {
+      "id": "E2",
+      "name": "UI/UX Consolidation (P1)"
+    },
+    {
+      "id": "E3",
+      "name": "Module Renovation (P2)"
+    },
+    {
+      "id": "E4",
+      "name": "Production Hardening (P3)"
+    }
+  ],
+  "issues": [
+    {
+      "key": "P0-STRUCTURE",
+      "title": "Create new folder architecture",
+      "epic": "E1",
+      "status": "Backlog",
+      "priority": "P0"
+    },
+    {
+      "key": "P0-STATE",
+      "title": "Implement React Query + Zustand",
+      "epic": "E1",
+      "status": "Backlog",
+      "priority": "P0"
+    },
+    {
+      "key": "P0-AUTH",
+      "title": "Full JWT auth system",
+      "epic": "E1",
+      "status": "Backlog",
+      "priority": "P0"
+    },
+    {
+      "key": "P0-SHARED",
+      "title": "Create shared UI component library",
+      "epic": "E1",
+      "status": "Backlog",
+      "priority": "P0"
+    },
+    {
+      "key": "P1-DESIGN",
+      "title": "Build unified UI design tokens",
+      "epic": "E2",
+      "status": "Backlog",
+      "priority": "P1"
+    },
+    {
+      "key": "P1-LAYOUT",
+      "title": "Implement PageLayout across all modules",
+      "epic": "E2",
+      "status": "Backlog",
+      "priority": "P1"
+    },
+    {
+      "key": "P2-LOGISTICS",
+      "title": "Fix Logistics core workflows",
+      "epic": "E3",
+      "status": "Backlog",
+      "priority": "P2"
+    },
+    {
+      "key": "P2-FLEET",
+      "title": "Connect Fleet module to live API data",
+      "epic": "E3",
+      "status": "Backlog",
+      "priority": "P2"
+    },
+    {
+      "key": "P2-WORKS",
+      "title": "Implement Works: machine hours, \u00c4TA, projects",
+      "epic": "E3",
+      "status": "Backlog",
+      "priority": "P2"
+    },
+    {
+      "key": "P2-FIELD",
+      "title": "Field offline mode + sync queue",
+      "epic": "E3",
+      "status": "Backlog",
+      "priority": "P2"
+    },
+    {
+      "key": "P2-SITES",
+      "title": "Sites: materials, depots, inventory logic",
+      "epic": "E3",
+      "status": "Backlog",
+      "priority": "P2"
+    },
+    {
+      "key": "P3-TESTS",
+      "title": "Setup testing framework",
+      "epic": "E4",
+      "status": "Backlog",
+      "priority": "P3"
+    },
+    {
+      "key": "P3-DOC",
+      "title": "Write full documentation",
+      "epic": "E4",
+      "status": "Backlog",
+      "priority": "P3"
+    }
+  ]
+}
