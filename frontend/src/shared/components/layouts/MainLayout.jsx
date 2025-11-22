@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import Breadcrumbs from './Breadcrumbs'
 import { useNetworkStatus } from '../../../hooks/useNetworkStatus'
 
 export default function MainLayout() {
@@ -50,6 +51,7 @@ export default function MainLayout() {
         overflowY: 'auto',
         background: '#F5F7FA'
       }}>
+        <Breadcrumbs />
         <Outlet />
       </main>
 

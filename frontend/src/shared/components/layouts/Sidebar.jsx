@@ -1,9 +1,8 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
 
 export default function Sidebar({ isOpen, toggle }) {
-  const location = useLocation()
 
   const navigation = [
     { name: 'Dashboard', icon: '📊', path: ROUTES.DASHBOARD, section: 'MAIN' },
@@ -42,7 +41,6 @@ export default function Sidebar({ isOpen, toggle }) {
     }}>
       <nav style={{ flex: 1, padding: '1rem 0', overflowY: 'auto' }}>
         {navigation.map((item, index) => {
-          const isActive = location.pathname === item.path
           const showSectionHeader = index === 0 || navigation[index - 1].section !== item.section
 
           return (
@@ -60,9 +58,9 @@ export default function Sidebar({ isOpen, toggle }) {
                   {item.section}
                 </div>
               )}
-              <Link
+              <NavLink
                 to={item.path}
-                style={{
+                style={({ isActive }) => ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.75rem',
@@ -73,14 +71,16 @@ export default function Sidebar({ isOpen, toggle }) {
                   borderLeft: `3px solid ${isActive ? '#4A90E2' : 'transparent'}`,
                   transition: 'all 0.2s ease',
                   fontWeight: isActive ? 600 : 500
-                }}
+                })}
                 onMouseEnter={(e) => {
+                  const isActive = e.currentTarget.classList.contains('active')
                   if (!isActive) {
                     e.currentTarget.style.background = 'rgba(74, 144, 226, 0.05)'
                     e.currentTarget.style.color = '#4A90E2'
                   }
                 }}
                 onMouseLeave={(e) => {
+                  const isActive = e.currentTarget.classList.contains('active')
                   if (!isActive) {
                     e.currentTarget.style.background = 'transparent'
                     e.currentTarget.style.color = '#556B7C'
@@ -95,7 +95,7 @@ export default function Sidebar({ isOpen, toggle }) {
                     {item.name}
                   </span>
                 )}
-              </Link>
+              </NavLink>
             </React.Fragment>
           )
         })}
