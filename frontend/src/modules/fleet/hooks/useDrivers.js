@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { driverService } from '../services/driverService'
 
 export function useDrivers() {
@@ -26,6 +27,7 @@ export function useCreateDriver() {
     mutationFn: driverService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['drivers'] })
+      toast.success('Driver created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateDriver() {
     mutationFn: ({ id, data }) => driverService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['drivers'] })
+      toast.success('Driver updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteDriver() {
     mutationFn: driverService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['drivers'] })
+      toast.success('Driver deleted successfully')
     }
   })
 }

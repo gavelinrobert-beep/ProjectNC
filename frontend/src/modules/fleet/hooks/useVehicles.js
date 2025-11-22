@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { vehicleService } from '../services/vehicleService'
 
 export function useVehicles() {
@@ -36,6 +37,7 @@ export function useCreateVehicle() {
     mutationFn: vehicleService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      toast.success('Vehicle created successfully')
     }
   })
 }
@@ -46,6 +48,7 @@ export function useUpdateVehicle() {
     mutationFn: ({ id, data }) => vehicleService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      toast.success('Vehicle updated successfully')
     }
   })
 }
@@ -56,6 +59,7 @@ export function useDeleteVehicle() {
     mutationFn: vehicleService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vehicles'] })
+      toast.success('Vehicle deleted successfully')
     }
   })
 }

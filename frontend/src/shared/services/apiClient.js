@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { handleApiError } from '../utils/errorHandler'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -27,6 +28,9 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && window.location.pathname !== '/login') {
       localStorage.removeItem('token')
       window.location.href = '/login'
+    } else {
+      // Handle other errors with user-friendly messages
+      handleApiError(error)
     }
     return Promise.reject(error)
   }

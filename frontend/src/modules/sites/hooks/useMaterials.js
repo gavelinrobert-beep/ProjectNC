@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { materialService } from '../services/materialService'
 
 export function useMaterials() {
@@ -26,6 +27,7 @@ export function useCreateMaterial() {
     mutationFn: materialService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['materials'] })
+      toast.success('Material created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateMaterial() {
     mutationFn: ({ id, data }) => materialService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['materials'] })
+      toast.success('Material updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteMaterial() {
     mutationFn: materialService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['materials'] })
+      toast.success('Material deleted successfully')
     }
   })
 }

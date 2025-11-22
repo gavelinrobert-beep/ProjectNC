@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { maintenanceService } from '../services/maintenanceService'
 
 export function useMaintenance() {
@@ -26,6 +27,7 @@ export function useCreateMaintenanceEvent() {
     mutationFn: maintenanceService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['maintenance'] })
+      toast.success('Maintenance event created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateMaintenanceEvent() {
     mutationFn: ({ id, data }) => maintenanceService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['maintenance'] })
+      toast.success('Maintenance event updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteMaintenanceEvent() {
     mutationFn: maintenanceService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['maintenance'] })
+      toast.success('Maintenance event deleted successfully')
     }
   })
 }

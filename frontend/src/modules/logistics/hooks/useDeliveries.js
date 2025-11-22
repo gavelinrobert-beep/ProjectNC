@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { deliveryService } from '../services/deliveryService'
 
 export function useDeliveries() {
@@ -26,6 +27,7 @@ export function useCreateDelivery() {
     mutationFn: deliveryService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveries'] })
+      toast.success('Delivery created successfully')
     }
   })
 }
@@ -36,6 +38,7 @@ export function useUpdateDelivery() {
     mutationFn: ({ id, data }) => deliveryService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveries'] })
+      toast.success('Delivery updated successfully')
     }
   })
 }
@@ -46,6 +49,7 @@ export function useDeleteDelivery() {
     mutationFn: deliveryService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveries'] })
+      toast.success('Delivery deleted successfully')
     }
   })
 }

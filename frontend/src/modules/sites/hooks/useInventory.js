@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { inventoryService } from '../services/inventoryService'
 
 export function useInventory() {
@@ -26,6 +27,7 @@ export function useUpdateInventory() {
     mutationFn: ({ id, data }) => inventoryService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory'] })
+      toast.success('Inventory updated successfully')
     }
   })
 }
