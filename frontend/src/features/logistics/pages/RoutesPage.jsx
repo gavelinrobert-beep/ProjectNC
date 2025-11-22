@@ -9,6 +9,7 @@ import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -17,6 +18,54 @@ export default function RoutesPage() {
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
+  // Mock route paths
+  const routePaths = [
+    {
+      id: 1,
+      name: 'Stockholm City Route',
+      path: [
+        [59.3293, 18.0686],
+        [59.3393, 18.0586],
+        [59.3493, 18.0786],
+        [59.3293, 18.0986]
+      ],
+      color: '#10B981',
+      stops: 5
+    },
+    {
+      id: 2,
+      name: 'Stockholm North',
+      path: [
+        [59.3193, 18.0486],
+        [59.3093, 18.0586],
+        [59.2993, 18.0686]
+      ],
+      color: '#4A90E2',
+      stops: 3
+    }
+  ]
+
+  // Mock vehicle positions
+  const vehicleMarkers = [
+    {
+      id: 1,
+      name: 'Truck 01',
+      lat: 59.3293,
+      lng: 18.0686,
+      status: 'active',
+      driver: 'Erik Andersson',
+      speed: 45
+    },
+    {
+      id: 2,
+      name: 'Van 02',
+      lat: 59.3393,
+      lng: 18.0586,
+      status: 'active',
+      driver: 'Anna Svensson',
+      speed: 60
+    }
+  ]
   const {
     filteredData,
     searchQuery,
@@ -155,6 +204,16 @@ export default function RoutesPage() {
         </div>
       </div>
 
+      {/* Route Map Visualization */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Route Visualization</h2>
+        <MapView
+          center={[59.3293, 18.0686]}
+          zoom={12}
+          routes={routePaths}
+          markers={vehicleMarkers}
+          height={400}
+        />
       {/* Search and Filter Toolbar */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

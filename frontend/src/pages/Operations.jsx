@@ -4,6 +4,7 @@ import { api, fetchInventoryItems } from '../lib/api'
 import { BRAND } from '../lib/constants'
 import DashboardMap from '../components/DashboardMap'
 import AssetDetailModal from '../components/AssetDetailModal'
+import MapView from '../components/map/MapView'
 
 export default function Operations() {
   const [assets, setAssets] = useState([])
@@ -68,6 +69,37 @@ export default function Operations() {
     setLayers(prev => ({ ...prev, [layer]: !prev[layer] }))
   }
 
+  // Mock vehicle positions (Stockholm area)
+  const vehicleMarkers = [
+    {
+      id: 1,
+      name: 'Truck 01',
+      lat: 59.3293,
+      lng: 18.0686,
+      status: 'active',
+      driver: 'Erik Andersson',
+      speed: 45
+    },
+    {
+      id: 2,
+      name: 'Van 02',
+      lat: 59.3393,
+      lng: 18.0586,
+      status: 'active',
+      driver: 'Anna Svensson',
+      speed: 60
+    },
+    {
+      id: 3,
+      name: 'Truck 03',
+      lat: 59.3193,
+      lng: 18.0786,
+      status: 'idle',
+      driver: null,
+      speed: 0
+    }
+  ]
+
   if (loading) {
     return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading resource map...</div>
   }
@@ -96,6 +128,19 @@ export default function Operations() {
             <option>Playback</option>
           </select>
         </div>
+      </div>
+
+      {/* Live Vehicle Tracking Section */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h2 style={{ fontSize: '1.25rem', color: '#e0e0e0', marginBottom: '1rem' }}>
+          Live Vehicle Tracking
+        </h2>
+        <MapView
+          center={[59.3293, 18.0686]}
+          zoom={13}
+          markers={vehicleMarkers}
+          height={500}
+        />
       </div>
 
       {/* Layer Controls */}

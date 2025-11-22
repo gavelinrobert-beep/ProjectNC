@@ -9,6 +9,7 @@ import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { formatDate } from '../../../utils/dateUtils'
 import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -17,6 +18,44 @@ export default function DepotsPage() {
   const [selectedDepot, setSelectedDepot] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
+  // Mock depot locations (Stockholm area)
+  const depotLocations = [
+    {
+      id: 1,
+      name: 'Stockholm Depot',
+      lat: 59.3293,
+      lng: 18.0686,
+      address: 'Stockholm South Industrial Area',
+      capacity: 1000
+    },
+    {
+      id: 2,
+      name: 'Göteborg Depot',
+      lat: 57.7089,
+      lng: 11.9746,
+      address: 'Göteborg North Harbor',
+      capacity: 800
+    }
+  ]
+
+  const depotGeofences = [
+    {
+      id: 1,
+      name: 'Stockholm Depot Zone',
+      lat: 59.3293,
+      lng: 18.0686,
+      radius: 500,
+      color: '#10B981'
+    },
+    {
+      id: 2,
+      name: 'Göteborg Depot Zone',
+      lat: 57.7089,
+      lng: 11.9746,
+      radius: 500,
+      color: '#4A90E2'
+    }
+  ]
   const {
     filteredData,
     searchQuery,
@@ -101,6 +140,16 @@ export default function DepotsPage() {
         </div>
       </div>
 
+      {/* Depot Locations Map */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Depot Locations</h2>
+        <MapView
+          center={[59.3293, 18.0686]}
+          zoom={6}
+          depots={depotLocations}
+          geofences={depotGeofences}
+          height={450}
+        />
       {/* Search and Filter Toolbar */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
