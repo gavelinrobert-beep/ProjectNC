@@ -1,21 +1,15 @@
-import { getStatusConfig } from '../../../utils/statusHelpers'
+import { STATUS_COLORS } from '../../../constants/design'
+import { getStatusConfig } from '../../../../utils/statusHelpers'
 
-export default function StatusBadge({ status }) {
+export default function StatusBadge({ status, children }) {
   const config = getStatusConfig(status)
-  
-  const colorClasses = {
-    green: 'bg-green-100 text-green-800',
-    blue: 'bg-blue-100 text-blue-800',
-    yellow: 'bg-yellow-100 text-yellow-800',
-    orange: 'bg-orange-100 text-orange-800',
-    red: 'bg-red-100 text-red-800',
-    gray: 'bg-gray-100 text-gray-800'
-  }
-  
+  const statusText = children || config.label || status.replace('_', ' ')
+  const colorClasses = STATUS_COLORS[status] || STATUS_COLORS.pending
+
   return (
-    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${colorClasses[config.color]}`}>
-      <span>{config.icon}</span>
-      <span>{config.label}</span>
+    <span className={`${colorClasses} px-3 py-1 rounded-full text-xs font-medium capitalize inline-flex items-center gap-1`}>
+      {config.icon && <span>{config.icon}</span>}
+      <span>{statusText}</span>
     </span>
   )
 }
