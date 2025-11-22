@@ -37,14 +37,14 @@ export function useFilter(data, config = {}) {
 
   // Stringify config to prevent infinite re-renders
   const configStr = JSON.stringify(config)
+  
+  // Memoize parsed config to avoid repeated parsing
+  const parsedConfig = useMemo(() => JSON.parse(configStr), [configStr])
 
   const filteredData = useMemo(() => {
     if (!data || !Array.isArray(data)) return []
 
     let result = [...data]
-    
-    // Parse config back from string
-    const parsedConfig = JSON.parse(configStr)
 
     // Search filter
     if (searchQuery && searchQuery.trim() !== '' && parsedConfig.searchFields) {
@@ -108,7 +108,7 @@ export function useFilter(data, config = {}) {
     }
 
     return result
-  }, [data, searchQuery, statusFilter, typeFilter, categoryFilter, stockLevelFilter, dateRange.start, dateRange.end, configStr])
+  }, [data, searchQuery, statusFilter, typeFilter, categoryFilter, stockLevelFilter, dateRange.start, dateRange.end, parsedConfig])
 
   return {
     filteredData,
