@@ -15,11 +15,11 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
     const result = await login(email, password)
+    setIsLoading(false)
     if (result.success) {
       navigate('/dashboard')
     } else {
       setError(result.error)
-      setIsLoading(false)
     }
   }
 

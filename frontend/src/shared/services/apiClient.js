@@ -22,6 +22,8 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // On 401 errors, force a hard redirect to login page to clear all state
+    // Using window.location instead of React Router to ensure complete state reset
     if (error.response?.status === 401 && window.location.pathname !== '/login') {
       localStorage.removeItem('token')
       window.location.href = '/login'

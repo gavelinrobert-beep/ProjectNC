@@ -15,7 +15,13 @@ export function AuthProvider({ children }) {
         try {
           setToken(storedToken)
           const userData = await authService.getCurrentUser()
-          setUser(userData)
+          if (userData && (userData.email || userData.id)) {
+            setUser(userData)
+          } else {
+            localStorage.removeItem('token')
+            setToken(null)
+            setUser(null)
+          }
         } catch (error) {
           localStorage.removeItem('token')
           setToken(null)
