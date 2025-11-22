@@ -3,11 +3,10 @@ import { useVehicles } from '../hooks/useVehicles'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
-import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { formatDate } from '../../../utils/dateUtils'
-import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { StatusBadge, EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -34,29 +33,18 @@ export default function VehiclesPage() {
     setShowModal(true)
   }
 
-  if (error) {
+  if (loading) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-semibold text-red-900">Error Loading Vehicles</h3>
-          </div>
-          <p className="text-red-800 mb-4">{error.message}</p>
-          <Button variant="danger" onClick={refetch}>
-            🔄 Retry
-          </Button>
-        </div>
+        <TableSkeleton rows={6} columns={4} />
       </div>
     )
   }
 
-  if (loading) {
+  if (error) {
     return (
       <div className="p-6">
-        <LoadingSpinner size="lg" text="Loading vehicles..." />
+        <ErrorMessage error={error} retry={refetch} />
       </div>
     )
   }
@@ -159,16 +147,12 @@ export default function VehiclesPage() {
 
       {/* Vehicle Grid */}
       {!filteredData || filteredData.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No Vehicles</h3>
-          <p className="mt-1 text-sm text-gray-500">Get started by adding a new vehicle.</p>
-          <div className="mt-6">
-            <Button icon="+">Add Vehicle</Button>
-          </div>
-        </div>
+        <EmptyState
+          icon="🚗"
+          title="No Vehicles"
+          description="Get started by adding a new vehicle."
+          action={<Button icon="+">Add Vehicle</Button>}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredData.map((vehicle) => (
@@ -179,9 +163,7 @@ export default function VehiclesPage() {
                     <h3 className="text-lg font-semibold text-gray-900">{vehicle.registration_number || vehicle.id}</h3>
                     <p className="text-sm text-gray-500">{vehicle.type || 'Vehicle'}</p>
                   </div>
-                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(vehicle.status)}`}>
-                    {getStatusLabel(vehicle.status)}
-                  </span>
+                  <StatusBadge status={vehicle.status} />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
@@ -250,9 +232,7 @@ export default function VehiclesPage() {
             <div>
               <label className="text-sm font-medium text-gray-700">Status</label>
               <div className="mt-1">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedVehicle.status)}`}>
-                  {getStatusLabel(selectedVehicle.status)}
-                </span>
+                <StatusBadge status={selectedVehicle.status} />
               </div>
             </div>
             <div>
@@ -274,7 +254,7 @@ export default function VehiclesPage() {
             {selectedVehicle.updated_at && (
               <div>
                 <label className="text-sm font-medium text-gray-700">Last Updated</label>
-                <p className="text-gray-900">{formatDate(selectedVehicle.updated_at, true)}</p>
+                <p className="text-gray-900">{formatDateTime(selectedVehicle.updated_at)}</p>
               </div>
             )}
           </div>

@@ -5,8 +5,8 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { formatDate } from '../../../utils/dateUtils'
-import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
@@ -46,16 +46,12 @@ export default function DeliveriesPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(value)}`}>
-          {getStatusLabel(value)}
-        </span>
-      )
+      render: (value) => <StatusBadge status={value} />
     },
     {
       key: 'scheduled_date',
       label: 'Scheduled',
-      render: (value) => formatDate(value, true)
+      render: (value) => formatDateTime(value)
     },
     {
       key: 'actions',
@@ -92,21 +88,18 @@ export default function DeliveriesPage() {
     })
   }
 
+  if (loading) {
+    return (
+      <div className="p-6">
+        <TableSkeleton rows={5} columns={6} />
+      </div>
+    )
+  }
+
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-semibold text-red-900">Error Loading Deliveries</h3>
-          </div>
-          <p className="text-red-800 mb-4">{error.message}</p>
-          <Button variant="danger" onClick={refetch}>
-            🔄 Retry
-          </Button>
-        </div>
+        <ErrorMessage error={error} retry={refetch} />
       </div>
     )
   }
@@ -234,14 +227,12 @@ export default function DeliveriesPage() {
             <div>
               <label className="text-sm font-medium text-gray-700">Status</label>
               <div className="mt-1">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedDelivery.status)}`}>
-                  {getStatusLabel(selectedDelivery.status)}
-                </span>
+                <StatusBadge status={selectedDelivery.status} />
               </div>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Scheduled Date</label>
-              <p className="text-gray-900">{formatDate(selectedDelivery.scheduled_date, true)}</p>
+              <p className="text-gray-900">{formatDateTime(selectedDelivery.scheduled_date)}</p>
             </div>
             {selectedDelivery.notes && (
               <div>

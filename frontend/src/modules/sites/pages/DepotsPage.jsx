@@ -3,11 +3,9 @@ import { useDepots } from '../hooks/useDepots'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
-import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { formatDate } from '../../../utils/dateUtils'
-import { getStatusColor, getStatusLabel } from '../../../utils/statusHelpers'
+import { EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -71,29 +69,18 @@ export default function DepotsPage() {
     setShowModal(true)
   }
 
-  if (error) {
+  if (loading) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-semibold text-red-900">Error Loading Depots</h3>
-          </div>
-          <p className="text-red-800 mb-4">{error.message}</p>
-          <Button variant="danger" onClick={refetch}>
-            🔄 Retry
-          </Button>
-        </div>
+        <TableSkeleton rows={4} columns={4} />
       </div>
     )
   }
 
-  if (loading) {
+  if (error) {
     return (
       <div className="p-6">
-        <LoadingSpinner size="lg" text="Loading depots..." />
+        <ErrorMessage error={error} retry={refetch} />
       </div>
     )
   }
@@ -192,16 +179,12 @@ export default function DepotsPage() {
 
       {/* Depot Grid */}
       {!filteredData || filteredData.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No Depots</h3>
-          <p className="mt-1 text-sm text-gray-500">Get started by adding a new depot.</p>
-          <div className="mt-6">
-            <Button icon="+">Add Depot</Button>
-          </div>
-        </div>
+        <EmptyState
+          icon="🏢"
+          title="No Depots"
+          description="Get started by adding a new depot."
+          action={<Button icon="+">Add Depot</Button>}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredData.map((depot) => (
