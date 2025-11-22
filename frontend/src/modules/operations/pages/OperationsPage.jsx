@@ -3,6 +3,9 @@ import { useVehicleTracking } from '../../fleet/hooks/useVehicles'
 import MapView from '../../../components/map/MapView'
 import ErrorMessage from '../../../shared/components/ui/ErrorMessage/ErrorMessage'
 
+// Default map center: Stockholm, Sweden
+const DEFAULT_MAP_CENTER = [59.3293, 18.0686]
+
 export default function OperationsPage() {
   // Real-time vehicle tracking with 5-second polling
   const { data: vehicles, isLoading, error, refetch } = useVehicleTracking()
@@ -41,8 +44,8 @@ export default function OperationsPage() {
   const markers = vehicles?.map(vehicle => ({
     id: vehicle.id,
     name: vehicle.name || vehicle.registrationNumber || `Vehicle ${vehicle.id}`,
-    lat: vehicle.currentLocation?.latitude || vehicle.latitude || 59.3293,
-    lng: vehicle.currentLocation?.longitude || vehicle.longitude || 18.0686,
+    lat: vehicle.currentLocation?.latitude || vehicle.latitude || DEFAULT_MAP_CENTER[0],
+    lng: vehicle.currentLocation?.longitude || vehicle.longitude || DEFAULT_MAP_CENTER[1],
     status: vehicle.status || 'unknown',
     driver: vehicle.currentDriver?.name || 'Unassigned',
     speed: vehicle.currentSpeed || 0,
@@ -127,7 +130,7 @@ export default function OperationsPage() {
       <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
         <MapView
           markers={markers}
-          center={[59.3293, 18.0686]} // Stockholm, Sweden
+          center={DEFAULT_MAP_CENTER}
           zoom={12}
           height={600}
         />
@@ -158,7 +161,7 @@ export default function OperationsPage() {
                 <div className="text-right">
                   <div className="text-sm text-gray-600">Position</div>
                   <div className="font-mono text-xs text-gray-600">
-                    {vehicle.lat.toFixed(4)}, {vehicle.lng.toFixed(4)}
+                    {typeof vehicle.lat === 'number' ? vehicle.lat.toFixed(4) : vehicle.lat}, {typeof vehicle.lng === 'number' ? vehicle.lng.toFixed(4) : vehicle.lng}
                   </div>
                 </div>
                 
