@@ -39,6 +39,8 @@ export function formatTime(date) {
 
 /**
  * Format relative date ("2 days ago", "Just now", etc.)
+ * Note: Uses approximate values (7 days = week, 30 days = month, 365 days = year)
+ * for simplicity and readability in relative time displays
  */
 export function formatRelativeDate(date) {
   if (!date) return '-'
@@ -56,9 +58,19 @@ export function formatRelativeDate(date) {
   if (diffMin < 60) return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`
   if (diffHour < 24) return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`
   if (diffDay < 7) return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`
-  if (diffDay < 30) return `${Math.floor(diffDay / 7)} week${Math.floor(diffDay / 7) !== 1 ? 's' : ''} ago`
-  if (diffDay < 365) return `${Math.floor(diffDay / 30)} month${Math.floor(diffDay / 30) !== 1 ? 's' : ''} ago`
-  return `${Math.floor(diffDay / 365)} year${Math.floor(diffDay / 365) !== 1 ? 's' : ''} ago`
+  
+  if (diffDay < 30) {
+    const weeks = Math.floor(diffDay / 7)
+    return `${weeks} week${weeks !== 1 ? 's' : ''} ago`
+  }
+  
+  if (diffDay < 365) {
+    const months = Math.floor(diffDay / 30)
+    return `${months} month${months !== 1 ? 's' : ''} ago`
+  }
+  
+  const years = Math.floor(diffDay / 365)
+  return `${years} year${years !== 1 ? 's' : ''} ago`
 }
 
 /**
