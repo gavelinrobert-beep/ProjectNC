@@ -61,7 +61,7 @@ describe('useNetworkStatus', () => {
     
     await waitFor(() => {
       expect(result.current).toBe(false)
-      expect(toast.error).toHaveBeenCalledWith('No internet connection', { duration: Infinity })
+      expect(toast.error).toHaveBeenCalledWith('No internet connection', { duration: 10000 })
     })
   })
 })

@@ -26,6 +26,17 @@ describe('handleApiError', () => {
     expect(toast.error).toHaveBeenCalledWith('Bad request')
   })
 
+  it('shows unauthorized message for 401 status', () => {
+    const error = {
+      response: {
+        status: 401,
+        data: {}
+      }
+    }
+    handleApiError(error)
+    expect(toast.error).toHaveBeenCalledWith('Unauthorized. Please login again.')
+  })
+
   it('shows permission denied for 403 status', () => {
     const error = {
       response: {

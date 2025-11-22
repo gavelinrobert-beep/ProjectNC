@@ -11,7 +11,7 @@ export function useNetworkStatus() {
     }
     const handleOffline = () => {
       setIsOnline(false)
-      toast.error('No internet connection', { duration: Infinity })
+      toast.error('No internet connection', { duration: 10000 })
     }
 
     window.addEventListener('online', handleOnline)

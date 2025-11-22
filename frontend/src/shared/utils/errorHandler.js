@@ -11,6 +11,7 @@ export function handleApiError(error) {
   
   switch (status) {
     case 400: toast.error(message || 'Invalid request'); break
+    case 401: toast.error('Unauthorized. Please login again.'); break
     case 403: toast.error('Permission denied'); break
     case 404: toast.error('Resource not found'); break
     case 500: toast.error('Server error'); break
