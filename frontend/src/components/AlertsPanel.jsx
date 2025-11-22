@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import { formatDateTime } from '../shared/utils'
 
 const SEVERITY_COLORS = {
   critical: '#b5392f',
@@ -347,7 +348,7 @@ export default function AlertsPanel() {
                           </span>
                         )}
                         <span>
-                          {new Date(alert.ts).toLocaleString('sv-SE')}
+                          {formatDateTime(alert.ts)}
                         </span>
                       </div>
                     </div>

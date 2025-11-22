@@ -9,6 +9,7 @@ import {
 } from '../lib/api';
 import { api } from '../lib/api';
 import './InventoryManager.css';
+import { formatDateTime } from '../shared/utils';
 
 const InventoryManager = () => {
   const [inventory, setInventory] = useState([]);
@@ -370,7 +371,7 @@ const InventoryManager = () => {
                   const item = inventory.find(i => i.id === trans.item_id);
                   return (
                     <tr key={trans.id} style={{ borderBottom: '1px solid #222' }}>
-                      <td style={{ padding: 8 }}>{new Date(trans.timestamp).toLocaleString('sv-SE')}</td>
+                      <td style={{ padding: 8 }}>{formatDateTime(trans.timestamp)}</td>
                       <td style={{ padding: 8 }}>{item?.name || 'Unknown'}</td>
                       <td style={{ padding: 8 }}>
                         <span style={{

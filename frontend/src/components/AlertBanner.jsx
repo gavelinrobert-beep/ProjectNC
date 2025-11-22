@@ -1,5 +1,6 @@
 // Aegis/frontend/src/components/AlertBanner.jsx
 import React from 'react'
+import { formatTime } from '../shared/utils'
 
 // NATO Standard Alert Colors
 const ALERT_COLORS = {
@@ -68,7 +69,7 @@ const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
               }}>
                 {alert.asset_id} • {alert.message || 'Immediate action required'}
                 <span style={{ marginLeft: 12, opacity: 0.8 }}>
-                  {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+                  {formatTime(alert.ts || alert.timestamp)}
                 </span>
               </div>
             </div>
@@ -164,7 +165,7 @@ const AlertBanner = ({ alerts, onDismiss, onAcknowledge }) => {
               }}>
                 {alert.asset_id} • {alert.message || 'Attention required'}
                 <span style={{ marginLeft: 12, opacity: 0.75 }}>
-                  {new Date(alert.ts || alert.timestamp).toLocaleTimeString('sv-SE')}
+                  {formatTime(alert.ts || alert.timestamp)}
                 </span>
               </div>
             </div>

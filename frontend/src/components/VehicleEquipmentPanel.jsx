@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { formatDate } from '../shared/utils';
 
 const VehicleEquipmentPanel = ({ vehicle, equipment }) => {
   const [expanded, setExpanded] = useState(false);
@@ -145,7 +146,7 @@ const VehicleEquipmentPanel = ({ vehicle, equipment }) => {
                         }}>
                           {isInspectionDue(item.next_inspection_due) && '⚠️'}
                           <span>
-                            Nästa kontroll: {new Date(item.next_inspection_due).toLocaleDateString('sv-SE')}
+                            Nästa kontroll: {formatDate(item.next_inspection_due)}
                           </span>
                         </div>
                       )}

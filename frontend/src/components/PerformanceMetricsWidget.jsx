@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import { formatTime } from '../shared/utils'
 
 const PERIOD_OPTIONS = [
   { value: 'today', label: 'Today' },
@@ -299,7 +300,7 @@ export default function PerformanceMetricsWidget({ refreshInterval = 30000 }) {
           fontSize: '0.85rem',
           color: '#999'
         }}>
-          Updated: {data?.timestamp ? new Date(data.timestamp).toLocaleTimeString('sv-SE') : 'N/A'}
+          Updated: {data?.timestamp ? formatTime(data.timestamp) : '-'}
         </div>
       </div>
 

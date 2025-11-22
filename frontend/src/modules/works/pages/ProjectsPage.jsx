@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getWorksProjects, deleteWorksProject } from '../../../lib/api';
 import toast from 'react-hot-toast';
+import { formatDate } from '../../../shared/utils';
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -83,10 +84,7 @@ const ProjectList = () => {
     return new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK' }).format(amount);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('sv-SE');
-  };
+  // formatDate is now imported from shared/utils
 
   if (loading) {
     return (

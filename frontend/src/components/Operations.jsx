@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Polygon, Popup, CircleMarker, Marker } from 'r
 import { api } from '../lib/api'
 import L from 'leaflet'
 import AssetDetailModal from './AssetDetailModal'
+import { formatDateTime } from '../shared/utils'
 
 const defaultCenter = [62.3901, 17.3062]
 
@@ -394,7 +395,7 @@ export default function Operations() {
                       {alert.geofence_id && ` • ${alert.geofence_id}`}
                     </div>
                     <div className='muted' style={{ fontSize: 10, marginTop: 2 }}>
-                      {new Date(alert.ts).toLocaleString('sv-SE')}
+                      {formatDateTime(alert.ts)}
                     </div>
                   </div>
                   <button

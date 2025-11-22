@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getWorksMachineHours, createWorksMachineHours } from '../../../lib/api';
 import toast from 'react-hot-toast';
+import { formatDateTime } from '../../../shared/utils';
 
 const MachineHours = () => {
   const [machineHours, setMachineHours] = useState([]);
@@ -28,10 +29,7 @@ const MachineHours = () => {
     return new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK' }).format(amount);
   };
 
-  const formatDateTime = (dateString) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleString('sv-SE');
-  };
+  // formatDateTime is now imported from shared/utils
 
   if (loading) {
     return (

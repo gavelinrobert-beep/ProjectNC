@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getWorksWorkOrders, updateWorksWorkOrder } from '../../../lib/api';
 import toast from 'react-hot-toast';
+import { formatDate } from '../../../shared/utils';
 
 const WorkOrderBoard = () => {
   const [workOrders, setWorkOrders] = useState([]);
@@ -257,7 +258,7 @@ const WorkOrderCard = ({ workOrder, getPriorityColor, getTypeIcon }) => (
         color: '#6B7280',
         marginTop: '0.5rem'
       }}>
-        📅 {new Date(workOrder.scheduled_start).toLocaleDateString('sv-SE')}
+        📅 {formatDate(workOrder.scheduled_start)}
       </div>
     )}
   </Link>
