@@ -180,7 +180,6 @@ export default function DashboardPage() {
             value={activeDeliveries} 
             icon="📦" 
             color="blue"
-            subtitle={`${deliveries?.length || 0} total`}
           />
         </Link>
         <Link to="/fleet/vehicles" style={{ textDecoration: 'none' }}>
@@ -189,7 +188,6 @@ export default function DashboardPage() {
             value={vehiclesInUse} 
             icon="🚛" 
             color="green"
-            subtitle={`${vehicles?.length || 0} total`}
           />
         </Link>
         <Link to="/logistics/routes" style={{ textDecoration: 'none' }}>
@@ -197,8 +195,7 @@ export default function DashboardPage() {
             title="Active Routes" 
             value={activeRoutes} 
             icon="🛣️" 
-            color="purple"
-            subtitle={`${routes?.length || 0} total`}
+            color="blue"
           />
         </Link>
         <Link to="/sites/depots" style={{ textDecoration: 'none' }}>
@@ -207,7 +204,6 @@ export default function DashboardPage() {
             value={operationalDepots} 
             icon="🏢" 
             color="yellow"
-            subtitle={`${depots?.length || 0} total`}
           />
         </Link>
       </div>
