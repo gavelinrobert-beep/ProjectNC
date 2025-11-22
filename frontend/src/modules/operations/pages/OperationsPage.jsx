@@ -1,5 +1,6 @@
 // frontend/src/modules/operations/pages/OperationsPage.jsx
 import React, { useEffect, useState } from 'react'
+import { useVehicleTracking } from '../../fleet/hooks/useVehicles'
 import { api, fetchInventoryItems } from '../../../lib/api'
 import { BRAND } from '../../../lib/constants'
 import DashboardMap from '../../../components/DashboardMap'
@@ -69,36 +70,18 @@ export default function OperationsPage() {
     setLayers(prev => ({ ...prev, [layer]: !prev[layer] }))
   }
 
-  // Mock vehicle positions (Stockholm area)
-  const vehicleMarkers = [
-    {
-      id: 1,
-      name: 'Truck 01',
-      lat: 59.3293,
-      lng: 18.0686,
-      status: 'active',
-      driver: 'Erik Andersson',
-      speed: 45
-    },
-    {
-      id: 2,
-      name: 'Van 02',
-      lat: 59.3393,
-      lng: 18.0586,
-      status: 'active',
-      driver: 'Anna Svensson',
-      speed: 60
-    },
-    {
-      id: 3,
-      name: 'Truck 03',
-      lat: 59.3193,
-      lng: 18.0786,
-      status: 'idle',
-      driver: null,
-      speed: 0
-    }
-  ]
+  // Real-time vehicle tracking (5s polling)
+  const { data: vehicles, isLoading: vehiclesLoading } = useVehicleTracking()
+
+  const vehicleMarkers = vehicles?.map(v => ({
+    id: v.id,
+    name: v.registration_number || `Vehicle ${v.id}`,
+    lat: v.lat || 59.3293,
+    lng: v.lon || 18.0686,
+    status: v.status || 'idle',
+    driver: v.driver_name,
+    speed: v.speed || 0
+  })) || []
 
   if (loading) {
     return <div style={{ padding: 20, textAlign: 'center', color: BRAND.primary }}>Loading resource map...</div>

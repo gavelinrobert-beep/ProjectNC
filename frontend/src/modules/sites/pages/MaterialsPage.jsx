@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { sitesApi } from '../../../features/sites/api/sitesApi'
-import { useApi } from '../../../hooks/useApi'
+import { useMaterials } from '../hooks/useMaterials'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
@@ -11,7 +10,7 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function MaterialsPage() {
-  const { data: materials, loading, error, refetch } = useApi(() => sitesApi.getMaterials())
+  const { data: materials, isLoading: loading, error, refetch } = useMaterials()
   const [selectedMaterial, setSelectedMaterial] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -80,7 +79,7 @@ export default function MaterialsPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Materials</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>

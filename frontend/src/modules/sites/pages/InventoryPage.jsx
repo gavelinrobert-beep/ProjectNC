@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { sitesApi } from '../../../features/sites/api/sitesApi'
-import { useApi } from '../../../hooks/useApi'
+import { useInventory } from '../hooks/useInventory'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
@@ -11,7 +10,7 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function InventoryPage() {
-  const { data: inventory, loading, error, refetch } = useApi(() => sitesApi.getAllInventory())
+  const { data: inventory, isLoading: loading, error, refetch } = useInventory()
   const [selectedItem, setSelectedItem] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -120,7 +119,7 @@ export default function InventoryPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Inventory</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>

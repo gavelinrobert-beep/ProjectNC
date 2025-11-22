@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { logisticsApi } from '../../../features/logistics/api/logisticsApi'
-import { useApi, useApiMutation } from '../../../hooks/useApi'
+import { useDeliveries, useCreateDelivery } from '../hooks/useDeliveries'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
@@ -12,8 +11,8 @@ import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 
 export default function DeliveriesPage() {
-  const { data: deliveries, loading, error, refetch } = useApi(() => logisticsApi.getDeliveries())
-  const { mutate, loading: mutating } = useApiMutation()
+  const { data: deliveries, isLoading: loading, error, refetch } = useDeliveries()
+  const { mutate, isPending: mutating } = useCreateDelivery()
   const [selectedDelivery, setSelectedDelivery] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -78,17 +77,19 @@ export default function DeliveriesPage() {
   ]
 
   const handleCreateDelivery = async () => {
-    const result = await mutate(() => logisticsApi.createDelivery({
+    mutate({
       customer_name: 'New Customer',
       delivery_address: '123 Test Street',
       status: 'pending',
       scheduled_date: new Date().toISOString()
-    }))
-
-    if (result.success) {
-      refetch()
-      alert('Delivery created successfully!')
-    }
+    }, {
+      onSuccess: () => {
+        alert('Delivery created successfully!')
+      },
+      onError: (error) => {
+        alert(`Error: ${error.message}`)
+      }
+    })
   }
 
   if (error) {
@@ -101,7 +102,7 @@ export default function DeliveriesPage() {
             </svg>
             <h3 className="text-lg font-semibold text-red-900">Error Loading Deliveries</h3>
           </div>
-          <p className="text-red-800 mb-4">{error}</p>
+          <p className="text-red-800 mb-4">{error.message}</p>
           <Button variant="danger" onClick={refetch}>
             🔄 Retry
           </Button>
