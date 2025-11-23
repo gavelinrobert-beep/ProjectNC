@@ -143,23 +143,24 @@ export default function DeliveriesPage() {
       </div>
 
       {/* Header */}
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className={TEXT.h1}>Deliveries</h1>
-          <p className={TEXT.bodySmall + ' mt-2'}>Manage deliveries and proof of delivery</p>
+          <h1 className={TEXT.h1Responsive}>Deliveries</h1>
+          <p className={TEXT.bodySmallResponsive + ' mt-2'}>Manage deliveries and proof of delivery</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="secondary" onClick={refetch} disabled={loading}>
-            🔄 Refresh
+            🔄 <span className="hidden sm:inline">Refresh</span>
           </Button>
           <Button icon="+" onClick={handleCreateDelivery} disabled={mutating}>
-            New Delivery
+            <span className="hidden sm:inline">New Delivery</span>
+            <span className="sm:hidden">New</span>
           </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className={CARD.p4}>
           <div className={TEXT.caption}>Total Deliveries</div>
           <div className="text-2xl font-bold text-gray-900">{deliveries?.length || 0}</div>
@@ -186,8 +187,8 @@ export default function DeliveriesPage() {
 
       {/* Search and Filter Toolbar */}
       <div className={CARD.base + ' p-4 mb-6'}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="sm:col-span-2">
             <SearchBar
               placeholder="Search deliveries..."
               onSearch={setSearchQuery}
@@ -206,9 +207,9 @@ export default function DeliveriesPage() {
             ]}
           />
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2 flex-wrap">
             <Button variant="secondary" onClick={clearFilters} size="sm">
-              Clear Filters
+              Clear
             </Button>
             <Button variant="secondary" onClick={() => exportToCSV(filteredData, 'deliveries')} size="sm">
               📥 CSV
@@ -225,16 +226,82 @@ export default function DeliveriesPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedDelivery(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedDelivery(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(delivery => (
+          <div 
+            key={delivery.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedDelivery(delivery)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                {delivery.customer_name}
+              </span>
+              <StatusBadge status={delivery.status} />
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">ID:</span>
+                <span className="text-gray-900">#{delivery.id}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Address:</span>
+                <span className="text-gray-900 text-right ml-2">{delivery.delivery_address || 'N/A'}</span>
+              </div>
+              {delivery.assigned_vehicle_id && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Vehicle:</span>
+                  <span className="text-gray-900">🚛 {delivery.vehicle_registration || delivery.assigned_vehicle_id}</span>
+                </div>
+              )}
+              {delivery.assigned_driver_id && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Driver:</span>
+                  <span className="text-gray-900">👤 {delivery.driver_name || delivery.assigned_driver_id}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-gray-500">Scheduled:</span>
+                <span className="text-gray-900">{formatDateTime(delivery.scheduled_date)}</span>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedDelivery(delivery)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No deliveries found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

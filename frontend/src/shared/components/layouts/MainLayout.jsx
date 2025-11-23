@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -7,18 +7,55 @@ import { useNetworkStatus } from '../../../hooks/useNetworkStatus'
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
   const isOnline = useNetworkStatus()
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Close sidebar on mobile on initial load
+  const hasInitialized = React.useRef(false)
+  useEffect(() => {
+    if (isMobile && !hasInitialized.current) {
+      setSidebarOpen(false)
+      hasInitialized.current = true
+    }
+  }, [isMobile])
+
+  const handleToggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
+  const handleCloseSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(false)
+    }
+  }
 
   return (
     <div style={{
       display: 'grid',
-      gridTemplateAreas: '"topbar topbar" "sidebar content"',
-      gridTemplateColumns: sidebarOpen ? '250px 1fr' : '70px 1fr',
+      gridTemplateAreas: isMobile 
+        ? '"topbar" "content"'
+        : '"topbar topbar" "sidebar content"',
+      gridTemplateColumns: isMobile 
+        ? '1fr'
+        : (sidebarOpen ? '250px 1fr' : '70px 1fr'),
       gridTemplateRows: '64px 1fr',
       height: '100vh',
       background: '#F5F7FA',
       color: '#2D3E50',
-      transition: 'grid-template-columns 0.3s ease'
+      transition: 'grid-template-columns 0.3s ease',
+      position: 'relative'
     }}>
       {!isOnline && (
         <div style={{
@@ -38,16 +75,37 @@ export default function MainLayout() {
       )}
 
       <div style={{ gridArea: 'topbar' }}>
-        <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header onToggleSidebar={handleToggleSidebar} isMobile={isMobile} />
       </div>
 
-      <div style={{ gridArea: 'sidebar' }}>
-        <Sidebar isOpen={sidebarOpen} toggle={() => setSidebarOpen(!sidebarOpen)} />
+      {/* Mobile overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 64,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 30
+          }}
+          onClick={handleCloseSidebar}
+        />
+      )}
+
+      <div style={{ gridArea: isMobile ? undefined : 'sidebar' }}>
+        <Sidebar 
+          isOpen={sidebarOpen} 
+          toggle={handleToggleSidebar}
+          onClose={handleCloseSidebar}
+          isMobile={isMobile}
+        />
       </div>
 
       <main style={{
         gridArea: 'content',
-        padding: '2rem',
+        padding: isMobile ? '1rem' : '2rem',
         overflowY: 'auto',
         background: '#F5F7FA'
       }}>

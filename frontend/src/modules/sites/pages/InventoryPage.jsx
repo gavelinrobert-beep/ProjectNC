@@ -230,16 +230,81 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedItem(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedItem(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(item => (
+          <div 
+            key={item.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedItem(item)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <span className="font-semibold text-gray-900 block">
+                  {item.item_name || 'N/A'}
+                </span>
+                {item.sku && <span className="text-xs text-gray-500">{item.sku}</span>}
+              </div>
+              <span className={`px-2 py-1 rounded-full text-xs ${getStockStatusColor(getStockStatus(item))}`}>
+                {getStockStatusLabel(getStockStatus(item))}
+              </span>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Category:</span>
+                <span className="text-gray-900">{item.category || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Quantity:</span>
+                <span className="text-gray-900 font-medium">{item.quantity || 0} {item.unit || ''}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Reorder Level:</span>
+                <span className="text-gray-900">{item.reorder_level || 'N/A'}</span>
+              </div>
+              {item.location && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Location:</span>
+                  <span className="text-gray-900">{item.location}</span>
+                </div>
+              )}
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedItem(item)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No inventory items found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

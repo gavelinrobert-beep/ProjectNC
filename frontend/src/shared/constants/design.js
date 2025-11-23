@@ -54,6 +54,15 @@ export const TEXT = {
   caption: 'text-xs text-neutral-500',
   label: 'text-sm font-medium text-neutral-700',
   link: 'text-primary-600 hover:text-primary-700 focus:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 underline',
+  
+  // Responsive headings (mobile-first)
+  h1Responsive: 'text-2xl md:text-4xl font-bold text-neutral-900',
+  h2Responsive: 'text-xl md:text-3xl font-bold text-neutral-900',
+  h3Responsive: 'text-lg md:text-2xl font-bold text-neutral-900',
+  
+  // Responsive body
+  bodyResponsive: 'text-sm md:text-base text-neutral-700',
+  bodySmallResponsive: 'text-xs sm:text-sm text-neutral-600',
 }
 
 // Button variants
@@ -66,13 +75,13 @@ export const BUTTON_VARIANTS = {
   ghost: 'text-primary-600 hover:bg-primary-50 active:bg-primary-100',
 }
 
-// Button sizes
+// Button sizes (touch-friendly with 44px minimum height)
 export const BUTTON_SIZES = {
   xs: 'px-2 py-1 text-xs',
-  sm: 'px-3 py-2 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-  xl: 'px-8 py-4 text-xl',
+  sm: 'px-3 py-2 text-sm min-h-[36px]',
+  md: 'px-4 py-2.5 text-base min-h-[44px]',
+  lg: 'px-6 py-3 text-lg min-h-[44px]',
+  xl: 'px-8 py-4 text-xl min-h-[48px]',
 }
 
 // Status colors (semantic)
@@ -100,9 +109,9 @@ export const CARD = {
   p6: 'bg-white rounded-lg shadow p-6',
 }
 
-// Input styles
+// Input styles (touch-friendly with 44px minimum height)
 export const INPUT = {
-  base: 'w-full px-4 py-2 border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent',
-  error: 'w-full px-4 py-2 border border-danger-300 rounded-md focus:ring-2 focus:ring-danger-500 focus:border-transparent',
-  disabled: 'w-full px-4 py-2 border border-neutral-200 rounded-md bg-neutral-50 text-neutral-400 cursor-not-allowed',
+  base: 'w-full px-4 py-2.5 text-base border border-neutral-300 rounded-md min-h-[44px] focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+  error: 'w-full px-4 py-2.5 text-base border border-danger-300 rounded-md min-h-[44px] focus:ring-2 focus:ring-danger-500 focus:border-transparent',
+  disabled: 'w-full px-4 py-2.5 text-base border border-neutral-200 rounded-md min-h-[44px] bg-neutral-50 text-neutral-400 cursor-not-allowed',
 }

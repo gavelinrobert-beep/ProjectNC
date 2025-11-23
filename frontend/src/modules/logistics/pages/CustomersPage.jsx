@@ -179,16 +179,80 @@ export default function CustomersPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedCustomer(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedCustomer(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(customer => (
+          <div 
+            key={customer.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedCustomer(customer)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                {customer.name}
+              </span>
+              <span className="text-xs text-gray-500">#{customer.id}</span>
+            </div>
+            <div className="space-y-2 text-sm">
+              {customer.email && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Email:</span>
+                  <span className="text-gray-900 text-right ml-2">{customer.email}</span>
+                </div>
+              )}
+              {customer.phone && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Phone:</span>
+                  <span className="text-gray-900">{customer.phone}</span>
+                </div>
+              )}
+              {customer.address && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Address:</span>
+                  <span className="text-gray-900 text-right ml-2">{customer.address}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-gray-500">Total Orders:</span>
+                <span className="text-gray-900 font-medium">{customer.total_orders || 0}</span>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedCustomer(customer)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No customers found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

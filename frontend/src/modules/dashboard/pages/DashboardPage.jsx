@@ -158,11 +158,11 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-7xl">
-      <div className="mb-8">
-        <h1 className={TEXT.h1 + ' mb-2'}>
+      <div className="mb-6 md:mb-8">
+        <h1 className={TEXT.h1Responsive + ' mb-2'}>
           📊 Dashboard - Executive Overview
         </h1>
-        <p className={TEXT.body}>
+        <p className={TEXT.bodyResponsive}>
           Real-time resource status and system overview
         </p>
       </div>
@@ -176,8 +176,8 @@ export default function DashboardPage() {
         assets={assets}
       />
 
-      {/* Cross-Module Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 mt-6">
+      {/* Cross-Module Stats Cards Row - Responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
         <Link to="/logistics/deliveries" style={{ textDecoration: 'none' }}>
           <StatCard 
             title="Active Deliveries" 
