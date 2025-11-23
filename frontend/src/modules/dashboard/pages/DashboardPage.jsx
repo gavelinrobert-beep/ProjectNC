@@ -20,6 +20,7 @@ import { useVehicles } from '../../fleet/hooks/useVehicles'
 import { useDepots } from '../../sites/hooks/useDepots'
 import { formatDateTime } from '../../../shared/utils'
 import { TEXT, CARD } from '../../../shared/constants/design'
+import { LoadingState } from '../../../shared/components/ui'
 
 export default function DashboardPage() {
   const [assets, setAssets] = useState([])
@@ -154,7 +155,13 @@ export default function DashboardPage() {
 
   const isLoading = loading || deliveriesLoading || routesLoading || vehiclesLoading || depotsLoading
   
-  if (isLoading) return <div className="p-6 text-center text-primary-600">Loading...</div>
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <LoadingState message="Loading dashboard..." />
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl">
