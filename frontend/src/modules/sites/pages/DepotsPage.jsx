@@ -5,7 +5,7 @@ import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -70,18 +70,51 @@ export default function DepotsPage() {
     setShowModal(true)
   }
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={4} columns={4} />
+        <LoadingState message="Loading depots..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load depots"
+          message="There was a problem loading depots. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no depots at all)
+  if (!depots || depots.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="🏢"
+          title="No depots configured"
+          description="Set up your first depot to manage inventory locations, distribution centers, and warehouse operations."
+          actionLabel="+ Add First Depot"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

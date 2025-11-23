@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -113,18 +113,51 @@ export default function DeliveriesPage() {
     })
   }
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={6} />
+        <LoadingState message="Loading deliveries..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load deliveries"
+          message="There was a problem loading deliveries. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no deliveries at all)
+  if (!deliveries || deliveries.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="📦"
+          title="No deliveries yet"
+          description="Get started by creating your first delivery. Track shipments, manage routes, and monitor progress all in one place."
+          actionLabel="+ Create First Delivery"
+          onAction={handleCreateDelivery}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

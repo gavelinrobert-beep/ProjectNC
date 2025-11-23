@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 import { TEXT, CARD } from '../../../shared/constants/design'
@@ -110,18 +110,51 @@ export default function InventoryPage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={5} />
+        <LoadingState message="Loading inventory..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load inventory"
+          message="There was a problem loading inventory. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no inventory items at all)
+  if (!inventory || inventory.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="📋"
+          title="No inventory items"
+          description="Start tracking your inventory by adding your first item. Monitor stock levels, track usage, and manage reorders."
+          actionLabel="+ Add First Item"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

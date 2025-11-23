@@ -4,7 +4,7 @@ import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
-import { ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -74,18 +74,51 @@ export default function CustomersPage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={5} />
+        <LoadingState message="Loading customers..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load customers"
+          message="There was a problem loading customers. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no customers at all)
+  if (!customers || customers.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="👥"
+          title="No customers yet"
+          description="Start building your customer base by adding your first customer. Manage contacts, track orders, and build relationships."
+          actionLabel="+ Add First Customer"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

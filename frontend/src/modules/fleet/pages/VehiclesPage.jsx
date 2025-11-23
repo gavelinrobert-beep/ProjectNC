@@ -5,7 +5,7 @@ import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -34,18 +34,51 @@ export default function VehiclesPage() {
     setShowModal(true)
   }
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={6} columns={4} />
+        <LoadingState message="Loading vehicles..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load vehicles"
+          message="There was a problem loading vehicles. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no vehicles at all)
+  if (!vehicles || vehicles.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="🚛"
+          title="No vehicles in fleet"
+          description="Add your first vehicle to start managing your fleet. Track maintenance, assignments, and availability."
+          actionLabel="+ Add First Vehicle"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

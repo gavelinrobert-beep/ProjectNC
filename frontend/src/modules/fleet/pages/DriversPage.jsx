@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -71,18 +71,51 @@ export default function DriversPage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={5} />
+        <LoadingState message="Loading drivers..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load drivers"
+          message="There was a problem loading drivers. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no drivers at all)
+  if (!drivers || drivers.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="👤"
+          title="No drivers yet"
+          description="Add your first driver to start managing your team. Track availability, assignments, and performance metrics."
+          actionLabel="+ Add First Driver"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }
