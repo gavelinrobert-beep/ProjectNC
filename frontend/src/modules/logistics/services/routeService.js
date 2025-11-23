@@ -1,9 +1,9 @@
-import { apiClient } from '../../../shared/services/apiClient'
+import { api } from '../../../shared/services/api'
 
 export const routeService = {
-  getAll: () => apiClient.get('/api/logistics/routes'),
-  getById: (id) => apiClient.get(`/api/logistics/routes/${id}`),
-  create: (data) => apiClient.post('/api/logistics/routes', data),
-  update: (id, data) => apiClient.put(`/api/logistics/routes/${id}`, data),
-  delete: (id) => apiClient.delete(`/api/logistics/routes/${id}`)
+  getAll: () => api.get('/api/logistics/routes').then(res => res.data || res),
+  getById: (id) => api.get(`/api/logistics/routes/${id}`).then(res => res.data || res),
+  create: (data) => api.post('/api/logistics/routes', data).then(res => res.data || res),
+  update: (id, data) => api.put(`/api/logistics/routes/${id}`, data).then(res => res.data || res),
+  delete: (id) => api.delete(`/api/logistics/routes/${id}`).then(res => res.data || res)
 }
