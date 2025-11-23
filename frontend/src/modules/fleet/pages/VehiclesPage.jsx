@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useVehicles } from '../hooks/useVehicles'
+import { useVehicles, useDeleteVehicle } from '../hooks/useVehicles'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { StatusBadge, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,8 +15,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function VehiclesPage() {
   const { data: vehicles, isLoading: loading, error, refetch } = useVehicles()
+  const { mutate: deleteVehicle, isPending: deleting } = useDeleteVehicle()
   const [selectedVehicle, setSelectedVehicle] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -31,7 +35,13 @@ export default function VehiclesPage() {
 
   const handleViewDetails = (vehicle) => {
     setSelectedVehicle(vehicle)
-    setShowModal(true)
+    viewModal.openModal()
+  }
+
+  const handleDelete = async () => {
+    if (selectedVehicle) {
+      deleteVehicle(selectedVehicle.id)
+    }
   }
 
   // Loading state
@@ -65,7 +75,7 @@ export default function VehiclesPage() {
           title="No vehicles in fleet"
           description="Add your first vehicle to start managing your fleet. Track maintenance, assignments, and availability."
           actionLabel="+ Add First Vehicle"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -259,6 +269,17 @@ export default function VehiclesPage() {
                   >
                     Details
                   </Button>
+                  <Button 
+                    size="sm" 
+                    variant="danger"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedVehicle(vehicle)
+                      deleteModal.openModal()
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -267,17 +288,10 @@ export default function VehiclesPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Vehicle: ${selectedVehicle?.registration_number || selectedVehicle?.id}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Vehicle</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedVehicle && (
           <div className="space-y-4">
@@ -349,9 +363,29 @@ export default function VehiclesPage() {
                 <p className={TEXT.body}>{formatDateTime(selectedVehicle.updated_at)}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Vehicle</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Vehicle?"
+        message="Are you sure you want to delete this vehicle? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }
