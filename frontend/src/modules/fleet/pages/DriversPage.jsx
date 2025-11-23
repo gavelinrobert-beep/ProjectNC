@@ -181,16 +181,74 @@ export default function DriversPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedDriver(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedDriver(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(driver => (
+          <div 
+            key={driver.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedDriver(driver)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                {driver.name}
+              </span>
+              <StatusBadge status={driver.status} />
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">License:</span>
+                <span className="text-gray-900">{driver.license_number || 'N/A'}</span>
+              </div>
+              {driver.email && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Email:</span>
+                  <span className="text-gray-900 text-right ml-2">{driver.email}</span>
+                </div>
+              )}
+              {driver.phone && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Phone:</span>
+                  <span className="text-gray-900">{driver.phone}</span>
+                </div>
+              )}
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedDriver(driver)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No drivers found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

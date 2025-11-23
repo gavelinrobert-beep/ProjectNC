@@ -225,16 +225,82 @@ export default function DeliveriesPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedDelivery(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedDelivery(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(delivery => (
+          <div 
+            key={delivery.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedDelivery(delivery)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                {delivery.customer_name}
+              </span>
+              <StatusBadge status={delivery.status} />
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">ID:</span>
+                <span className="text-gray-900">#{delivery.id}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Address:</span>
+                <span className="text-gray-900 text-right ml-2">{delivery.delivery_address || 'N/A'}</span>
+              </div>
+              {delivery.assigned_vehicle_id && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Vehicle:</span>
+                  <span className="text-gray-900">🚛 {delivery.vehicle_registration || delivery.assigned_vehicle_id}</span>
+                </div>
+              )}
+              {delivery.assigned_driver_id && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Driver:</span>
+                  <span className="text-gray-900">👤 {delivery.driver_name || delivery.assigned_driver_id}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-gray-500">Scheduled:</span>
+                <span className="text-gray-900">{formatDateTime(delivery.scheduled_date)}</span>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedDelivery(delivery)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No deliveries found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

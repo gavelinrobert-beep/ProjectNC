@@ -178,16 +178,76 @@ export default function MaterialsPage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedMaterial(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedMaterial(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(material => (
+          <div 
+            key={material.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedMaterial(material)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                {material.name}
+              </span>
+              <span className="text-xs text-gray-500">#{material.id}</span>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Category:</span>
+                <span className="text-gray-900">{material.category || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Unit:</span>
+                <span className="text-gray-900">{material.unit || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Standard Cost:</span>
+                <span className="text-gray-900 font-medium">{formatCurrency(material.standard_cost, 'USD')}</span>
+              </div>
+              {material.supplier && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Supplier:</span>
+                  <span className="text-gray-900">{material.supplier}</span>
+                </div>
+              )}
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedMaterial(material)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No materials found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

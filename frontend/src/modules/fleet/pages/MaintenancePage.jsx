@@ -196,16 +196,76 @@ export default function MaintenancePage() {
         )}
       </div>
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredData || []}
-        loading={loading}
-        onRowClick={(row) => {
-          setSelectedMaintenance(row)
-          setShowModal(true)
-        }}
-      />
+      {/* Desktop: Table view */}
+      <div className="hidden md:block">
+        <Table
+          columns={columns}
+          data={filteredData || []}
+          loading={loading}
+          onRowClick={(row) => {
+            setSelectedMaintenance(row)
+            setShowModal(true)
+          }}
+        />
+      </div>
+
+      {/* Mobile: Card view */}
+      <div className="md:hidden space-y-4">
+        {filteredData?.map(maintenance => (
+          <div 
+            key={maintenance.id} 
+            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => {
+              setSelectedMaintenance(maintenance)
+              setShowModal(true)
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-semibold text-gray-900">
+                Vehicle: {maintenance.vehicle_id || 'N/A'}
+              </span>
+              <StatusBadge status={maintenance.status} />
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Type:</span>
+                <span className="text-gray-900">{getStatusConfig(maintenance.type || 'routine').label}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Scheduled:</span>
+                <span className="text-gray-900">{formatDate(maintenance.scheduled_date)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Cost:</span>
+                <span className="text-gray-900 font-medium">{formatCurrency(maintenance.cost, 'USD')}</span>
+              </div>
+              {maintenance.notes && (
+                <div className="mt-2">
+                  <span className="text-gray-500">Notes:</span>
+                  <p className="text-gray-900 text-xs mt-1">{maintenance.notes}</p>
+                </div>
+              )}
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button 
+                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedMaintenance(maintenance)
+                  setShowModal(true)
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredData?.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No maintenance records found
+          </div>
+        )}
+      </div>
 
       {/* Detail Modal */}
       <Modal
