@@ -191,15 +191,7 @@ export default function VehiclesPage() {
       </div>
 
       {/* Vehicle Grid */}
-      {!filteredData || filteredData.length === 0 ? (
-        <EmptyState
-          icon="🚗"
-          title="No Vehicles"
-          description="Get started by adding a new vehicle."
-          action={<Button icon="+">Add Vehicle</Button>}
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredData.map((vehicle) => (
             <Card key={vehicle.id} hover onClick={() => handleViewDetails(vehicle)}>
               <div className="space-y-3">
@@ -271,8 +263,7 @@ export default function VehiclesPage() {
               </div>
             </Card>
           ))}
-        </div>
-      )}
+      </div>
 
       {/* Detail Modal */}
       <Modal
