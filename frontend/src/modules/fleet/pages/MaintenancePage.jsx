@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useMaintenance } from '../hooks/useMaintenance'
+import { useMaintenance, useDeleteMaintenanceEvent } from '../hooks/useMaintenance'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,8 +15,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function MaintenancePage() {
   const { data: maintenance, isLoading: loading, error, refetch } = useMaintenance()
+  const { mutate: deleteMaintenanceEvent, isPending: deleting } = useDeleteMaintenanceEvent()
   const [selectedMaintenance, setSelectedMaintenance] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -60,20 +64,39 @@ export default function MaintenancePage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedMaintenance(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedMaintenance(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedMaintenance(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
+
+  const handleDelete = async () => {
+    if (selectedMaintenance) {
+      deleteMaintenanceEvent(selectedMaintenance.id)
+    }
+  }
 
   // Loading state
   if (loading) {
@@ -106,7 +129,7 @@ export default function MaintenancePage() {
           title="No maintenance records"
           description="Start tracking vehicle maintenance by adding your first maintenance record. Keep your fleet running smoothly with scheduled maintenance."
           actionLabel="+ Add First Record"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -237,7 +260,7 @@ export default function MaintenancePage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedMaintenance(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -250,7 +273,7 @@ export default function MaintenancePage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedMaintenance(maintenance)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -285,7 +308,7 @@ export default function MaintenancePage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedMaintenance(maintenance)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -302,17 +325,10 @@ export default function MaintenancePage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Maintenance Record`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Record</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedMaintenance && (
           <div className="space-y-4">
@@ -358,9 +374,29 @@ export default function MaintenancePage() {
                 <p className="text-gray-900">{selectedMaintenance.notes}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Record</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Maintenance Record?"
+        message="Are you sure you want to delete this maintenance record? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }

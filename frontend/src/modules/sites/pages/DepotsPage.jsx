@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useDepots } from '../hooks/useDepots'
+import { useDepots, useDeleteDepot } from '../hooks/useDepots'
 import Button from '../../../components/ui/Button'
 import Card from '../../../components/ui/Card'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,8 +15,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DepotsPage() {
   const { data: depots, isLoading: loading, error, refetch } = useDepots()
+  const { mutate: deleteDepot, isPending: deleting } = useDeleteDepot()
   const [selectedDepot, setSelectedDepot] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   // Mock depot locations (Stockholm area)
   const depotLocations = [
@@ -67,7 +71,13 @@ export default function DepotsPage() {
 
   const handleViewDetails = (depot) => {
     setSelectedDepot(depot)
-    setShowModal(true)
+    viewModal.openModal()
+  }
+
+  const handleDelete = async () => {
+    if (selectedDepot) {
+      deleteDepot(selectedDepot.id)
+    }
   }
 
   // Loading state
@@ -101,7 +111,7 @@ export default function DepotsPage() {
           title="No depots configured"
           description="Set up your first depot to manage inventory locations, distribution centers, and warehouse operations."
           actionLabel="+ Add First Depot"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -285,6 +295,17 @@ export default function DepotsPage() {
                   >
                     Details
                   </Button>
+                  <Button 
+                    size="sm" 
+                    variant="danger"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedDepot(depot)
+                      deleteModal.openModal()
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -293,17 +314,10 @@ export default function DepotsPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Depot: ${selectedDepot?.name || selectedDepot?.id}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Depot</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedDepot && (
           <div className="space-y-4">
@@ -386,9 +400,29 @@ export default function DepotsPage() {
                 <p className="text-gray-900">{selectedDepot.description}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Depot</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Depot?"
+        message="Are you sure you want to delete this depot? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }

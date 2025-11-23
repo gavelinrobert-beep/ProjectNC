@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useDeliveries, useCreateDelivery } from '../hooks/useDeliveries'
+import { useDeliveries, useCreateDelivery, useDeleteDelivery } from '../hooks/useDeliveries'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,9 +15,11 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DeliveriesPage() {
   const { data: deliveries, isLoading: loading, error, refetch } = useDeliveries()
-  const { mutate, isPending: mutating } = useCreateDelivery()
+  const { mutate: createDelivery, isPending: mutating } = useCreateDelivery()
+  const { mutate: deleteDelivery, isPending: deleting } = useDeleteDelivery()
   const [selectedDelivery, setSelectedDelivery] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -82,23 +86,36 @@ export default function DeliveriesPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedDelivery(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedDelivery(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedDelivery(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
 
   const handleCreateDelivery = async () => {
-    mutate({
+    createDelivery({
       customer_name: 'New Customer',
       delivery_address: '123 Test Street',
       status: 'pending',
@@ -111,6 +128,12 @@ export default function DeliveriesPage() {
         alert(`Error: ${error.message}`)
       }
     })
+  }
+
+  const handleDelete = async () => {
+    if (selectedDelivery) {
+      deleteDelivery(selectedDelivery.id)
+    }
   }
 
   // Loading state
@@ -267,7 +290,7 @@ export default function DeliveriesPage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedDelivery(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -280,7 +303,7 @@ export default function DeliveriesPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedDelivery(delivery)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -321,7 +344,7 @@ export default function DeliveriesPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedDelivery(delivery)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -338,17 +361,10 @@ export default function DeliveriesPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Delivery #${selectedDelivery?.id}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Delivery</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedDelivery && (
           <div className="space-y-4">
@@ -402,9 +418,29 @@ export default function DeliveriesPage() {
                 <p className={TEXT.body}>{selectedDelivery.notes}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Delivery</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Delivery?"
+        message="Are you sure you want to delete this delivery? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useMaterials } from '../hooks/useMaterials'
+import { useMaterials, useDeleteMaterial } from '../hooks/useMaterials'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,8 +15,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function MaterialsPage() {
   const { data: materials, isLoading: loading, error, refetch } = useMaterials()
+  const { mutate: deleteMaterial, isPending: deleting } = useDeleteMaterial()
   const [selectedMaterial, setSelectedMaterial] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -56,20 +60,39 @@ export default function MaterialsPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedMaterial(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedMaterial(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedMaterial(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
+
+  const handleDelete = async () => {
+    if (selectedMaterial) {
+      deleteMaterial(selectedMaterial.id)
+    }
+  }
 
   // Loading state
   if (loading) {
@@ -102,7 +125,7 @@ export default function MaterialsPage() {
           title="No materials tracked"
           description="Start tracking materials by adding your first material. Manage costs, suppliers, and specifications."
           actionLabel="+ Add First Material"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -219,7 +242,7 @@ export default function MaterialsPage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedMaterial(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -232,7 +255,7 @@ export default function MaterialsPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedMaterial(material)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -267,7 +290,7 @@ export default function MaterialsPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedMaterial(material)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -284,17 +307,10 @@ export default function MaterialsPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Material: ${selectedMaterial?.name || selectedMaterial?.id}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Material</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedMaterial && (
           <div className="space-y-4">
@@ -340,9 +356,29 @@ export default function MaterialsPage() {
                 <p className="text-gray-900">{selectedMaterial.part_number}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Material</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Material?"
+        message="Are you sure you want to delete this material? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useInventory } from '../hooks/useInventory'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,7 +14,7 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 export default function InventoryPage() {
   const { data: inventory, isLoading: loading, error, refetch } = useInventory()
   const [selectedItem, setSelectedItem] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
 
   const getStockStatus = (item) => {
     if (!item.quantity || item.quantity === 0) return 'out_of_stock'
@@ -101,7 +102,7 @@ export default function InventoryPage() {
           onClick={(e) => {
             e.stopPropagation()
             setSelectedItem(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         >
           View
@@ -141,7 +142,7 @@ export default function InventoryPage() {
           title="No inventory items"
           description="Start tracking your inventory by adding your first item. Monitor stock levels, track usage, and manage reorders."
           actionLabel="+ Add First Item"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -271,7 +272,7 @@ export default function InventoryPage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedItem(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -284,7 +285,7 @@ export default function InventoryPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedItem(item)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -324,7 +325,7 @@ export default function InventoryPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedItem(item)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -341,17 +342,10 @@ export default function InventoryPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Inventory Item: ${selectedItem?.item_name || selectedItem?.id}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Item</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedItem && (
           <div className="space-y-4">
@@ -405,6 +399,14 @@ export default function InventoryPage() {
                 <p className="text-gray-900">{selectedItem.description}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Item</Button>
+            </div>
           </div>
         )}
       </Modal>

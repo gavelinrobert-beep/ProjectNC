@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useRoutes } from '../hooks/useRoutes'
+import { useRoutes, useDeleteRoute } from '../hooks/useRoutes'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -14,8 +16,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function RoutesPage() {
   const { data: routes, isLoading: loading, error, refetch } = useRoutes()
+  const { mutate: deleteRoute, isPending: deleting } = useDeleteRoute()
   const [selectedRoute, setSelectedRoute] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   // Mock route paths
   const routePaths = [
@@ -143,20 +147,39 @@ export default function RoutesPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedRoute(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedRoute(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedRoute(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
+
+  const handleDelete = async () => {
+    if (selectedRoute) {
+      deleteRoute(selectedRoute.id)
+    }
+  }
 
   // Loading state
   if (loading) {
@@ -189,7 +212,7 @@ export default function RoutesPage() {
           title="No routes yet"
           description="Create your first route to optimize deliveries and track vehicle progress in real-time."
           actionLabel="+ Create First Route"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -336,7 +359,7 @@ export default function RoutesPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedRoute(route)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -383,7 +406,7 @@ export default function RoutesPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedRoute(route)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -400,18 +423,10 @@ export default function RoutesPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Route: ${selectedRoute?.name || `#${selectedRoute?.id}`}`}
         size="lg"
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Route</Button>
-          </>
-        }
       >
         {selectedRoute && (
           <div className="space-y-4">
@@ -525,9 +540,29 @@ export default function RoutesPage() {
                 <p className="text-gray-900">{selectedRoute.notes}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Route</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Route?"
+        message="Are you sure you want to delete this route? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }

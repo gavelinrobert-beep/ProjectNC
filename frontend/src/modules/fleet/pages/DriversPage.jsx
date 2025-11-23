@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useDrivers } from '../hooks/useDrivers'
+import { useDrivers, useDeleteDriver } from '../hooks/useDrivers'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
 import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
@@ -13,8 +15,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function DriversPage() {
   const { data: drivers, isLoading: loading, error, refetch } = useDrivers()
+  const { mutate: deleteDriver, isPending: deleting } = useDeleteDriver()
   const [selectedDriver, setSelectedDriver] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -56,20 +60,39 @@ export default function DriversPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedDriver(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedDriver(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedDriver(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
+
+  const handleDelete = async () => {
+    if (selectedDriver) {
+      deleteDriver(selectedDriver.id)
+    }
+  }
 
   // Loading state
   if (loading) {
@@ -102,7 +125,7 @@ export default function DriversPage() {
           title="No drivers yet"
           description="Add your first driver to start managing your team. Track availability, assignments, and performance metrics."
           actionLabel="+ Add First Driver"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -222,7 +245,7 @@ export default function DriversPage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedDriver(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -235,7 +258,7 @@ export default function DriversPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedDriver(driver)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -268,7 +291,7 @@ export default function DriversPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedDriver(driver)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -285,17 +308,10 @@ export default function DriversPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Driver: ${selectedDriver?.name}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Driver</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedDriver && (
           <div className="space-y-4">
@@ -345,9 +361,29 @@ export default function DriversPage() {
                 <p className="text-gray-900">{selectedDriver.role}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Driver</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Driver?"
+        message="Are you sure you want to delete this driver? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }
