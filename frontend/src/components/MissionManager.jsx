@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MissionPlanner from './MissionPlanner';
 import TransferMissionPlanner from './TransferMissionPlanner';
 import { api } from '../lib/api';
+import StatusBadge from '../shared/components/ui/StatusBadge/StatusBadge';
 import './MissionManager.css';
 
 const MissionManager = () => {
@@ -110,16 +111,6 @@ const MissionManager = () => {
 const MissionCard = ({ mission, assets, onUpdate }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const getStatusColor = (status) => {
-    const colors = {
-      planned: '#4a90e2',
-      active: '#3aa86f',
-      completed: '#96a39a',
-      cancelled: '#b5392f'
-    };
-    return colors[status] || '#666';
-  };
-
   const getPriorityColor = (priority) => {
     const colors = {
       low: '#4a90e2',
@@ -168,7 +159,7 @@ const MissionCard = ({ mission, assets, onUpdate }) => {
   const isTransferMission = mission.mission_type === 'transfer';
 
   return (
-    <div className="mission-card" style={{ borderLeftColor: getStatusColor(mission.status) }}>
+    <div className="mission-card">
       <div className="mission-card-header" onClick={() => setExpanded(!expanded)}>
         <div className="mission-info">
           <h3>
@@ -178,9 +169,7 @@ const MissionCard = ({ mission, assets, onUpdate }) => {
           <p className="mission-description">{mission.description}</p>
         </div>
         <div className="mission-meta">
-          <span className="status-badge" style={{ background: getStatusColor(mission.status) }}>
-            {mission.status}
-          </span>
+          <StatusBadge status={mission.status} size="sm" />
           <span className="priority-badge" style={{ background: getPriorityColor(mission.priority) }}>
             {mission.priority}
           </span>

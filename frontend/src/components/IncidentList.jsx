@@ -1,18 +1,12 @@
 import React from 'react'
 import { formatDateTime } from '../shared/utils'
+import StatusBadge from '../shared/components/ui/StatusBadge/StatusBadge'
 
 const SEVERITY_COLORS = {
   low: '#4CAF50',
   medium: '#FFC107',
   high: '#FF9800',
   critical: '#F44336'
-}
-
-const STATUS_COLORS = {
-  open: '#F44336',
-  in_progress: '#FF9800',
-  resolved: '#4CAF50',
-  closed: '#9E9E9E'
 }
 
 const INCIDENT_TYPE_ICONS = {
@@ -101,17 +95,7 @@ export default function IncidentList({ incidents, onEdit, onDelete, onSelect }) 
                 }}>
                   {severity}
                 </span>
-                <span style={{
-                  padding: '0.25rem 0.75rem',
-                  borderRadius: '12px',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  background: STATUS_COLORS[status] + '20',
-                  color: STATUS_COLORS[status],
-                  textTransform: 'capitalize'
-                }}>
-                  {status.replace('_', ' ')}
-                </span>
+                <StatusBadge status={status} size="sm" />
               </div>
             </div>
 

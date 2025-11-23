@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import BarChart from '../../../components/charts/BarChart';
 import LineChart from '../../../components/charts/LineChart';
 import AreaChart from '../../../components/charts/AreaChart';
+import StatusBadge from '../../../shared/components/ui/StatusBadge/StatusBadge';
 
 const WorksDashboard = () => {
   const [stats, setStats] = useState({
@@ -56,20 +57,6 @@ const WorksDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      planning: '#6B7280',
-      active: '#10B981',
-      on_hold: '#F59E0B',
-      completed: '#3B82F6',
-      cancelled: '#EF4444',
-      draft: '#6B7280',
-      scheduled: '#3B82F6',
-      in_progress: '#10B981',
-    };
-    return colors[status] || '#6B7280';
   };
 
   if (loading) {
@@ -242,16 +229,7 @@ const WorksDashboard = () => {
                         {project.project_number}
                       </div>
                     </div>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500',
-                      background: `${getStatusColor(project.status)}20`,
-                      color: getStatusColor(project.status)
-                    }}>
-                      {project.status}
-                    </span>
+                    <StatusBadge status={project.status} size="sm" />
                   </div>
                 </Link>
               ))
@@ -299,15 +277,7 @@ const WorksDashboard = () => {
                         {workOrder.order_number} • {workOrder.type}
                       </div>
                     </div>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500',
-                      background: `${getStatusColor(workOrder.status)}20`,
-                      color: getStatusColor(workOrder.status)
-                    }}>
-                      {workOrder.status}
+                    <StatusBadge status={workOrder.status} size="sm" />
                     </span>
                   </div>
                 </Link>

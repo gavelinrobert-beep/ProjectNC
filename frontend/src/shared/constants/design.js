@@ -84,7 +84,9 @@ export const BUTTON_SIZES = {
   xl: 'px-8 py-4 text-xl min-h-[48px]',
 }
 
-// Status colors (semantic)
+// DEPRECATED: Use StatusBadge component from shared/components/ui/StatusBadge instead
+// Status colors are now centralized in the StatusBadge component
+// This is kept for backward compatibility only
 export const STATUS_COLORS = {
   pending: 'bg-warning-100 text-warning-800',
   in_progress: 'bg-primary-100 text-primary-800',
