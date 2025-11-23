@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
 
-export default function Sidebar({ isOpen, toggle }) {
+export default function Sidebar({ isOpen, toggle, onClose, isMobile }) {
 
   const navigation = [
     { name: 'Dashboard', icon: '📊', path: ROUTES.DASHBOARD, section: 'MAIN' },
@@ -29,23 +29,53 @@ export default function Sidebar({ isOpen, toggle }) {
 
   return (
     <aside style={{
-      width: isOpen ? '250px' : '70px',
+      position: isMobile ? 'fixed' : 'relative',
+      top: isMobile ? 64 : 'auto',
+      left: 0,
+      bottom: isMobile ? 0 : 'auto',
+      width: isOpen ? '250px' : (isMobile ? '250px' : '70px'),
       background: '#FFFFFF',
       borderRight: '1px solid #E8EDF2',
       display: 'flex',
       flexDirection: 'column',
-      transition: 'width 0.3s ease',
+      transition: isMobile ? 'transform 0.3s ease' : 'width 0.3s ease',
+      transform: isMobile ? (isOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
       overflow: 'hidden',
-      height: '100%',
-      boxShadow: '2px 0 8px rgba(45, 62, 80, 0.08)'
+      height: isMobile ? 'calc(100vh - 64px)' : '100%',
+      boxShadow: '2px 0 8px rgba(45, 62, 80, 0.08)',
+      zIndex: isMobile ? 40 : 'auto'
     }}>
+      {/* Close button for mobile */}
+      {isMobile && isOpen && (
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'none',
+            border: 'none',
+            color: '#556B7C',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            zIndex: 10,
+            transition: 'color 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#4A90E2'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#556B7C'}
+        >
+          ✕
+        </button>
+      )}
+
       <nav style={{ flex: 1, padding: '1rem 0', overflowY: 'auto' }}>
         {navigation.map((item, index) => {
           const showSectionHeader = index === 0 || navigation[index - 1].section !== item.section
 
           return (
             <React.Fragment key={item.path}>
-              {showSectionHeader && isOpen && (
+              {showSectionHeader && (isOpen || isMobile) && (
                 <div style={{
                   padding: '0.75rem 1.25rem',
                   fontSize: '0.75rem',
@@ -60,6 +90,7 @@ export default function Sidebar({ isOpen, toggle }) {
               )}
               <NavLink
                 to={item.path}
+                onClick={isMobile ? onClose : undefined}
                 style={({ isActive }) => ({
                   display: 'flex',
                   alignItems: 'center',
@@ -90,7 +121,7 @@ export default function Sidebar({ isOpen, toggle }) {
                 <span style={{ fontSize: '1.3rem', minWidth: '1.5rem' }}>
                   {item.icon}
                 </span>
-                {isOpen && (
+                {(isOpen || isMobile) && (
                   <span style={{ fontSize: '0.95rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
                     {item.name}
                   </span>
@@ -101,7 +132,7 @@ export default function Sidebar({ isOpen, toggle }) {
         })}
       </nav>
 
-      {isOpen && (
+      {(isOpen || isMobile) && (
         <div style={{
           padding: '1rem',
           borderTop: '1px solid #E8EDF2',
