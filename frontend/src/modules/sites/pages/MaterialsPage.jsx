@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatCurrency } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -71,18 +71,51 @@ export default function MaterialsPage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={5} />
+        <LoadingState message="Loading materials..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load materials"
+          message="There was a problem loading materials. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no materials at all)
+  if (!materials || materials.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="📦"
+          title="No materials tracked"
+          description="Start tracking materials by adding your first material. Manage costs, suppliers, and specifications."
+          actionLabel="+ Add First Material"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

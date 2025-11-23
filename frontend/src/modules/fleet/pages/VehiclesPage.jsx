@@ -5,7 +5,7 @@ import Card from '../../../components/ui/Card'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, EmptyState, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -34,18 +34,51 @@ export default function VehiclesPage() {
     setShowModal(true)
   }
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={6} columns={4} />
+        <LoadingState message="Loading vehicles..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load vehicles"
+          message="There was a problem loading vehicles. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no vehicles at all)
+  if (!vehicles || vehicles.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="🚛"
+          title="No vehicles in fleet"
+          description="Add your first vehicle to start managing your fleet. Track maintenance, assignments, and availability."
+          actionLabel="+ Add First Vehicle"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }
@@ -158,15 +191,7 @@ export default function VehiclesPage() {
       </div>
 
       {/* Vehicle Grid */}
-      {!filteredData || filteredData.length === 0 ? (
-        <EmptyState
-          icon="🚗"
-          title="No Vehicles"
-          description="Get started by adding a new vehicle."
-          action={<Button icon="+">Add Vehicle</Button>}
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredData.map((vehicle) => (
             <Card key={vehicle.id} hover onClick={() => handleViewDetails(vehicle)}>
               <div className="space-y-3">
@@ -238,8 +263,7 @@ export default function VehiclesPage() {
               </div>
             </Card>
           ))}
-        </div>
-      )}
+      </div>
 
       {/* Detail Modal */}
       <Modal

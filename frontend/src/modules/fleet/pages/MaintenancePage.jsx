@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate, formatCurrency, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -75,18 +75,51 @@ export default function MaintenancePage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={6} />
+        <LoadingState message="Loading maintenance records..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load maintenance records"
+          message="There was a problem loading maintenance records. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no maintenance records at all)
+  if (!maintenance || maintenance.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="🔧"
+          title="No maintenance records"
+          description="Start tracking vehicle maintenance by adding your first maintenance record. Keep your fleet running smoothly with scheduled maintenance."
+          actionLabel="+ Add First Record"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }

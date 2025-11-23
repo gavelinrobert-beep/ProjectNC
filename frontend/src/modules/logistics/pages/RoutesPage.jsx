@@ -5,7 +5,7 @@ import Table from '../../../components/ui/Table'
 import Modal from '../../../components/ui/Modal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, TableSkeleton } from '../../../shared/components/ui'
+import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
@@ -158,18 +158,51 @@ export default function RoutesPage() {
     }
   ]
 
+  // Loading state
   if (loading) {
     return (
       <div className="p-6">
-        <TableSkeleton rows={5} columns={7} />
+        <LoadingState message="Loading routes..." />
       </div>
     )
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
-        <ErrorMessage error={error} retry={refetch} />
+        <ErrorState
+          title="Unable to load routes"
+          message="There was a problem loading routes. Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
+  // Empty state (no routes at all)
+  if (!routes || routes.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon="🗺️"
+          title="No routes yet"
+          description="Create your first route to optimize deliveries and track vehicle progress in real-time."
+          actionLabel="+ Create First Route"
+          onAction={() => setShowModal(true)}
+        />
+      </div>
+    )
+  }
+
+  // No search results
+  if (searchQuery && filteredData.length === 0) {
+    return (
+      <div className="p-6">
+        <NoResults
+          searchTerm={searchQuery}
+          onClear={() => setSearchQuery('')}
+        />
       </div>
     )
   }
