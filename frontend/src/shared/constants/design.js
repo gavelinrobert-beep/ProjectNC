@@ -54,6 +54,15 @@ export const TEXT = {
   caption: 'text-xs text-neutral-500',
   label: 'text-sm font-medium text-neutral-700',
   link: 'text-primary-600 hover:text-primary-700 focus:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 underline',
+  
+  // Responsive headings (mobile-first)
+  h1Responsive: 'text-2xl md:text-4xl font-bold text-neutral-900',
+  h2Responsive: 'text-xl md:text-3xl font-bold text-neutral-900',
+  h3Responsive: 'text-lg md:text-2xl font-bold text-neutral-900',
+  
+  // Responsive body
+  bodyResponsive: 'text-sm md:text-base text-neutral-700',
+  bodySmallResponsive: 'text-xs sm:text-sm text-neutral-600',
 }
 
 // Button variants

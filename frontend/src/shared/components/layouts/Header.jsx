@@ -46,12 +46,7 @@ export default function Header({ onToggleSidebar, isMobile }) {
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.5rem' }}>🚛</span>
-          <span style={{ 
-            fontWeight: 700, 
-            fontSize: isMobile ? '0.95rem' : '1.1rem', 
-            color: '#FFFFFF',
-            display: isMobile ? 'none' : 'inline'
-          }}>
+          <span className="hidden sm:inline" style={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF' }}>
             SYLON Systems
           </span>
         </div>

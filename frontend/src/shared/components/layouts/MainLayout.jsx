@@ -23,9 +23,11 @@ export default function MainLayout() {
   }, [])
 
   // Close sidebar on mobile on initial load
+  const hasInitialized = React.useRef(false)
   useEffect(() => {
-    if (isMobile && sidebarOpen) {
+    if (isMobile && !hasInitialized.current) {
       setSidebarOpen(false)
+      hasInitialized.current = true
     }
   }, [isMobile])
 
