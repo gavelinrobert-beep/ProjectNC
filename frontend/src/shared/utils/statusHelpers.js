@@ -1,3 +1,5 @@
+// Legacy status configuration - deprecated
+// Use StatusBadge component directly instead
 export const STATUS_CONFIG = {
   // Delivery statuses
   delivered: { label: 'Delivered', color: 'green', icon: '✓' },
@@ -29,6 +31,8 @@ export const STATUS_CONFIG = {
   closed: { label: 'Closed', color: 'gray', icon: '✓' }
 }
 
+// Legacy function - deprecated
+// Use StatusBadge component directly instead
 export function getStatusConfig(status) {
   return STATUS_CONFIG[status] || { label: status, color: 'gray', icon: '•' }
 }

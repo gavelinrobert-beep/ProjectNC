@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getWorksProjects, deleteWorksProject } from '../../../lib/api';
 import toast from 'react-hot-toast';
 import { formatDate } from '../../../shared/utils';
+import StatusBadge from '../../../shared/components/ui/StatusBadge/StatusBadge';
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -66,17 +67,6 @@ const ProjectList = () => {
       console.error('Failed to delete project:', error);
       toast.error('Failed to delete project');
     }
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      planning: '#6B7280',
-      active: '#10B981',
-      on_hold: '#F59E0B',
-      completed: '#3B82F6',
-      cancelled: '#EF4444',
-    };
-    return colors[status] || '#6B7280';
   };
 
   const formatCurrency = (amount) => {
@@ -218,16 +208,7 @@ const ProjectList = () => {
                     </Link>
                   </td>
                   <td style={tdStyle}>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500',
-                      background: `${getStatusColor(project.status)}20`,
-                      color: getStatusColor(project.status)
-                    }}>
-                      {project.status}
-                    </span>
+                    <StatusBadge status={project.status} size="sm" />
                   </td>
                   <td style={tdStyle}>{formatDate(project.start_date)}</td>
                   <td style={tdStyle}>{formatDate(project.end_date)}</td>

@@ -1,3 +1,5 @@
+// DEPRECATED: Use StatusBadge component from shared/components/ui/StatusBadge instead
+// This function is kept for backward compatibility only
 export function getStatusColor(status) {
   const statusColors = {
     // Delivery statuses

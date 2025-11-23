@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getWorksChangeOrders } from '../../../lib/api';
 import toast from 'react-hot-toast';
+import StatusBadge from '../../../shared/components/ui/StatusBadge/StatusBadge';
 
 const ChangeOrders = () => {
   const [changeOrders, setChangeOrders] = useState([]);
@@ -24,17 +25,6 @@ const ChangeOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      draft: '#6B7280',
-      submitted: '#3B82F6',
-      approved: '#10B981',
-      rejected: '#EF4444',
-      completed: '#059669',
-    };
-    return colors[status] || '#6B7280';
   };
 
   const formatCurrency = (amount) => {
@@ -133,16 +123,7 @@ const ChangeOrders = () => {
                     <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
                       {co.title}
                     </h3>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500',
-                      background: `${getStatusColor(co.status)}20`,
-                      color: getStatusColor(co.status)
-                    }}>
-                      {co.status}
-                    </span>
+                    <StatusBadge status={co.status} size="sm" />
                   </div>
                   <div style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.75rem' }}>
                     {co.change_order_number}
