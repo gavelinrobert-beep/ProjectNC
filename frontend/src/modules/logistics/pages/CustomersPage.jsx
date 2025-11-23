@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useCustomers } from '../hooks/useCustomers'
+import { useCustomers, useDeleteCustomer } from '../hooks/useCustomers'
 import Button from '../../../components/ui/Button'
 import Table from '../../../components/ui/Table'
-import Modal from '../../../components/ui/Modal'
+import Modal from '../../../shared/components/ui/Modal/Modal'
+import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
+import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate } from '../../../shared/utils'
@@ -12,8 +14,10 @@ import { TEXT, CARD } from '../../../shared/constants/design'
 
 export default function CustomersPage() {
   const { data: customers, isLoading: loading, error, refetch } = useCustomers()
+  const { mutate: deleteCustomer, isPending: deleting } = useDeleteCustomer()
   const [selectedCustomer, setSelectedCustomer] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const viewModal = useModal()
+  const deleteModal = useModal()
 
   const {
     filteredData,
@@ -59,20 +63,39 @@ export default function CustomersPage() {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedCustomer(row)
-            setShowModal(true)
-          }}
-        >
-          View
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedCustomer(row)
+              viewModal.openModal()
+            }}
+          >
+            View
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedCustomer(row)
+              deleteModal.openModal()
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       )
     }
   ]
+
+  const handleDelete = async () => {
+    if (selectedCustomer) {
+      deleteCustomer(selectedCustomer.id)
+    }
+  }
 
   // Loading state
   if (loading) {
@@ -105,7 +128,7 @@ export default function CustomersPage() {
           title="No customers yet"
           description="Start building your customer base by adding your first customer. Manage contacts, track orders, and build relationships."
           actionLabel="+ Add First Customer"
-          onAction={() => setShowModal(true)}
+          onAction={() => viewModal.openModal()}
         />
       </div>
     )
@@ -220,7 +243,7 @@ export default function CustomersPage() {
           loading={loading}
           onRowClick={(row) => {
             setSelectedCustomer(row)
-            setShowModal(true)
+            viewModal.openModal()
           }}
         />
       </div>
@@ -233,7 +256,7 @@ export default function CustomersPage() {
             className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => {
               setSelectedCustomer(customer)
-              setShowModal(true)
+              viewModal.openModal()
             }}
           >
             <div className="flex items-center justify-between mb-3">
@@ -272,7 +295,7 @@ export default function CustomersPage() {
                 onClick={(e) => {
                   e.stopPropagation()
                   setSelectedCustomer(customer)
-                  setShowModal(true)
+                  viewModal.openModal()
                 }}
               >
                 View Details
@@ -289,17 +312,10 @@ export default function CustomersPage() {
 
       {/* Detail Modal */}
       <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.closeModal}
         title={`Customer: ${selectedCustomer?.name}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button>Edit Customer</Button>
-          </>
-        }
+        size="lg"
       >
         {selectedCustomer && (
           <div className="space-y-4">
@@ -355,9 +371,29 @@ export default function CustomersPage() {
                 <p className="text-gray-900">{selectedCustomer.notes}</p>
               </div>
             )}
+            
+            {/* Modal Actions */}
+            <div className="flex gap-3 justify-end pt-4 border-t">
+              <Button variant="secondary" onClick={viewModal.closeModal}>
+                Close
+              </Button>
+              <Button>Edit Customer</Button>
+            </div>
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={handleDelete}
+        title="Delete Customer?"
+        message="Are you sure you want to delete this customer? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={deleting}
+      />
     </div>
   )
 }
