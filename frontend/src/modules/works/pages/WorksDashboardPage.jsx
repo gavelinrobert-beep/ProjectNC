@@ -278,7 +278,6 @@ const WorksDashboard = () => {
                       </div>
                     </div>
                     <StatusBadge status={workOrder.status} size="sm" />
-                    </span>
                   </div>
                 </Link>
               ))

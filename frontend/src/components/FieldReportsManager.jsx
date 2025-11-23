@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
 import { formatDateTime } from '../shared/utils'
+import StatusBadge from '../shared/components/ui/StatusBadge/StatusBadge'
 
 const REPORT_TYPES = [
   { value: 'status', label: 'Status Update', icon: '📝' },
@@ -418,28 +419,6 @@ function ReportCard({ report, onUpdate }) {
         )}
       </div>
     </div>
-  )
-}
-
-function StatusBadge({ status }) {
-  const statusColors = {
-    open: '#FF9800',
-    in_progress: '#2196F3',
-    resolved: '#4CAF50',
-    closed: '#9E9E9E'
-  }
-
-  return (
-    <span style={{
-      padding: '0.25rem 0.75rem',
-      background: (statusColors[status] || '#9E9E9E') + '20',
-      color: statusColors[status] || '#9E9E9E',
-      borderRadius: '4px',
-      fontSize: '0.85rem',
-      fontWeight: 600
-    }}>
-      {(status || 'open').toUpperCase()}
-    </span>
   )
 }
 
