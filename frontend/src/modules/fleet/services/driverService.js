@@ -1,9 +1,9 @@
-import { apiClient } from '../../../shared/services/apiClient'
+import { api } from '../../../shared/services/api'
 
 export const driverService = {
-  getAll: () => apiClient.get('/api/fleet/drivers'),
-  getById: (id) => apiClient.get(`/api/fleet/drivers/${id}`),
-  create: (data) => apiClient.post('/api/fleet/drivers', data),
-  update: (id, data) => apiClient.put(`/api/fleet/drivers/${id}`, data),
-  delete: (id) => apiClient.delete(`/api/fleet/drivers/${id}`)
+  getAll: () => api.get('/api/fleet/drivers').then(res => res.data || res),
+  getById: (id) => api.get(`/api/fleet/drivers/${id}`).then(res => res.data || res),
+  create: (data) => api.post('/api/fleet/drivers', data).then(res => res.data || res),
+  update: (id, data) => api.put(`/api/fleet/drivers/${id}`, data).then(res => res.data || res),
+  delete: (id) => api.delete(`/api/fleet/drivers/${id}`).then(res => res.data || res)
 }

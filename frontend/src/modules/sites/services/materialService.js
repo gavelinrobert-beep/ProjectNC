@@ -1,9 +1,9 @@
-import { apiClient } from '../../../shared/services/apiClient'
+import { api } from '../../../shared/services/api'
 
 export const materialService = {
-  getAll: () => apiClient.get('/api/sites/materials'),
-  getById: (id) => apiClient.get(`/api/sites/materials/${id}`),
-  create: (data) => apiClient.post('/api/sites/materials', data),
-  update: (id, data) => apiClient.put(`/api/sites/materials/${id}`, data),
-  delete: (id) => apiClient.delete(`/api/sites/materials/${id}`)
+  getAll: () => api.get('/api/sites/materials').then(res => res.data || res),
+  getById: (id) => api.get(`/api/sites/materials/${id}`).then(res => res.data || res),
+  create: (data) => api.post('/api/sites/materials', data).then(res => res.data || res),
+  update: (id, data) => api.put(`/api/sites/materials/${id}`, data).then(res => res.data || res),
+  delete: (id) => api.delete(`/api/sites/materials/${id}`).then(res => res.data || res)
 }
