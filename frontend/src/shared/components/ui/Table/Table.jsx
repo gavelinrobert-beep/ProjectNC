@@ -28,6 +28,11 @@ export default function Table({
       const aVal = a[sortConfig.key]
       const bVal = b[sortConfig.key]
 
+      // Handle null/undefined values - sort them to the end
+      if (aVal == null && bVal == null) return 0
+      if (aVal == null) return 1
+      if (bVal == null) return -1
+
       if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1
       if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1
       return 0
