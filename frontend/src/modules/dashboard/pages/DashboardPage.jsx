@@ -159,10 +159,10 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl">
       <div className="mb-6 md:mb-8">
-        <h1 className={TEXT.h1 + ' mb-2 text-2xl md:text-4xl'}>
+        <h1 className="text-2xl md:text-4xl font-bold text-neutral-900 mb-2">
           📊 Dashboard - Executive Overview
         </h1>
-        <p className={TEXT.body + ' text-sm md:text-base'}>
+        <p className="text-sm md:text-base text-neutral-700">
           Real-time resource status and system overview
         </p>
       </div>

@@ -145,8 +145,8 @@ export default function DeliveriesPage() {
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className={TEXT.h1 + ' text-2xl md:text-4xl'}>Deliveries</h1>
-          <p className={TEXT.bodySmall + ' mt-2 text-xs sm:text-sm'}>Manage deliveries and proof of delivery</p>
+          <h1 className="text-2xl md:text-4xl font-bold text-neutral-900">Deliveries</h1>
+          <p className="text-xs sm:text-sm text-neutral-600 mt-2">Manage deliveries and proof of delivery</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button variant="secondary" onClick={refetch} disabled={loading}>

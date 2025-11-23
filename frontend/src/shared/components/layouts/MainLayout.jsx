@@ -15,16 +15,19 @@ export default function MainLayout() {
     const checkMobile = () => {
       const mobile = window.innerWidth < 1024
       setIsMobile(mobile)
-      // On mobile, start with sidebar closed
-      if (mobile && sidebarOpen) {
-        setSidebarOpen(false)
-      }
     }
     
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Close sidebar on mobile on initial load
+  useEffect(() => {
+    if (isMobile && sidebarOpen) {
+      setSidebarOpen(false)
+    }
+  }, [isMobile])
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)

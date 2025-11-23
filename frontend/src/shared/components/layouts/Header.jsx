@@ -58,30 +58,32 @@ export default function Header({ onToggleSidebar, isMobile }) {
       </div>
 
       {/* Hide subtitle on mobile and tablet */}
-      {!isMobile && (
-        <span style={{
+      <span 
+        className="hidden xl:inline"
+        style={{
           color: 'rgba(255, 255, 255, 0.9)',
           fontSize: '0.85rem',
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
-          fontWeight: 500,
-          display: window.innerWidth < 1280 ? 'none' : 'inline'
-        }}>
-          Logistics & Fleet Management Platform
-        </span>
-      )}
+          fontWeight: 500
+        }}
+      >
+        Logistics & Fleet Management Platform
+      </span>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.5rem' : '1rem' }}>
         {/* Hide user email on very small screens */}
-        <span style={{
-          padding: '0.4rem 0.8rem',
-          background: 'rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          fontSize: isMobile ? '0.8rem' : '0.9rem',
-          color: '#FFFFFF',
-          fontWeight: 500,
-          display: window.innerWidth < 640 ? 'none' : 'inline'
-        }}>
+        <span 
+          className="hidden sm:inline"
+          style={{
+            padding: '0.4rem 0.8rem',
+            background: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '8px',
+            fontSize: isMobile ? '0.8rem' : '0.9rem',
+            color: '#FFFFFF',
+            fontWeight: 500
+          }}
+        >
           👤 {user?.email || user?.name || 'admin'}
         </span>
         <button
