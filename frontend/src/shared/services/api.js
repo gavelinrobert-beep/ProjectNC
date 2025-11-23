@@ -34,7 +34,17 @@ async function apiRequest(endpoint, options = {}) {
     throw new Error(error.message || `HTTP ${response.status}`)
   }
 
-  return response.json()
+  // Handle empty responses (204 No Content, etc.)
+  const text = await response.text()
+  if (!text) {
+    return null
+  }
+
+  try {
+    return JSON.parse(text)
+  } catch {
+    return text
+  }
 }
 
 // CRUD helpers
