@@ -97,8 +97,14 @@ export default function MaterialsPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="p-6">
-        <LoadingState message="Loading materials..." />
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Materials</h1>
+        </div>
+        
+        {/* Skeleton */}
+        <TableSkeleton rows={8} columns={5} />
       </div>
     )
   }

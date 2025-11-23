@@ -20,7 +20,7 @@ import { useVehicles } from '../../fleet/hooks/useVehicles'
 import { useDepots } from '../../sites/hooks/useDepots'
 import { formatDateTime } from '../../../shared/utils'
 import { TEXT, CARD } from '../../../shared/constants/design'
-import { LoadingState } from '../../../shared/components/ui'
+import { LoadingState, StatsSkeleton } from '../../../shared/components/ui'
 
 export default function DashboardPage() {
   const [assets, setAssets] = useState([])
@@ -157,8 +157,19 @@ export default function DashboardPage() {
   
   if (isLoading) {
     return (
-      <div className="p-6">
-        <LoadingState message="Loading dashboard..." />
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <StatsSkeleton count={4} />
+        
+        {/* Chart skeletons */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow p-6 h-64">
+            <div className="h-full bg-gray-200 rounded animate-pulse" />
+          </div>
+          <div className="bg-white rounded-lg shadow p-6 h-64">
+            <div className="h-full bg-gray-200 rounded animate-pulse" />
+          </div>
+        </div>
       </div>
     )
   }
