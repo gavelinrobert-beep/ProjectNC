@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useRoutes, useDeleteRoute } from '../hooks/useRoutes'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
@@ -85,15 +84,16 @@ export default function RoutesPage() {
     {
       key: 'name',
       label: 'Route Name',
-      render: (value, row) => value || `Route #${row.id}`
+      sortable: true,
+      render: (row) => row.name || `Route #${row.id}`
     },
     {
       key: 'assigned_vehicle_id',
       label: 'Vehicle',
-      render: (value, row) => value ? (
+      render: (row) => row.assigned_vehicle_id ? (
         <span className="flex items-center gap-1">
           <span>🚛</span>
-          <span className="text-sm">{row.vehicle_registration || value}</span>
+          <span className="text-sm">{row.vehicle_registration || row.assigned_vehicle_id}</span>
         </span>
       ) : (
         <span className="text-gray-400 text-sm">Unassigned</span>
@@ -102,10 +102,10 @@ export default function RoutesPage() {
     {
       key: 'assigned_driver_id',
       label: 'Driver',
-      render: (value, row) => value ? (
+      render: (row) => row.assigned_driver_id ? (
         <span className="flex items-center gap-1">
           <span>👤</span>
-          <span className="text-sm">{row.driver_name || value}</span>
+          <span className="text-sm">{row.driver_name || row.assigned_driver_id}</span>
         </span>
       ) : (
         <span className="text-gray-400 text-sm">Unassigned</span>
@@ -114,7 +114,7 @@ export default function RoutesPage() {
     {
       key: 'start_depot',
       label: 'Start Depot',
-      render: (value, row) => row.start_depot_id ? (
+      render: (row) => row.start_depot_id ? (
         <span className="flex items-center gap-1">
           <span>🏢</span>
           <span className="text-sm">{row.start_depot_name || row.start_depot_id}</span>
@@ -126,54 +126,53 @@ export default function RoutesPage() {
     {
       key: 'deliveries',
       label: 'Deliveries',
-      render: (value) => (
+      render: (row) => (
         <span className="flex items-center gap-1">
           <span>📦</span>
-          <span className="font-medium">{value?.length || 0}</span>
+          <span className="font-medium">{row.deliveries?.length || 0}</span>
         </span>
       )
     },
     {
       key: 'status',
       label: 'Status',
-      render: (value) => <StatusBadge status={value} />
+      sortable: true,
+      render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'start_time',
       label: 'Start Time',
-      render: (value) => formatDateTime(value)
+      sortable: true,
+      render: (row) => formatDateTime(row.start_time)
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedRoute(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedRoute(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedRoute(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedRoute(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedRoute) {
@@ -338,88 +337,17 @@ export default function RoutesPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedRoute(row)
-            setShowModal(true)
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(route => (
-          <div 
-            key={route.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedRoute(route)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                {route.name || `Route #${route.id}`}
-              </span>
-              <StatusBadge status={route.status} />
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">ID:</span>
-                <span className="text-gray-900">#{route.id}</span>
-              </div>
-              {route.assigned_vehicle_id && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Vehicle:</span>
-                  <span className="text-gray-900">🚛 {route.vehicle_registration || route.assigned_vehicle_id}</span>
-                </div>
-              )}
-              {route.assigned_driver_id && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Driver:</span>
-                  <span className="text-gray-900">👤 {route.driver_name || route.assigned_driver_id}</span>
-                </div>
-              )}
-              {route.start_depot_id && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Start Depot:</span>
-                  <span className="text-gray-900">🏢 {route.start_depot_name || route.start_depot_id}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-gray-500">Deliveries:</span>
-                <span className="text-gray-900">📦 {route.deliveries?.length || 0}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Start Time:</span>
-                <span className="text-gray-900">{formatDateTime(route.start_time)}</span>
-              </div>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedRoute(route)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No routes found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedRoute(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No routes found"
+      />
 
       {/* Detail Modal */}
       <Modal

@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { useInventory } from '../hooks/useInventory'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
 import { TEXT, CARD } from '../../../shared/constants/design'
@@ -58,9 +57,10 @@ export default function InventoryPage() {
     {
       key: 'item_name',
       label: 'Item / SKU',
-      render: (value, row) => (
+      sortable: true,
+      render: (row) => (
         <div>
-          <div className="font-medium">{value || 'N/A'}</div>
+          <div className="font-medium">{row.item_name || 'N/A'}</div>
           {row.sku && <div className="text-xs text-gray-500">{row.sku}</div>}
         </div>
       )
@@ -68,22 +68,25 @@ export default function InventoryPage() {
     {
       key: 'category',
       label: 'Category',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.category || 'N/A'
     },
     {
       key: 'quantity',
       label: 'Quantity',
-      render: (value, row) => `${value || 0} ${row.unit || ''}`
+      sortable: true,
+      render: (row) => `${row.quantity || 0} ${row.unit || ''}`
     },
     {
       key: 'reorder_level',
       label: 'Reorder Level',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.reorder_level || 'N/A'
     },
     {
       key: 'status',
       label: 'Status',
-      render: (_, row) => {
+      render: (row) => {
         const status = getStockStatus(row)
         return (
           <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStockStatusColor(status)}`}>
@@ -92,24 +95,21 @@ export default function InventoryPage() {
         )
       }
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedItem(row)
-            viewModal.openModal()
-          }}
-        >
-          View
-        </Button>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <Button
+      size="sm"
+      variant="outline"
+      onClick={(e) => {
+        e.stopPropagation()
+        setSelectedItem(row)
+        viewModal.openModal()
+      }}
+    >
+      View
+    </Button>
+  )
 
   // Loading state
   if (loading) {
@@ -264,81 +264,17 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedItem(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(item => (
-          <div 
-            key={item.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedItem(item)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <span className="font-semibold text-gray-900 block">
-                  {item.item_name || 'N/A'}
-                </span>
-                {item.sku && <span className="text-xs text-gray-500">{item.sku}</span>}
-              </div>
-              <span className={`px-2 py-1 rounded-full text-xs ${getStockStatusColor(getStockStatus(item))}`}>
-                {getStockStatusLabel(getStockStatus(item))}
-              </span>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Category:</span>
-                <span className="text-gray-900">{item.category || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Quantity:</span>
-                <span className="text-gray-900 font-medium">{item.quantity || 0} {item.unit || ''}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Reorder Level:</span>
-                <span className="text-gray-900">{item.reorder_level || 'N/A'}</span>
-              </div>
-              {item.location && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Location:</span>
-                  <span className="text-gray-900">{item.location}</span>
-                </div>
-              )}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedItem(item)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No inventory items found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedItem(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No inventory items found"
+      />
 
       {/* Detail Modal */}
       <Modal

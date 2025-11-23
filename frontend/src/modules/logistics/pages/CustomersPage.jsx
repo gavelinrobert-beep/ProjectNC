@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { useCustomers, useDeleteCustomer } from '../hooks/useCustomers'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
-import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -32,11 +31,12 @@ export default function CustomersPage() {
     {
       key: 'name',
       label: 'Customer Name',
+      sortable: true,
     },
     {
       key: 'contact',
       label: 'Contact Info',
-      render: (value, row) => (
+      render: (row) => (
         <div className="text-sm">
           {row.email && <div>{row.email}</div>}
           {row.phone && <div className="text-gray-500">{row.phone}</div>}
@@ -47,49 +47,49 @@ export default function CustomersPage() {
     {
       key: 'address',
       label: 'Address',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.address || 'N/A'
     },
     {
       key: 'total_orders',
       label: 'Total Orders',
-      render: (value) => value || 0
+      sortable: true,
+      render: (row) => row.total_orders || 0
     },
     {
       key: 'last_order_date',
       label: 'Last Order',
-      render: (value) => formatDate(value)
+      sortable: true,
+      render: (row) => formatDate(row.last_order_date)
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedCustomer(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedCustomer(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedCustomer(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedCustomer(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedCustomer) {
@@ -235,80 +235,17 @@ export default function CustomersPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedCustomer(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(customer => (
-          <div 
-            key={customer.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedCustomer(customer)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                {customer.name}
-              </span>
-              <span className="text-xs text-gray-500">#{customer.id}</span>
-            </div>
-            <div className="space-y-2 text-sm">
-              {customer.email && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Email:</span>
-                  <span className="text-gray-900 text-right ml-2">{customer.email}</span>
-                </div>
-              )}
-              {customer.phone && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Phone:</span>
-                  <span className="text-gray-900">{customer.phone}</span>
-                </div>
-              )}
-              {customer.address && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Address:</span>
-                  <span className="text-gray-900 text-right ml-2">{customer.address}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-gray-500">Total Orders:</span>
-                <span className="text-gray-900 font-medium">{customer.total_orders || 0}</span>
-              </div>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedCustomer(customer)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No customers found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedCustomer(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No customers found"
+      />
 
       {/* Detail Modal */}
       <Modal

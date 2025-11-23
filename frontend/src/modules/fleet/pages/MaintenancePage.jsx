@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useMaintenance, useDeleteMaintenanceEvent } from '../hooks/useMaintenance'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate, formatCurrency, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -38,59 +37,61 @@ export default function MaintenancePage() {
     {
       key: 'vehicle_id',
       label: 'Vehicle',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.vehicle_id || 'N/A'
     },
     {
       key: 'type',
       label: 'Maintenance Type',
-      render: (value) => getStatusConfig(value || 'routine').label
+      sortable: true,
+      render: (row) => getStatusConfig(row.type || 'routine').label
     },
     {
       key: 'scheduled_date',
       label: 'Scheduled Date',
-      render: (value) => formatDate(value)
+      sortable: true,
+      render: (row) => formatDate(row.scheduled_date)
     },
     {
       key: 'status',
       label: 'Status',
-      render: (value) => <StatusBadge status={value} />
+      sortable: true,
+      render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'cost',
       label: 'Cost',
-      render: (value) => formatCurrency(value, 'USD')
+      sortable: true,
+      render: (row) => formatCurrency(row.cost, 'USD')
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedMaintenance(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedMaintenance(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedMaintenance(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedMaintenance(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedMaintenance) {
@@ -252,76 +253,17 @@ export default function MaintenancePage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedMaintenance(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(maintenance => (
-          <div 
-            key={maintenance.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedMaintenance(maintenance)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                Vehicle: {maintenance.vehicle_id || 'N/A'}
-              </span>
-              <StatusBadge status={maintenance.status} />
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Type:</span>
-                <span className="text-gray-900">{getStatusConfig(maintenance.type || 'routine').label}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Scheduled:</span>
-                <span className="text-gray-900">{formatDate(maintenance.scheduled_date)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Cost:</span>
-                <span className="text-gray-900 font-medium">{formatCurrency(maintenance.cost, 'USD')}</span>
-              </div>
-              {maintenance.notes && (
-                <div className="mt-2">
-                  <span className="text-gray-500">Notes:</span>
-                  <p className="text-gray-900 text-xs mt-1">{maintenance.notes}</p>
-                </div>
-              )}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedMaintenance(maintenance)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No maintenance records found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedMaintenance(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No maintenance records found"
+      />
 
       {/* Detail Modal */}
       <Modal

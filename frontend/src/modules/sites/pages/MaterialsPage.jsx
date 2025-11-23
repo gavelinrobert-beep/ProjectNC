@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useMaterials, useDeleteMaterial } from '../hooks/useMaterials'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatCurrency } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -35,58 +34,59 @@ export default function MaterialsPage() {
     {
       key: 'name',
       label: 'Material Name',
+      sortable: true,
     },
     {
       key: 'category',
       label: 'Category',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.category || 'N/A'
     },
     {
       key: 'unit',
       label: 'Unit of Measure',
-      render: (value) => value || 'N/A'
+      render: (row) => row.unit || 'N/A'
     },
     {
       key: 'standard_cost',
       label: 'Standard Cost',
-      render: (value) => formatCurrency(value, 'USD')
+      sortable: true,
+      render: (row) => formatCurrency(row.standard_cost, 'USD')
     },
     {
       key: 'supplier',
       label: 'Supplier',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.supplier || 'N/A'
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedMaterial(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedMaterial(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedMaterial(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedMaterial(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedMaterial) {
@@ -234,76 +234,17 @@ export default function MaterialsPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedMaterial(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(material => (
-          <div 
-            key={material.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedMaterial(material)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                {material.name}
-              </span>
-              <span className="text-xs text-gray-500">#{material.id}</span>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Category:</span>
-                <span className="text-gray-900">{material.category || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Unit:</span>
-                <span className="text-gray-900">{material.unit || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Standard Cost:</span>
-                <span className="text-gray-900 font-medium">{formatCurrency(material.standard_cost, 'USD')}</span>
-              </div>
-              {material.supplier && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Supplier:</span>
-                  <span className="text-gray-900">{material.supplier}</span>
-                </div>
-              )}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedMaterial(material)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No materials found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedMaterial(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No materials found"
+      />
 
       {/* Detail Modal */}
       <Modal
