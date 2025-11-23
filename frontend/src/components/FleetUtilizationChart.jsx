@@ -16,6 +16,7 @@ import {
 } from 'recharts';
 import { api } from '../lib/api';
 import { formatSwedishShortDate, formatSwedishNumber } from '../lib/formatters';
+import { formatChartDate, formatDateTime } from '../shared/utils';
 
 export default function FleetUtilizationChart() {
   const [data, setData] = useState([]);
@@ -88,13 +89,7 @@ export default function FleetUtilizationChart() {
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      const date = new Date(label);
-      const formattedDate = date.toLocaleString('sv-SE', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+      const formattedDate = formatDateTime(label);
 
       return (
         <div
@@ -254,10 +249,7 @@ export default function FleetUtilizationChart() {
               dataKey="timestamp"
               stroke="#888"
               style={{ fontSize: '0.75rem' }}
-              tickFormatter={(timestamp) => {
-                const date = new Date(timestamp);
-                return date.toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' });
-              }}
+              tickFormatter={(timestamp) => formatChartDate(timestamp)}
             />
             <YAxis stroke="#888" style={{ fontSize: '0.75rem' }} />
             <Tooltip content={<CustomTooltip />} />

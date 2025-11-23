@@ -7,6 +7,7 @@ import MetricsPanel from './MetricsPanel'
 import NATOAlliesPanel from './NATOAlliesPanel'
 import InventoryWidget from './InventoryWidget?v=2'
 import CollapsibleSection from './CollapsibleSection'
+import { formatTime } from '../shared/utils'
 
 export default function DashboardSidebar({
   assets,
@@ -191,7 +192,7 @@ export default function DashboardSidebar({
               fontSize: 10
             }}>
               <div style={{ fontWeight: 'bold' }}>{a.rule}</div>
-              <div style={{ fontSize: 9, color: '#999' }}>{a.asset_id} • {new Date(a.ts).toLocaleTimeString('sv-SE')}</div>
+              <div style={{ fontSize: 9, color: '#999' }}>{a.asset_id} • {formatTime(a.ts)}</div>
             </div>
           ))
         )}

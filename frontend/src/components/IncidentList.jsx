@@ -1,4 +1,5 @@
 import React from 'react'
+import { formatDateTime } from '../shared/utils'
 
 const SEVERITY_COLORS = {
   low: '#4CAF50',
@@ -24,21 +25,7 @@ const INCIDENT_TYPE_ICONS = {
 }
 
 export default function IncidentList({ incidents, onEdit, onDelete, onSelect }) {
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'N/A'
-    try {
-      const date = new Date(dateStr)
-      return date.toLocaleString('sv-SE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    } catch {
-      return dateStr
-    }
-  }
+  // formatDateTime is now imported from shared/utils
 
   if (!incidents || incidents.length === 0) {
     return (
@@ -140,7 +127,7 @@ export default function IncidentList({ incidents, onEdit, onDelete, onSelect }) 
             }}>
               <div>
                 <div style={{ color: '#999', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Reported</div>
-                <div style={{ color: '#333', fontWeight: 500 }}>{formatDate(incident.reported_at)}</div>
+                <div style={{ color: '#333', fontWeight: 500 }}>{formatDateTime(incident.reported_at)}</div>
               </div>
               {incident.location_description && (
                 <div>

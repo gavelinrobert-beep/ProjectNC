@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api'
+import { formatDateTime } from '../shared/utils'
 
 const REPORT_TYPES = [
   { value: 'status', label: 'Status Update', icon: '📝' },
@@ -370,7 +371,7 @@ function ReportCard({ report, onUpdate }) {
             <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{report.title}</h3>
           </div>
           <div style={{ fontSize: '0.85rem', color: '#718096' }}>
-            {new Date(report.created_at).toLocaleString()}
+            {formatDateTime(report.created_at)}
             {report.location_name && ` • 📍 ${report.location_name}`}
           </div>
         </div>
