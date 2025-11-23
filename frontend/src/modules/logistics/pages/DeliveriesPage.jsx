@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useDeliveries, useCreateDelivery, useDeleteDelivery } from '../hooks/useDeliveries'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -37,24 +36,27 @@ export default function DeliveriesPage() {
     {
       key: 'id',
       label: 'ID',
-      render: (value) => `#${value}`
+      sortable: true,
+      render: (row) => `#${row.id}`
     },
     {
       key: 'customer_name',
       label: 'Customer',
+      sortable: true,
     },
     {
       key: 'delivery_address',
       label: 'Address',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.delivery_address || 'N/A'
     },
     {
       key: 'assigned_vehicle_id',
       label: 'Vehicle',
-      render: (value, row) => value ? (
+      render: (row) => row.assigned_vehicle_id ? (
         <span className="flex items-center gap-1">
           <span>🚛</span>
-          <span className="text-sm">{row.vehicle_registration || value}</span>
+          <span className="text-sm">{row.vehicle_registration || row.assigned_vehicle_id}</span>
         </span>
       ) : (
         <span className="text-gray-400 text-sm">Unassigned</span>
@@ -63,10 +65,10 @@ export default function DeliveriesPage() {
     {
       key: 'assigned_driver_id',
       label: 'Driver',
-      render: (value, row) => value ? (
+      render: (row) => row.assigned_driver_id ? (
         <span className="flex items-center gap-1">
           <span>👤</span>
-          <span className="text-sm">{row.driver_name || value}</span>
+          <span className="text-sm">{row.driver_name || row.assigned_driver_id}</span>
         </span>
       ) : (
         <span className="text-gray-400 text-sm">Unassigned</span>
@@ -75,44 +77,43 @@ export default function DeliveriesPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (value) => <StatusBadge status={value} />
+      sortable: true,
+      render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'scheduled_date',
       label: 'Scheduled',
-      render: (value) => formatDateTime(value)
+      sortable: true,
+      render: (row) => formatDateTime(row.scheduled_date)
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedDelivery(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedDelivery(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDelivery(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDelivery(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleCreateDelivery = async () => {
     createDelivery({
@@ -282,82 +283,17 @@ export default function DeliveriesPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedDelivery(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(delivery => (
-          <div 
-            key={delivery.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedDelivery(delivery)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                {delivery.customer_name}
-              </span>
-              <StatusBadge status={delivery.status} />
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">ID:</span>
-                <span className="text-gray-900">#{delivery.id}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Address:</span>
-                <span className="text-gray-900 text-right ml-2">{delivery.delivery_address || 'N/A'}</span>
-              </div>
-              {delivery.assigned_vehicle_id && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Vehicle:</span>
-                  <span className="text-gray-900">🚛 {delivery.vehicle_registration || delivery.assigned_vehicle_id}</span>
-                </div>
-              )}
-              {delivery.assigned_driver_id && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Driver:</span>
-                  <span className="text-gray-900">👤 {delivery.driver_name || delivery.assigned_driver_id}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-gray-500">Scheduled:</span>
-                <span className="text-gray-900">{formatDateTime(delivery.scheduled_date)}</span>
-              </div>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedDelivery(delivery)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No deliveries found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedDelivery(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No deliveries found"
+      />
 
       {/* Detail Modal */}
       <Modal

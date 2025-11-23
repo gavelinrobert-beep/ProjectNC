@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useDrivers, useDeleteDriver } from '../hooks/useDrivers'
 import Button from '../../../components/ui/Button'
-import Table from '../../../components/ui/Table'
+import { Table, StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, ErrorMessage, ErrorState, EmptyState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDate, getStatusConfig } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -35,58 +34,58 @@ export default function DriversPage() {
     {
       key: 'name',
       label: 'Name',
+      sortable: true,
     },
     {
       key: 'license_number',
       label: 'License Number',
-      render: (value) => value || 'N/A'
+      sortable: true,
+      render: (row) => row.license_number || 'N/A'
     },
     {
       key: 'status',
       label: 'Status',
-      render: (value) => <StatusBadge status={value} />
+      sortable: true,
+      render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'email',
       label: 'Contact',
-      render: (value, row) => (
+      render: (row) => (
         <div className="text-sm">
-          <div>{value || 'N/A'}</div>
+          <div>{row.email || 'N/A'}</div>
           {row.phone && <div className="text-gray-500">{row.phone}</div>}
         </div>
       )
     },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => (
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedDriver(row)
-              viewModal.openModal()
-            }}
-          >
-            View
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={(e) => {
-              e.stopPropagation()
-              setSelectedDriver(row)
-              deleteModal.openModal()
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      )
-    }
   ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDriver(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDriver(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedDriver) {
@@ -237,74 +236,17 @@ export default function DriversPage() {
         )}
       </div>
 
-      {/* Desktop: Table view */}
-      <div className="hidden md:block">
-        <Table
-          columns={columns}
-          data={filteredData || []}
-          loading={loading}
-          onRowClick={(row) => {
-            setSelectedDriver(row)
-            viewModal.openModal()
-          }}
-        />
-      </div>
-
-      {/* Mobile: Card view */}
-      <div className="md:hidden space-y-4">
-        {filteredData?.map(driver => (
-          <div 
-            key={driver.id} 
-            className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => {
-              setSelectedDriver(driver)
-              viewModal.openModal()
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-gray-900">
-                {driver.name}
-              </span>
-              <StatusBadge status={driver.status} />
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">License:</span>
-                <span className="text-gray-900">{driver.license_number || 'N/A'}</span>
-              </div>
-              {driver.email && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Email:</span>
-                  <span className="text-gray-900 text-right ml-2">{driver.email}</span>
-                </div>
-              )}
-              {driver.phone && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Phone:</span>
-                  <span className="text-gray-900">{driver.phone}</span>
-                </div>
-              )}
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button 
-                className="flex-1 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg min-h-[44px] font-medium"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedDriver(driver)
-                  viewModal.openModal()
-                }}
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredData?.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No drivers found
-          </div>
-        )}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedDriver(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No drivers found"
+      />
 
       {/* Detail Modal */}
       <Modal

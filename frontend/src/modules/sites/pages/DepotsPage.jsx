@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useDepots, useDeleteDepot } from '../hooks/useDepots'
 import Button from '../../../components/ui/Button'
-import Card from '../../../components/ui/Card'
+import { Table, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import MapView from '../../../components/map/MapView'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -69,10 +68,71 @@ export default function DepotsPage() {
     searchFields: ['name', 'address', 'manager']
   })
 
-  const handleViewDetails = (depot) => {
-    setSelectedDepot(depot)
-    viewModal.openModal()
-  }
+  const columns = [
+    {
+      key: 'name',
+      label: 'Depot Name',
+      sortable: true,
+      render: (row) => row.name || row.id
+    },
+    {
+      key: 'address',
+      label: 'Address',
+      sortable: true,
+      render: (row) => row.address || 'No address'
+    },
+    {
+      key: 'capacity',
+      label: 'Capacity',
+      sortable: true,
+      render: (row) => row.capacity ? `${row.capacity} units` : 'N/A'
+    },
+    {
+      key: 'utilization',
+      label: 'Utilization',
+      sortable: true,
+      render: (row) => row.capacity && row.current_usage !== undefined
+        ? `${Math.round((row.current_usage / row.capacity) * 100)}%`
+        : 'N/A'
+    },
+    {
+      key: 'is_active',
+      label: 'Status',
+      sortable: true,
+      render: (row) => (
+        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${row.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+          {row.is_active !== false ? 'Active' : 'Inactive'}
+        </span>
+      )
+    },
+  ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDepot(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedDepot(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedDepot) {
@@ -232,85 +292,17 @@ export default function DepotsPage() {
         )}
       </div>
 
-      {/* Depot Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredData.map((depot) => (
-            <Card key={depot.id} hover onClick={() => handleViewDetails(depot)}>
-              <div className="space-y-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{depot.name || depot.id}</h3>
-                    <p className={TEXT.caption}>{depot.address || 'No address'}</p>
-                  </div>
-                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${depot.is_active !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {depot.is_active !== false ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {depot.capacity && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Capacity:</span>
-                      <span className="font-medium text-gray-900">{depot.capacity} units</span>
-                    </div>
-                  )}
-                  {depot.current_usage !== undefined && depot.capacity && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Utilization:</span>
-                      <span className="font-medium text-gray-900">
-                        {Math.round((depot.current_usage / depot.capacity) * 100)}%
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">🚛 Vehicles:</span>
-                    <span className="font-medium text-gray-900">{depot.vehicles_count || 0}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">🛣️ Active Routes:</span>
-                    <span className="font-medium text-gray-900">{depot.active_routes_count || 0}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">📦 Pending Deliveries:</span>
-                    <span className="font-medium text-gray-900">{depot.pending_deliveries_count || 0}</span>
-                  </div>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      alert('View on map feature coming soon')
-                    }}
-                  >
-                    View on Map
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="primary"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleViewDetails(depot)
-                    }}
-                  >
-                    Details
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedDepot(depot)
-                      deleteModal.openModal()
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedDepot(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No depots found"
+      />
 
       {/* Detail Modal */}
       <Modal

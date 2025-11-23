@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useVehicles, useDeleteVehicle } from '../hooks/useVehicles'
 import Button from '../../../components/ui/Button'
-import Card from '../../../components/ui/Card'
+import { Table, StatusBadge, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import Modal from '../../../shared/components/ui/Modal/Modal'
 import ConfirmModal from '../../../shared/components/ui/Modal/ConfirmModal'
 import { useModal } from '../../../shared/hooks/useModal'
 import SearchBar from '../../../components/ui/SearchBar'
 import FilterDropdown from '../../../components/ui/FilterDropdown'
-import { StatusBadge, EmptyState, ErrorMessage, ErrorState, LoadingState, NoResults, TableSkeleton } from '../../../shared/components/ui'
 import { formatDateTime } from '../../../shared/utils'
 import { useFilter } from '../../../hooks/useFilter'
 import { exportToCSV, exportToJSON } from '../../../utils/exportUtils'
@@ -33,10 +32,71 @@ export default function VehiclesPage() {
     searchFields: ['name', 'plate', 'type']
   })
 
-  const handleViewDetails = (vehicle) => {
-    setSelectedVehicle(vehicle)
-    viewModal.openModal()
-  }
+  const columns = [
+    {
+      key: 'registration_number',
+      label: 'Registration',
+      sortable: true,
+      render: (row) => row.registration_number || row.id
+    },
+    {
+      key: 'type',
+      label: 'Type',
+      sortable: true,
+      render: (row) => row.type || 'Vehicle'
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      sortable: true,
+      render: (row) => <StatusBadge status={row.status} />
+    },
+    {
+      key: 'fuel_level',
+      label: 'Fuel Level',
+      sortable: true,
+      render: (row) => `${row.fuel_level || 0}%`
+    },
+    {
+      key: 'current_driver_id',
+      label: 'Assigned Driver',
+      render: (row) => row.current_driver_id ? (
+        <span className="flex items-center gap-1">
+          <span>👤</span>
+          <span className="text-sm">{row.driver_name || row.current_driver_id}</span>
+        </span>
+      ) : (
+        <span className="text-gray-400 text-sm">Unassigned</span>
+      )
+    },
+  ]
+
+  const actions = (row) => (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedVehicle(row)
+          viewModal.openModal()
+        }}
+      >
+        View
+      </Button>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedVehicle(row)
+          deleteModal.openModal()
+        }}
+      >
+        Delete
+      </Button>
+    </>
+  )
 
   const handleDelete = async () => {
     if (selectedVehicle) {
@@ -200,91 +260,17 @@ export default function VehiclesPage() {
         )}
       </div>
 
-      {/* Vehicle Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredData.map((vehicle) => (
-            <Card key={vehicle.id} hover onClick={() => handleViewDetails(vehicle)}>
-              <div className="space-y-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{vehicle.registration_number || vehicle.id}</h3>
-                    <p className="text-sm text-gray-500">{vehicle.type || 'Vehicle'}</p>
-                  </div>
-                  <StatusBadge status={vehicle.status} />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Fuel Level:</span>
-                    <span className="font-medium text-gray-900">{vehicle.fuel_level || 0}%</span>
-                  </div>
-                  {vehicle.odometer && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Odometer:</span>
-                      <span className="font-medium text-gray-900">{vehicle.odometer} km</span>
-                    </div>
-                  )}
-                  {vehicle.current_driver_id && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Driver:</span>
-                      <span className="font-medium text-gray-900 flex items-center gap-1">
-                        <span>👤</span>
-                        {vehicle.driver_name || vehicle.current_driver_id}
-                      </span>
-                    </div>
-                  )}
-                  {vehicle.home_facility_id && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Home Depot:</span>
-                      <span className="font-medium text-gray-900 flex items-center gap-1">
-                        <span>🏢</span>
-                        {vehicle.depot_name || vehicle.home_facility_id}
-                      </span>
-                    </div>
-                  )}
-                  {vehicle.current_route && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Current Route:</span>
-                      <span className="font-medium text-blue-600">{vehicle.current_route}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      alert('Track feature coming soon')
-                    }}
-                  >
-                    Track
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="primary"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleViewDetails(vehicle)
-                    }}
-                  >
-                    Details
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedVehicle(vehicle)
-                      deleteModal.openModal()
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-      </div>
+      {/* Table with mobile card layout */}
+      <Table
+        columns={columns}
+        data={filteredData || []}
+        onRowClick={(row) => {
+          setSelectedVehicle(row)
+          viewModal.openModal()
+        }}
+        actions={actions}
+        emptyMessage="No vehicles found"
+      />
 
       {/* Detail Modal */}
       <Modal
