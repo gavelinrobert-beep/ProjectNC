@@ -6,7 +6,7 @@ from ..shared.models import LoginIn, LoginOut
 from ..shared.auth import make_token, pwd
 from ..shared.database import get_pool
 
-router = APIRouter(prefix="/api", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 @router.post("/login", response_model=LoginOut)
