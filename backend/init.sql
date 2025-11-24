@@ -533,7 +533,7 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Sample admin user (password: admin123)
 INSERT INTO users (id, email, password_hash, first_name, last_name, role, facility_id) VALUES
-    ('USER-001', 'admin@sylon.local', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5NU8zrwjJQOSa',
+    ('USER-001', 'admin@sylon.local', '$2b$12$b6cSLnvdUkr.3vf7pWltm.wmT0..cJhcIFc0GGY/Eh7UMDCN8Sntm',
      'Admin', 'User', 'admin', 'FAC-STH-01')
 ON CONFLICT (id) DO NOTHING;
 
