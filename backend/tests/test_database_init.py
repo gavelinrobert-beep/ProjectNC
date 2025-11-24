@@ -13,20 +13,29 @@ class TestDatabaseInitialization:
     @pytest.mark.asyncio
     async def test_init_sql_path_resolution_shared(self):
         """Test that init.sql path is correctly resolved from shared/database.py"""
-        from app.shared.database import init_database
+        from app.shared.database import INIT_SQL_PATH
         
-        # The path should resolve to backend/init.sql
-        expected_path = Path(__file__).parent.parent / "init.sql"
-        assert expected_path.exists(), f"init.sql should exist at {expected_path}"
+        # The constant should point to a valid init.sql file
+        assert INIT_SQL_PATH.exists(), f"init.sql should exist at {INIT_SQL_PATH}"
+        assert INIT_SQL_PATH.name == "init.sql", "Path should point to init.sql file"
     
     @pytest.mark.asyncio
     async def test_init_sql_path_resolution_root(self):
         """Test that init.sql path is correctly resolved from database.py"""
-        from app.database import init_database
+        from app.database import INIT_SQL_PATH
         
-        # The path should resolve to backend/init.sql
-        expected_path = Path(__file__).parent.parent / "init.sql"
-        assert expected_path.exists(), f"init.sql should exist at {expected_path}"
+        # The constant should point to a valid init.sql file
+        assert INIT_SQL_PATH.exists(), f"init.sql should exist at {INIT_SQL_PATH}"
+        assert INIT_SQL_PATH.name == "init.sql", "Path should point to init.sql file"
+    
+    @pytest.mark.asyncio
+    async def test_both_database_files_resolve_to_same_path(self):
+        """Test that both database files resolve to the same init.sql"""
+        from app.shared.database import INIT_SQL_PATH as shared_path
+        from app.database import INIT_SQL_PATH as db_path
+        
+        # Both should resolve to the same file
+        assert shared_path == db_path, f"Paths should be identical: {shared_path} vs {db_path}"
     
     @pytest.mark.asyncio
     async def test_init_database_tables_exist(self):

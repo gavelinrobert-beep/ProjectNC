@@ -5,6 +5,11 @@ from pathlib import Path
 # Global pool variable
 _pool = None
 
+# Path to init.sql relative to this file
+# backend/app/shared/database.py -> backend/init.sql
+INIT_SQL_PATH = Path(__file__).resolve().parent.parent.parent / "init.sql"
+
+
 async def get_pool(app=None):
     """Get or create database connection pool"""
     global _pool
@@ -33,14 +38,11 @@ async def init_database(pool):
         if not exists:
             print("[DATABASE] Tables don't exist, executing init.sql...")
             
-            # Read and execute init.sql
-            init_sql_path = Path(__file__).parent.parent.parent / "init.sql"
-            
-            if not init_sql_path.exists():
-                print(f"[DATABASE] ⚠️ init.sql not found at {init_sql_path}")
+            if not INIT_SQL_PATH.exists():
+                print(f"[DATABASE] ⚠️ init.sql not found at {INIT_SQL_PATH}")
                 return
             
-            with open(init_sql_path, 'r', encoding='utf-8') as f:
+            with open(INIT_SQL_PATH, 'r', encoding='utf-8') as f:
                 init_sql = f.read()
             
             try:
