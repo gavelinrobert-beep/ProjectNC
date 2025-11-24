@@ -1,8 +1,14 @@
 import asyncpg
 import os
+from pathlib import Path
 
 # Global pool variable
 _pool = None
+
+# Path to init.sql relative to this file
+# backend/app/database.py -> backend/init.sql
+INIT_SQL_PATH = Path(__file__).resolve().parent.parent / "init.sql"
+
 
 async def get_pool(app=None):
     """Get or create database connection pool"""
@@ -20,8 +26,6 @@ async def get_pool(app=None):
 
 async def init_database(pool):
     """Initialize database schema from init.sql"""
-    # This function should read your init.sql and execute it
-    # Or check if tables exist
     async with pool.acquire() as conn:
         # Check if facilities table exists
         exists = await conn.fetchval("""
@@ -32,7 +36,22 @@ async def init_database(pool):
         """)
 
         if not exists:
-            print("[DATABASE] Tables don't exist yet, they will be created by init.sql")
+            print("[DATABASE] Tables don't exist, executing init.sql...")
+            
+            if not INIT_SQL_PATH.exists():
+                print(f"[DATABASE] ⚠️ init.sql not found at {INIT_SQL_PATH}")
+                return
+            
+            with open(INIT_SQL_PATH, 'r', encoding='utf-8') as f:
+                init_sql = f.read()
+            
+            try:
+                await conn.execute(init_sql)
+                print("[DATABASE] ✅ init.sql executed successfully")
+                print("[DATABASE] ✅ Default admin user created: admin@sylon.local / admin123")
+            except Exception as e:
+                print(f"[DATABASE] ❌ Error executing init.sql: {e}")
+                raise
         else:
             print("[DATABASE] Tables already exist")
 
