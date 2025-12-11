@@ -1,322 +1,323 @@
-# SYLON Logistics — Civil Logistics & Situational Awareness Platform
+# Fantasy MMORPG - Scalable Game Architecture
 
-**Version 1.0.0 (Civil MVP) - Q1 2025**
+A production-ready, scalable fantasy MMORPG inspired by World of Warcraft, built with modern technologies and clean architecture principles.
 
-[![Backend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/backend-ci.yml)
-[![Frontend CI](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/frontend-ci.yml)
-[![Docker Build](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/docker-build.yml)
-[![Security Scanning](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml/badge.svg)](https://github.com/gavelinrobert-beep/SYLON/actions/workflows/security.yml)
-[![codecov](https://codecov.io/gh/gavelinrobert-beep/SYLON/branch/master/graph/badge.svg)](https://codecov.io/gh/gavelinrobert-beep/SYLON)
+## 🏗️ Architecture Overview
 
-SYLON Logistics is a secure, cloud-based logistics and coordination platform designed for:
-- 🏛️ **Municipalities** - Track vehicles, equipment, and field personnel for public works
-- 🏗️ **Contractors** - Coordinate resources, equipment tracking, and project operations
-- 🚨 **Emergency Response** - Civil defense, incident management, resource coordination
-- 🚛 **Logistics Companies** - Fleet management, delivery tracking, route optimization
-- 🛠️ **Public Works** - Infrastructure maintenance, crew coordination, asset management
+This project uses a **monorepo structure** with multiple specialized services:
 
-> "A platform for real-time coordination and resource management for municipalities, contractors, and emergency response organizations."
+```
+/packages
+├── /api          - NestJS REST API (Authentication, Characters, World)
+├── /frontend     - Next.js React client (Login, Character Select, Game UI)
+├── /gameserver   - Go authoritative game server (Real-time gameplay)
+└── /shared       - Shared TypeScript interfaces and protocol definitions
+```
 
-This is the **civilian MVP version**, focused on real-time situational awareness, resource tracking, and field coordination without military dependencies or terminology.
+### Service Communication Flow
 
----
+```
+┌─────────────┐     HTTP/REST      ┌──────────────┐
+│   Frontend  │ ◄─────────────────► │   API        │
+│  (Next.js)  │                     │  (NestJS)    │
+└─────────────┘                     └──────────────┘
+       │                                   │
+       │                                   │
+       │ WebSocket                         │ PostgreSQL
+       │ (Game Events)                     │
+       │                                   │
+       ▼                                   ▼
+┌─────────────┐                     ┌──────────────┐
+│ Game Server │                     │  Database    │
+│    (Go)     │ ◄───────────────────┤ (PostgreSQL) │
+└─────────────┘     Query Players   └──────────────┘
+```
 
-## ✨ Features
-
-### Core Capabilities
-- 📍 **Live Asset Tracking** - Real-time location of vehicles, machines, and staff
-- 🗺️ **Map-Based Visualization** - Interactive map with Leaflet/OpenStreetMap
-- 📊 **Status Dashboard** - Fuel levels, availability, task progress
-- 📋 **Task Management** - Work orders, assignments, route planning
-- 📦 **Inventory Management** - Track supplies and equipment
-- 📱 **Offline Support** - Field-ready with offline capabilities
-- 👥 **Role-Based Access** - Municipality Admin, Contractor, Operator, Viewer
-- 📄 **Export Tools** - Generate PDF and CSV reports
-
-### Technical Stack
-- **Backend**: FastAPI (Python) with PostgreSQL
-- **Frontend**: React + Leaflet for mapping
-- **Real-time**: Server-Sent Events (SSE) for live updates
-- **Deployment**: Docker Compose for easy setup
-- **Security**: JWT authentication with role-based access control
-
----
+**Key Design Principles:**
+- **API Backend**: Handles authentication, character management, and persistent data
+- **Game Server**: Authoritative server for real-time gameplay (movement, combat, NPCs)
+- **Frontend**: Thin client that sends input commands and renders game state
+- **Shared**: Common interfaces ensure type safety across services
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker Engine 20.10+
-- Docker Compose 2.0+
-- 4GB RAM (8GB recommended)
+- Node.js 18+ and npm
+- Go 1.21+
+- PostgreSQL 15+
+- Docker (optional, for containerized deployment)
 
 ### Installation
 
-1. **Clone and navigate**
-   ```bash
-   cd Aegis
-   ```
-
-2. **Configure environment**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your settings (see DEPLOYMENT.md)
-   ```
-
-3. **Start the platform**
-   ```bash
-   docker compose up --build
-   ```
-
-4. **Access the application**
-   - 🌐 Frontend: http://localhost:5173
-   - 📚 API Docs: http://localhost:8000/docs
-   - 🔑 Login: `admin@aegis.local` / `admin123`
-
-⚠️ **Change default credentials after first login!**
-
----
-
-## 📁 Project Structure
-
-```
-Aegis/
-├── backend/           # FastAPI application
-│   ├── app/
-│   │   ├── routes/   # API endpoints
-│   │   ├── models.py # Data models
-│   │   ├── auth.py   # Authentication
-│   │   └── main.py   # Application entry
-│   ├── init.sql      # Database schema
-│   └── Dockerfile
-├── frontend/          # React application
-│   ├── src/
-│   │   ├── pages/    # Main pages
-│   │   ├── components/ # Reusable components
-│   │   ├── lib/      # API client & utilities
-│   │   └── App.jsx   # Root component
-│   └── Dockerfile
-├── compose.yaml       # Docker Compose configuration
-├── .env.example       # Environment template
-├── DEPLOYMENT.md      # Deployment guide
-└── README.md         # This file
-```
-
----
-
-## 🔧 Configuration
-
-See `.env.example` for all configuration options. Key settings:
-
+1. **Install dependencies for all packages:**
 ```bash
-# Security (REQUIRED for production)
-JWT_SECRET=your-secret-key-here
-
-# Database
-DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-
-# API Access
-CORS_ORIGINS=http://localhost:5173
-
-# Optional Features
-OPENWEATHER_API_KEY=your-api-key  # For weather data
-VITE_MAPBOX_TOKEN=your-token      # For enhanced maps
-```
-
-Full deployment guide: [DEPLOYMENT.md](./DEPLOYMENT.md)
-
----
-
-## 📖 Documentation
-
-- **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment instructions
-- **[API Documentation](http://localhost:8000/docs)** - Interactive API explorer (after starting)
-- **[CI/CD Pipeline](./docs/CI_CD.md)** - Continuous integration and testing guide
-- **[User Guide](./docs/USER_GUIDE.md)** - End-user documentation
-- **[Security Guide](./docs/SECURITY.md)** - Security best practices
-
----
-
-## 🎯 Use Cases
-
-### Municipality Fleet Management
-- Track snow plows, garbage trucks, maintenance vehicles
-- Monitor fuel levels and maintenance schedules
-- Optimize routes and resource allocation
-
-### Emergency Response Coordination
-- Real-time positioning of response teams
-- Resource tracking during incidents
-- Communication and status updates
-
-### Construction & Contractor Operations
-- Equipment location and availability
-- Project resource management
-- Field report submission with photos
-
-### Public Works Infrastructure
-- Maintenance crew tracking
-- Equipment and supply management
-- Work order coordination
-
----
-
-## 👥 User Roles
-
-1. **Municipality Admin**
-   - Full system access and configuration
-   - User management
-   - Report generation
-
-2. **Contractor**
-   - View and update assigned assets
-   - Submit field reports
-   - Limited mission planning
-
-3. **Field Operator**
-   - Mobile access
-   - Update asset status
-   - Submit reports with photos
-
-4. **Viewer**
-   - Read-only dashboard access
-   - Export reports
-
----
-
-## 🔒 Security
-
-AEGIS Light follows security best practices:
-- ✅ JWT-based authentication
-- ✅ Role-based access control (RBAC)
-- ✅ Environment-based configuration
-- ✅ HTTPS support (with reverse proxy)
-- ✅ No classified or defense dependencies
-- ✅ Audit logging ready
-
-**For production deployments**, see our [Security Guide](./docs/SECURITY.md).
-
----
-
-## 🛠️ Development
-
-### Running in Development Mode
-
-```bash
-# Backend (with hot reload)
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-
-# Frontend (with hot reload)
-cd frontend
+# API Backend
+cd packages/api
 npm install
+
+# Frontend
+cd ../frontend
+npm install
+
+# Shared
+cd ../shared
+npm install
+
+# Game Server (Go)
+cd ../gameserver
+go mod download
+```
+
+2. **Set up the database:**
+```bash
+cd packages/api
+cp .env.example .env
+# Edit .env with your PostgreSQL connection string
+
+# Run Prisma migrations
+npx prisma migrate dev
+npx prisma generate
+```
+
+3. **Start all services:**
+
+```bash
+# Terminal 1: API Backend
+cd packages/api
+npm run start:dev
+
+# Terminal 2: Game Server
+cd packages/gameserver
+go run cmd/server/main.go
+
+# Terminal 3: Frontend
+cd packages/frontend
 npm run dev
 ```
 
+4. **Access the game:**
+- Frontend: http://localhost:3000
+- API Docs: http://localhost:4000/api
+- Game Server: ws://localhost:8080
+
+## 📦 Package Details
+
+### `/packages/api` - NestJS Backend
+
+**Purpose**: REST API for authentication, character management, and persistent data
+
+**Key Modules:**
+- `AuthModule` - JWT-based authentication, account creation
+- `CharacterModule` - Character CRUD operations, loading character data
+- `WorldModule` - Zone metadata, static game world data
+- `GatewayModule` - WebSocket gateway for relaying messages to game server
+
+**Tech Stack:**
+- NestJS (TypeScript)
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
+- WebSocket Gateway
+
+**Endpoints:**
+- `POST /auth/register` - Create new account
+- `POST /auth/login` - Login and get JWT token
+- `GET /characters` - List player's characters
+- `POST /characters` - Create new character
+- `GET /world/zones` - Get zone metadata
+
+### `/packages/frontend` - Next.js Client
+
+**Purpose**: Game client UI for players
+
+**Key Pages:**
+- `/login` - Authentication
+- `/character-select` - Choose or create character
+- `/game` - Main game interface
+
+**Key Components:**
+- `HUD` - Health, mana, experience bars
+- `ChatWindow` - In-game chat
+- `ActionBar` - Ability hotkeys
+- `MovementControls` - WASD/Click-to-move overlay
+- `Inventory` - Equipment and bag slots
+- `QuestLog` - Active quests and objectives
+
+**Tech Stack:**
+- Next.js 14+ (App Router)
+- React 18+
+- TypeScript
+- TailwindCSS
+- WebSocket client for game server
+
+### `/packages/gameserver` - Go Game Server
+
+**Purpose**: Authoritative real-time game server
+
+**Core Systems:**
+- **Networking Layer**: WebSocket server, connection manager, message router
+- **Game Loop**: Fixed 20-tick/sec update loop
+- **Entity System**: Players, NPCs, monsters with position and state
+- **Combat System**: Ability execution, damage calculation, cooldowns
+- **Anti-Cheat**: Rate limiting, validation, server authority
+
+**Tech Stack:**
+- Go 1.21+
+- gorilla/websocket
+- ECS-style architecture (Entities, Components, Systems)
+
+**Protocol Messages:**
+- `PlayerMove` - Client movement input
+- `AttackRequest` - Client ability usage
+- `EntityUpdate` - Server state broadcast
+- `CombatEvent` - Damage, healing events
+- `ChatMessage` - Player communication
+
+### `/packages/shared` - Shared Interfaces
+
+**Purpose**: Type-safe protocol definitions used by all services
+
+**Contents:**
+- Protocol message interfaces
+- Enums (Race, Class, ItemType)
+- Common data structures
+- Game constants
+
+## 🎮 Game Features
+
+### Character System
+- **Races**: Human, Elf, Dwarf, Orc
+- **Classes**: Warrior, Mage, Rogue, Priest
+- **Stats**: Strength, Agility, Intellect, Stamina, HP, MP
+- **Customization**: Name, appearance options
+
+### Combat System
+- **Authoritative Server**: All combat calculated server-side
+- **Abilities**: Each class has unique abilities with cooldowns
+- **Target System**: Click-to-target, tab-targeting
+- **Damage Formula**: Stats + weapon + ability power
+- **Threat System**: Aggro management (placeholder for now)
+
+### World & Quests
+- **Zones**: Multiple interconnected zones with different levels
+- **NPCs**: Quest givers, vendors, trainers
+- **Quests**: Kill, collect, and delivery quests
+- **Exploration**: Fog of war, discovery experience
+
+### Inventory & Equipment
+- **Equipment Slots**: Head, chest, legs, weapon, etc.
+- **Bags**: Expandable inventory
+- **Item Types**: Armor, weapons, consumables, quest items
+- **Rarity**: Common, uncommon, rare, epic, legendary
+
+## 🔧 Development
+
+### Code Standards
+- **TypeScript**: Strict mode enabled, no `any` types
+- **Go**: Follow effective Go guidelines
+- **Architecture**: SOLID principles, clean architecture
+- **Comments**: Extensive inline documentation for future features
+
 ### Testing
-
-AEGIS Light includes comprehensive test infrastructure with automated CI/CD pipelines.
-
 ```bash
-# Backend tests with coverage
-cd backend
-pytest --cov=app --cov-report=term-missing
+# API Backend
+cd packages/api
+npm run test
+npm run test:e2e
 
-# Frontend tests
-cd frontend
-npm test
+# Frontend
+cd packages/frontend
+npm run test
 
-# Frontend tests with coverage
-npm run test:coverage
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
+# Game Server
+cd packages/gameserver
+go test ./...
 ```
 
-For more details on testing and CI/CD, see the **[CI/CD Pipeline Documentation](./docs/CI_CD.md)**.
-
----
-
-## 📦 Demo Data
-
-### Loading Sundsvall Transport Demo Data
-
-To load realistic Swedish transport demo data for customer demos:
-
+### Database Migrations
 ```bash
-# Load demo data
-docker exec -i sylon-db-1 psql -U postgres -d postgres < backend/demo_data_sundsvall.sql
-
-# Verify
-docker exec -it sylon-db-1 psql -U postgres -d postgres -c "SELECT COUNT(*) FROM assets WHERE id LIKE 'VEH-SND-%';"
+cd packages/api
+npx prisma migrate dev --name description_of_change
+npx prisma generate
 ```
 
-Demo includes:
-- 6 facilities (Sundsvall, Stockholm, Göteborg)
-- 8 drivers (Swedish names and licenses)
-- 8 vehicles (Swedish registration plates ABC 123, etc.)
-- 5 customers (Swedish companies)
-- 25 deliveries (20 completed + 5 active)
+## 🛣️ Roadmap
 
-**Test driver login:** Use PIN `0001` for vehicle VEH-SND-01
+### Current Phase: MVP (v0.1)
+- [x] Monorepo structure
+- [x] NestJS API with authentication
+- [x] Character creation and management
+- [x] Next.js frontend with basic UI
+- [x] Go game server with entity system
+- [x] Basic combat system
+- [ ] Quest system implementation
+- [ ] Inventory and equipment system
+- [ ] First playable zone
+
+### Phase 2: Core Gameplay (v0.2)
+- [ ] Multiple zones and seamless transitions
+- [ ] Party system
+- [ ] Trading between players
+- [ ] NPC AI and pathfinding
+- [ ] Enhanced combat (buffs, debuffs, dots)
+
+### Phase 3: Social & Guilds (v0.3)
+- [ ] Guild system
+- [ ] Friends list
+- [ ] Whisper and guild chat
+- [ ] Mail system
+- [ ] Auction house
+
+### Phase 4: Endgame Content (v0.4)
+- [ ] Instanced dungeons
+- [ ] Raid content
+- [ ] PvP battlegrounds
+- [ ] Leaderboards and achievements
+
+### Phase 5: Performance & Scale (v0.5)
+- [ ] Migrate to binary protocol
+- [ ] Zone sharding
+- [ ] Horizontal scaling
+- [ ] CDN integration
+- [ ] Advanced anti-cheat
+
+## 🔒 Security Considerations
+
+- **Authentication**: JWT tokens with short expiry
+- **Authorization**: Role-based access control
+- **Game Server**: All gameplay authority on server
+- **Anti-Cheat**: Rate limiting, input validation, impossible action detection
+- **Database**: Prepared statements, Prisma ORM prevents SQL injection
+- **WebSocket**: Connection authentication, message validation
+
+## 📚 Future Extensions
+
+This codebase is designed for extensibility. Planned features include:
+
+- **Instancing**: Separate game server instances per dungeon
+- **Pathfinding**: A* algorithm for NPC movement
+- **AI Behavior Trees**: Complex NPC behaviors
+- **Mounts**: Speed boost items with animations
+- **Professions**: Crafting, gathering skills
+- **Item Procs**: Random on-hit effects
+- **Weather System**: Dynamic weather affecting gameplay
+- **Day/Night Cycle**: Time-based events and spawns
+- **Phasing**: Different world states per player
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+## 🤝 Contributing
+
+This is a learning/portfolio project. Contributions welcome!
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Write tests
+5. Submit a pull request
 
 ---
 
-## 🗺️ Roadmap
-
-### Phase 1: Civil MVP (Q1 2025) ✅
-- Core asset tracking and mapping
-- Mission planning
-- Basic inventory management
-- User authentication and roles
-
-### Phase 2: Field Companion (Q2 2025)
-- Mobile app (React Native/Capacitor)
-- Offline-first architecture
-- Enhanced field reports with photos
-- Push notifications
-
-### Phase 3: Advanced Features (Q3 2025)
-- Tactical planner with simulations
-- Advanced analytics and reporting
-- Integration APIs for third-party systems
-- Multi-tenant support
-
-### Phase 4: Enterprise (Q4 2025)
-- High-availability deployment
-- Advanced security features
-- Custom integrations
-- SLA support
-
----
-
-## 💼 Support & Contact
-
-- **Documentation**: https://docs.aegis-light.com
-- **Issues**: https://github.com/your-org/aegis-light/issues
-- **Email**: support@aegis-light.com
-- **Commercial**: enterprise@aegis-light.com
-
----
-
-## 📜 License
-
-AEGIS Light is released under the MIT License.
-See [LICENSE](./LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-Built with support from municipalities, contractors, and civil defense organizations.
-Special thanks to the open-source community.
-
----
-
-**AEGIS Light** - Professional logistics made simple.
-*Civilian deployment. No classified data. Production-ready.*
+**Built with ❤️ for MMO enthusiasts**

@@ -1,0 +1,276 @@
+// Prisma Schema for Fantasy MMORPG
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION & ACCOUNTS
+// ============================================================================
+
+model Account {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String   // bcrypt hashed
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  characters Character[]
+  
+  @@map("accounts")
+}
+
+// ============================================================================
+// CHARACTERS
+// ============================================================================
+
+model Character {
+  id        String   @id @default(uuid())
+  accountId String
+  
+  name      String   @unique
+  race      String   // HUMAN, ELF, DWARF, ORC
+  class     String   // WARRIOR, MAGE, ROGUE, PRIEST
+  
+  level     Int      @default(1)
+  experience Int     @default(0)
+  
+  // Stats
+  strength  Int      @default(10)
+  agility   Int      @default(10)
+  intellect Int      @default(10)
+  stamina   Int      @default(10)
+  spirit    Int      @default(10)
+  
+  // Current state
+  maxHealth     Int      @default(100)
+  maxMana       Int      @default(100)
+  currentHealth Int      @default(100)
+  currentMana   Int      @default(100)
+  
+  // Position (last known)
+  zoneId   String   @default("starter_zone")
+  x        Float    @default(0)
+  y        Float    @default(0)
+  z        Float    @default(0)
+  rotation Float    @default(0)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  lastLogin DateTime @default(now())
+  
+  // Relations
+  account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  inventory     InventoryItem[]
+  questProgress QuestProgress[]
+  
+  @@map("characters")
+  @@index([accountId])
+}
+
+// ============================================================================
+// ITEMS & INVENTORY
+// ============================================================================
+
+model ItemDefinition {
+  id          String @id
+  name        String
+  description String
+  
+  type        String // WEAPON, ARMOR, CONSUMABLE, QUEST_ITEM, MATERIAL
+  rarity      String // COMMON, UNCOMMON, RARE, EPIC, LEGENDARY
+  level       Int    @default(1)
+  
+  // Equipment specific
+  slot         String? // HEAD, CHEST, LEGS, etc.
+  armor        Int?
+  weaponMinDmg Int?
+  weaponMaxDmg Int?
+  
+  // Stats bonuses (nullable for non-equipment)
+  bonusStrength  Int?
+  bonusAgility   Int?
+  bonusIntellect Int?
+  bonusStamina   Int?
+  bonusSpirit    Int?
+  
+  // Stackable
+  maxStack Int @default(1)
+  
+  // Vendor prices
+  sellPrice Int @default(0)
+  buyPrice  Int?
+  
+  @@map("item_definitions")
+}
+
+model InventoryItem {
+  id        String @id @default(uuid())
+  
+  characterId       String
+  itemDefinitionId String
+  
+  quantity Int    @default(1)
+  slot     Int    // 0-39 for bag slots, negative for equipment slots
+  
+  // Future: Item-specific data (durability, enchantments, sockets)
+  
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  @@map("inventory_items")
+  @@index([characterId])
+  @@unique([characterId, slot])
+}
+
+// ============================================================================
+// QUESTS
+// ============================================================================
+
+model Quest {
+  id          String @id
+  name        String
+  description String
+  
+  level         Int
+  requiredLevel Int @default(1)
+  
+  // Simplified objectives (can expand to separate table)
+  objectivesJson String // JSON array of objectives
+  
+  // Rewards
+  experienceReward Int @default(0)
+  goldReward       Int @default(0)
+  itemRewardsJson  String? // JSON array of item IDs
+  
+  // Relations
+  progress QuestProgress[]
+  
+  @@map("quests")
+}
+
+model QuestProgress {
+  id          String @id @default(uuid())
+  
+  characterId String
+  questId     String
+  
+  status      String // AVAILABLE, IN_PROGRESS, COMPLETED, TURNED_IN
+  progressJson String // JSON tracking objectives completion
+  
+  startedAt   DateTime?
+  completedAt DateTime?
+  
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  quest     Quest     @relation(fields: [questId], references: [id])
+  
+  @@map("quest_progress")
+  @@unique([characterId, questId])
+  @@index([characterId])
+}
+
+// ============================================================================
+// WORLD & ZONES
+// ============================================================================
+
+model Zone {
+  id          String @id
+  name        String
+  description String
+  
+  minLevel Int @default(1)
+  maxLevel Int @default(60)
+  
+  width  Int
+  height Int
+  
+  // Safe spawn points (JSON array of {x, y, z})
+  safeZonesJson String
+  
+  @@map("zones")
+}
+
+model NPC {
+  id    String @id
+  name  String
+  level Int    @default(1)
+  type  String // NPC, MONSTER
+  
+  // Position
+  zoneId String
+  x      Float
+  y      Float
+  z      Float
+  
+  // Behavior flags
+  isQuestGiver Boolean @default(false)
+  isVendor     Boolean @default(false)
+  isHostile    Boolean @default(false)
+  
+  // Combat stats (for hostile NPCs)
+  health    Int?
+  minDamage Int?
+  maxDamage Int?
+  
+  // Loot table (JSON)
+  lootTableJson String?
+  
+  @@map("npcs")
+  @@index([zoneId])
+}
+
+// ============================================================================
+// ABILITIES & SPELLS
+// ============================================================================
+
+model Ability {
+  id          String @id
+  name        String
+  description String
+  
+  classRequired String // WARRIOR, MAGE, ROGUE, PRIEST, or "ALL"
+  levelRequired Int    @default(1)
+  
+  // Resource costs
+  manaCost   Int @default(0)
+  energyCost Int @default(0)
+  rageCost   Int @default(0)
+  
+  // Timing (milliseconds)
+  cooldown       Int @default(0)
+  castTime       Int @default(0)
+  globalCooldown Int @default(1500)
+  
+  // Targeting
+  range           Int     @default(5)
+  requiresTarget  Boolean @default(true)
+  canTargetSelf   Boolean @default(false)
+  
+  // Damage/Heal formulas (simple string formulas)
+  damageFormula String?
+  healFormula   String?
+  
+  // Effects (JSON)
+  effectsJson String?
+  
+  @@map("abilities")
+  @@index([classRequired])
+}
+
+// Future tables to implement:
+// - Guilds
+// - Friends
+// - Mail
+// - AuctionHouse
+// - CombatLogs
+// - Achievements

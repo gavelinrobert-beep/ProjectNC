@@ -1,0 +1,18 @@
+{
+  "name": "@mmorpg/shared",
+  "version": "0.1.0",
+  "description": "Shared TypeScript interfaces and protocol definitions for Fantasy MMORPG",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["mmorpg", "shared", "protocol"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "fantasy-mmorpg-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A scalable fantasy MMORPG with Node.js API, Next.js frontend, and Go game server",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "cd packages/api && npm run start:dev",
+    "dev:frontend": "cd packages/frontend && npm run dev",
+    "dev:gameserver": "cd packages/gameserver && go run cmd/server/main.go",
+    "build:api": "cd packages/api && npm run build",
+    "build:frontend": "cd packages/frontend && npm run build",
+    "build:gameserver": "cd packages/gameserver && go build -o gameserver cmd/server/main.go",
+    "install:all": "npm install && cd packages/api && npm install && cd ../frontend && npm install && cd ../shared && npm install",
+    "prisma:migrate": "cd packages/api && npx prisma migrate dev",
+    "prisma:generate": "cd packages/api && npx prisma generate"
+  },
+  "keywords": [
+    "mmorpg",
+    "game",
+    "nestjs",
+    "nextjs",
+    "golang",
+    "websocket",
+    "prisma"
+  ],
+  "author": "",
+  "license": "MIT"
+}
