@@ -174,13 +174,19 @@ export interface TalentPointInfo {
   availablePoints: number;
 }
 
+/** Level at which players start earning talent points. */
+export const TALENT_START_LEVEL = 10;
+
+/** Offset for calculating talent points (level - offset = points). */
+const TALENT_LEVEL_OFFSET = 9;
+
 /**
  * Calculate total talent points available at a given level.
- * Talents typically start at level 10.
+ * Talents typically start at TALENT_START_LEVEL.
  */
 export function getTalentPointsForLevel(level: number): number {
-  if (level < 10) return 0;
-  return level - 9; // 1 point at level 10, 2 at 11, etc.
+  if (level < TALENT_START_LEVEL) return 0;
+  return level - TALENT_LEVEL_OFFSET; // 1 point at level 10, 2 at 11, etc.
 }
 
 /**

@@ -8,6 +8,13 @@ namespace MMORPG.Systems
     /// </summary>
     public class CameraController : MonoBehaviour
     {
+        #region Constants
+        
+        /// <summary>Angle offset to position camera behind the target (180 degrees = directly behind).</summary>
+        private const float BEHIND_TARGET_ANGLE = 180f;
+        
+        #endregion
+        
         #region Configuration
         
         [Header("Target")]
@@ -135,7 +142,7 @@ namespace MMORPG.Systems
             // Auto-rotate behind player when not manually rotating
             if (autoRotateBehindPlayer && !isRotating && Time.time - lastInputTime > autoRotateDelay)
             {
-                float targetAngle = target.eulerAngles.y + 180f;
+                float targetAngle = target.eulerAngles.y + BEHIND_TARGET_ANGLE;
                 horizontalAngle = Mathf.MoveTowardsAngle(
                     horizontalAngle,
                     targetAngle,

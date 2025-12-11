@@ -30,8 +30,11 @@ func (t *ThreatTable) AddThreat(entityID string, amount float64) float64 {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
+	// Clamp negative threat to zero. This is intentional for game balance:
+	// Players cannot reduce threat below zero through negative threat actions.
+	// If threat reduction mechanics are desired, use ModifyThreat instead.
 	if amount < 0 {
-		amount = 0 // No negative threat
+		amount = 0
 	}
 
 	t.entries[entityID] += amount

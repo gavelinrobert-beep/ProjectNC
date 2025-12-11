@@ -9,6 +9,12 @@ namespace MMORPG.UI
     /// </summary>
     public class HUD : MonoBehaviour
     {
+        #region Constants
+        
+        private const int MAX_COMBAT_LOG_LINES = 10;
+        
+        #endregion
+        
         #region Singleton
         
         public static HUD Instance { get; private set; }
@@ -292,11 +298,11 @@ namespace MMORPG.UI
         {
             if (combatLogText != null)
             {
-                // Keep last 10 lines
+                // Keep last MAX_COMBAT_LOG_LINES lines
                 string[] lines = combatLogText.text.Split('\n');
-                if (lines.Length > 9)
+                if (lines.Length > MAX_COMBAT_LOG_LINES - 1)
                 {
-                    combatLogText.text = string.Join("\n", lines, 1, 9);
+                    combatLogText.text = string.Join("\n", lines, 1, MAX_COMBAT_LOG_LINES - 1);
                 }
                 
                 combatLogText.text += (combatLogText.text.Length > 0 ? "\n" : "") + message;

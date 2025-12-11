@@ -10,6 +10,13 @@ namespace MMORPG.UI
     /// </summary>
     public class TargetFrame : MonoBehaviour
     {
+        #region Constants
+        
+        private const int MIN_LEVEL = 1;
+        private const int MAX_LEVEL = 100;
+        
+        #endregion
+        
         #region Singleton
         
         public static TargetFrame Instance { get; private set; }
@@ -118,7 +125,7 @@ namespace MMORPG.UI
             // Set level
             if (levelText != null)
             {
-                if (level < 1 || level > 100)
+                if (level < MIN_LEVEL || level > MAX_LEVEL)
                 {
                     levelText.text = "??";
                     levelText.color = levelSkull;

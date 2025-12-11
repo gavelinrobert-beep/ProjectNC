@@ -16,6 +16,12 @@ namespace MMORPG.Network
     /// </summary>
     public class WebSocketClient : MonoBehaviour
     {
+        #region Constants
+        
+        private const int LOG_MESSAGE_TRUNCATE_LENGTH = 100;
+        
+        #endregion
+        
         #region Events
         
         /// <summary>Fired when connection is established.</summary>
@@ -202,7 +208,7 @@ namespace MMORPG.Network
                 // Production code:
                 // webSocket?.SendText(message);
                 
-                Debug.Log($"WebSocket: Sent message - {message.Substring(0, Math.Min(100, message.Length))}...");
+                Debug.Log($"WebSocket: Sent message - {message.Substring(0, Math.Min(LOG_MESSAGE_TRUNCATE_LENGTH, message.Length))}...");
             }
             catch (Exception ex)
             {

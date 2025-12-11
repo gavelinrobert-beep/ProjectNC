@@ -173,7 +173,9 @@ namespace MMORPG.World
             Vector3 position = new Vector3(data.x, data.y, data.z);
             GameObject entity = Instantiate(prefab, position, Quaternion.identity, entityContainer);
             
-            entity.name = $"{data.type}_{data.name}_{data.entityId.Substring(0, 8)}";
+            // Use short ID if available, otherwise use full ID
+            string shortId = data.entityId.Length >= 8 ? data.entityId.Substring(0, 8) : data.entityId;
+            entity.name = $"{data.type}_{data.name}_{shortId}";
             
             // Setup RemoteCharacter component
             RemoteCharacter remoteChar = entity.GetComponent<RemoteCharacter>();

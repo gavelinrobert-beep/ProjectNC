@@ -399,7 +399,10 @@ namespace MMORPG.UI
         
         private void OnChannelChanged(int index)
         {
-            if (index >= 0 && index < channels.Count - 1) // -1 to exclude SYSTEM
+            // SYSTEM channel is the last channel in the list and is receive-only,
+            // so users cannot select it for sending messages. We exclude it by
+            // checking index < channels.Count - 1.
+            if (index >= 0 && index < channels.Count - 1)
             {
                 currentChannel = channels[index].name;
             }
