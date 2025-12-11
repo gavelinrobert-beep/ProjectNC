@@ -7,6 +7,8 @@
     "packages/*"
   ],
   "scripts": {
+    "setup": "bash setup.sh",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File setup.ps1",
     "dev:api": "cd packages/api && npm run start:dev",
     "dev:frontend": "cd packages/frontend && npm run dev",
     "dev:gameserver": "cd packages/gameserver && go run cmd/server/main.go",
@@ -15,7 +17,8 @@
     "build:gameserver": "cd packages/gameserver && go build -o gameserver cmd/server/main.go",
     "install:all": "npm install && cd packages/api && npm install && cd ../frontend && npm install && cd ../shared && npm install",
     "prisma:migrate": "cd packages/api && npx prisma migrate dev",
-    "prisma:generate": "cd packages/api && npx prisma generate"
+    "prisma:generate": "cd packages/api && npx prisma generate",
+    "prisma:studio": "cd packages/api && npx prisma studio"
   },
   "keywords": [
     "mmorpg",

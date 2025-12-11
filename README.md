@@ -41,61 +41,97 @@ This project uses a **monorepo structure** with multiple specialized services:
 
 ## 🚀 Quick Start
 
+> **💡 New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for the fastest way to get up and running!
+
 ### Prerequisites
 - Node.js 18+ and npm
 - Go 1.21+
 - PostgreSQL 15+
 - Docker (optional, for containerized deployment)
 
-### Installation
+### Automated Setup (Recommended)
+
+**For Linux/Mac:**
+```bash
+npm run setup
+```
+
+**For Windows:**
+```powershell
+npm run setup:windows
+```
+
+This will:
+- Install all dependencies for all packages
+- Set up the API environment file
+- Generate Prisma client
+- Provide next steps for database configuration
+
+After running setup, you need to:
+1. **Configure the database** - Edit `packages/api/.env` with your PostgreSQL connection string
+2. **Run migrations** - `npm run prisma:migrate`
+3. **Start services** - See "Starting the Services" section below
+
+### Manual Installation
+
+If you prefer to set up manually or need more control:
 
 1. **Install dependencies for all packages:**
 ```bash
-# API Backend
-cd packages/api
-npm install
+# From root directory
+npm run install:all
 
-# Frontend
-cd ../frontend
-npm install
-
-# Shared
-cd ../shared
-npm install
-
-# Game Server (Go)
-cd ../gameserver
-go mod download
+# Or manually for each package:
+cd packages/api && npm install
+cd ../frontend && npm install
+cd ../shared && npm install
+cd ../gameserver && go mod download
 ```
 
 2. **Set up the database:**
 ```bash
+# Copy environment file
 cd packages/api
 cp .env.example .env
+
 # Edit .env with your PostgreSQL connection string
+# Example: DATABASE_URL="postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
 
-# Run Prisma migrations
-npx prisma migrate dev
+# Generate Prisma client
 npx prisma generate
+
+# Run Prisma migrations (ensure PostgreSQL is running)
+npx prisma migrate dev
 ```
 
-3. **Start all services:**
+**Important:** All Prisma commands must be run from the `packages/api` directory, or use the npm scripts from the root:
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:studio` - Open Prisma Studio
 
+### Starting the Services
+
+You need **3 terminal windows** (one for each service):
+
+**Terminal 1 - API Backend:**
 ```bash
-# Terminal 1: API Backend
-cd packages/api
-npm run start:dev
-
-# Terminal 2: Game Server
-cd packages/gameserver
-go run cmd/server/main.go
-
-# Terminal 3: Frontend
-cd packages/frontend
-npm run dev
+npm run dev:api
+# Runs on http://localhost:4000
 ```
 
-4. **Access the game:**
+**Terminal 2 - Game Server:**
+```bash
+npm run dev:gameserver
+# Runs on ws://localhost:8080
+```
+
+**Terminal 3 - Frontend:**
+```bash
+npm run dev:frontend
+# Runs on http://localhost:3000
+```
+
+### Access the Application
 - Frontend: http://localhost:3000
 - API Docs: http://localhost:4000/api
 - Game Server: ws://localhost:8080
@@ -236,10 +272,27 @@ go test ./...
 
 ### Database Migrations
 ```bash
+# From root directory (recommended)
+npm run prisma:migrate
+
+# Or from packages/api directory
 cd packages/api
 npx prisma migrate dev --name description_of_change
 npx prisma generate
 ```
+
+## 🛠️ Troubleshooting
+
+Having issues getting started? Check these resources:
+
+- **[QUICKSTART.md](./QUICKSTART.md)** - Fast setup guide
+- **[SETUP.md](./SETUP.md)** - Detailed setup instructions  
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common problems and solutions
+
+**Common Issues:**
+- "Could not find Prisma Schema" → Use `npm run prisma:generate` from root
+- ".env.example not found" → File is in `packages/api/.env.example`
+- "Port already in use" → Kill existing processes on ports 3000, 4000, 8080
 
 ## 🛣️ Roadmap
 
