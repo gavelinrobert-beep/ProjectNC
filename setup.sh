@@ -45,6 +45,11 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 NODE_VERSION=$(node -v)
+NODE_MAJOR=$(echo $NODE_VERSION | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$NODE_MAJOR" -lt 18 ]; then
+    print_error "Node.js version $NODE_VERSION is too old. Please install Node.js 18+ (found v$NODE_MAJOR)."
+    exit 1
+fi
 print_success "Node.js found: $NODE_VERSION"
 
 # Check npm
@@ -81,6 +86,10 @@ print_success "Root dependencies installed"
 
 # Step 2: Install API dependencies
 print_step "Installing API package dependencies..."
+if [ ! -d "packages/api" ]; then
+    print_error "packages/api directory not found. Are you in the correct directory?"
+    exit 1
+fi
 cd packages/api
 npm install
 print_success "API dependencies installed"
@@ -105,25 +114,40 @@ cd ../..
 
 # Step 5: Install Frontend dependencies
 print_step "Installing Frontend package dependencies..."
-cd packages/frontend
-npm install
-print_success "Frontend dependencies installed"
-cd ../..
+if [ ! -d "packages/frontend" ]; then
+    print_warning "packages/frontend directory not found, skipping frontend setup"
+else
+    cd packages/frontend
+    npm install
+    print_success "Frontend dependencies installed"
+    cd ../..
+fi
 
 # Step 6: Install Shared dependencies
 print_step "Installing Shared package dependencies..."
-cd packages/shared
-npm install
-print_success "Shared dependencies installed"
-cd ../..
+if [ ! -d "packages/shared" ]; then
+    print_warning "packages/shared directory not found, skipping shared setup"
+else
+    cd packages/shared
+    npm install
+    print_success "Shared dependencies installed"
+    cd ../..
+fi
 
 # Step 7: Install Game Server dependencies (if Go is available)
 if [ "$GO_INSTALLED" = true ]; then
-    print_step "Installing Game Server dependencies..."
-    cd packages/gameserver
-    go mod download
-    print_success "Game Server dependencies installed"
-    cd ../..
+    if [ ! -d "packages/gameserver" ]; then
+        print_warning "packages/gameserver directory not found, skipping game server setup"
+    else
+        print_step "Installing Game Server dependencies..."
+        cd packages/gameserver
+        if go mod download; then
+            print_success "Game Server dependencies installed"
+        else
+            print_warning "Failed to download Game Server dependencies. You may need to install them manually."
+        fi
+        cd ../..
+    fi
 fi
 
 # Final instructions

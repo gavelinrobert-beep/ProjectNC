@@ -40,6 +40,11 @@ Print-Step "Checking prerequisites..."
 # Check Node.js
 try {
     $nodeVersion = node --version
+    $nodeMajor = [int]($nodeVersion -replace 'v', '' -split '\.')[0]
+    if ($nodeMajor -lt 18) {
+        Print-Error "Node.js version $nodeVersion is too old. Please install Node.js 18+ (found v$nodeMajor)."
+        exit 1
+    }
     Print-Success "Node.js found: $nodeVersion"
 } catch {
     Print-Error "Node.js is not installed. Please install Node.js 18+ first."
@@ -82,6 +87,10 @@ Print-Success "Root dependencies installed"
 
 # Step 2: Install API dependencies
 Print-Step "Installing API package dependencies..."
+if (!(Test-Path "packages\api")) {
+    Print-Error "packages\api directory not found. Are you in the correct directory?"
+    exit 1
+}
 Set-Location packages\api
 npm install
 Print-Success "API dependencies installed"
@@ -106,25 +115,41 @@ Set-Location ..\..
 
 # Step 5: Install Frontend dependencies
 Print-Step "Installing Frontend package dependencies..."
-Set-Location packages\frontend
-npm install
-Print-Success "Frontend dependencies installed"
-Set-Location ..\..
+if (!(Test-Path "packages\frontend")) {
+    Print-Warning "packages\frontend directory not found, skipping frontend setup"
+} else {
+    Set-Location packages\frontend
+    npm install
+    Print-Success "Frontend dependencies installed"
+    Set-Location ..\..
+}
 
 # Step 6: Install Shared dependencies
 Print-Step "Installing Shared package dependencies..."
-Set-Location packages\shared
-npm install
-Print-Success "Shared dependencies installed"
-Set-Location ..\..
+if (!(Test-Path "packages\shared")) {
+    Print-Warning "packages\shared directory not found, skipping shared setup"
+} else {
+    Set-Location packages\shared
+    npm install
+    Print-Success "Shared dependencies installed"
+    Set-Location ..\..
+}
 
 # Step 7: Install Game Server dependencies (if Go is available)
 if ($goInstalled) {
-    Print-Step "Installing Game Server dependencies..."
-    Set-Location packages\gameserver
-    go mod download
-    Print-Success "Game Server dependencies installed"
-    Set-Location ..\..
+    if (!(Test-Path "packages\gameserver")) {
+        Print-Warning "packages\gameserver directory not found, skipping game server setup"
+    } else {
+        Print-Step "Installing Game Server dependencies..."
+        Set-Location packages\gameserver
+        try {
+            go mod download
+            Print-Success "Game Server dependencies installed"
+        } catch {
+            Print-Warning "Failed to download Game Server dependencies. You may need to install them manually."
+        }
+        Set-Location ..\..
+    }
 }
 
 # Final instructions
