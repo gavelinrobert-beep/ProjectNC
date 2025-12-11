@@ -41,6 +41,8 @@ This project uses a **monorepo structure** with multiple specialized services:
 
 ## 🚀 Quick Start
 
+> **💡 New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for the fastest way to get up and running!
+
 ### Prerequisites
 - Node.js 18+ and npm
 - Go 1.21+
@@ -270,10 +272,27 @@ go test ./...
 
 ### Database Migrations
 ```bash
+# From root directory (recommended)
+npm run prisma:migrate
+
+# Or from packages/api directory
 cd packages/api
 npx prisma migrate dev --name description_of_change
 npx prisma generate
 ```
+
+## 🛠️ Troubleshooting
+
+Having issues getting started? Check these resources:
+
+- **[QUICKSTART.md](./QUICKSTART.md)** - Fast setup guide
+- **[SETUP.md](./SETUP.md)** - Detailed setup instructions  
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common problems and solutions
+
+**Common Issues:**
+- "Could not find Prisma Schema" → Use `npm run prisma:generate` from root
+- ".env.example not found" → File is in `packages/api/.env.example`
+- "Port already in use" → Kill existing processes on ports 3000, 4000, 8080
 
 ## 🛣️ Roadmap
 

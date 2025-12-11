@@ -13,12 +13,52 @@ Before you begin, ensure you have the following installed:
 
 ## Quick Start (Development)
 
+### Automated Setup (Recommended) ⭐
+
+The easiest way to get started:
+
+**For Linux/Mac:**
+```bash
+# Clone the repository
+git clone <repository-url>
+cd ProjectNC
+
+# Run the automated setup script
+npm run setup
+```
+
+**For Windows:**
+```powershell
+# Clone the repository
+git clone <repository-url>
+cd ProjectNC
+
+# Run the automated setup script
+npm run setup:windows
+```
+
+This automated script will:
+1. Check that all prerequisites are installed
+2. Install dependencies for all packages
+3. Create the `.env` file from `.env.example`
+4. Generate the Prisma client
+
+After the automated setup completes, you need to:
+1. **Configure the database** - Edit `packages/api/.env` with your PostgreSQL connection string
+2. **Create the database** - Run `createdb mmorpg` or create it via psql
+3. **Run migrations** - `npm run prisma:migrate`
+4. **Start services** - See "Start All Services" section below
+
+### Manual Setup
+
+If you prefer manual setup or need more control:
+
 ### 1. Clone and Install Dependencies
 
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd SYLON
+cd ProjectNC
 
 # Install root dependencies and all package dependencies
 npm run install:all
