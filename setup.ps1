@@ -1,0 +1,157 @@
+# =============================================================================
+# Fantasy MMORPG - Automated Setup Script (PowerShell)
+# =============================================================================
+# This script automates the initial setup process for the MMORPG project
+# Run this with: .\setup.ps1
+# =============================================================================
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "================================================" -ForegroundColor Cyan
+Write-Host "Fantasy MMORPG - Automated Setup" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Function to print colored output
+function Print-Success {
+    param($Message)
+    Write-Host "✓ $Message" -ForegroundColor Green
+}
+
+function Print-Warning {
+    param($Message)
+    Write-Host "⚠ $Message" -ForegroundColor Yellow
+}
+
+function Print-Error {
+    param($Message)
+    Write-Host "✗ $Message" -ForegroundColor Red
+}
+
+function Print-Step {
+    param($Message)
+    Write-Host ""
+    Write-Host "➜ $Message" -ForegroundColor Yellow
+}
+
+# Check prerequisites
+Print-Step "Checking prerequisites..."
+
+# Check Node.js
+try {
+    $nodeVersion = node --version
+    Print-Success "Node.js found: $nodeVersion"
+} catch {
+    Print-Error "Node.js is not installed. Please install Node.js 18+ first."
+    exit 1
+}
+
+# Check npm
+try {
+    $npmVersion = npm --version
+    Print-Success "npm found: v$npmVersion"
+} catch {
+    Print-Error "npm is not installed. Please install npm first."
+    exit 1
+}
+
+# Check Go
+$goInstalled = $false
+try {
+    $goVersion = go version
+    Print-Success "Go found: $goVersion"
+    $goInstalled = $true
+} catch {
+    Print-Warning "Go is not installed. Game server will not be available."
+    Print-Warning "Please install Go 1.21+ to run the game server."
+}
+
+# Check PostgreSQL
+try {
+    $null = psql --version
+    Print-Success "PostgreSQL client found"
+} catch {
+    Print-Warning "PostgreSQL client (psql) is not found."
+    Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
+}
+
+# Step 1: Install root dependencies
+Print-Step "Installing root dependencies..."
+npm install
+Print-Success "Root dependencies installed"
+
+# Step 2: Install API dependencies
+Print-Step "Installing API package dependencies..."
+Set-Location packages\api
+npm install
+Print-Success "API dependencies installed"
+
+# Step 3: Setup API environment
+Print-Step "Setting up API environment..."
+if (!(Test-Path ".env")) {
+    Copy-Item .env.example .env
+    Print-Success "Created .env file from .env.example"
+    Print-Warning "Please edit packages\api\.env with your PostgreSQL connection string"
+    Print-Warning "Default: postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
+} else {
+    Print-Warning ".env file already exists, skipping copy"
+}
+
+# Step 4: Generate Prisma Client
+Print-Step "Generating Prisma client..."
+npx prisma generate
+Print-Success "Prisma client generated"
+
+Set-Location ..\..
+
+# Step 5: Install Frontend dependencies
+Print-Step "Installing Frontend package dependencies..."
+Set-Location packages\frontend
+npm install
+Print-Success "Frontend dependencies installed"
+Set-Location ..\..
+
+# Step 6: Install Shared dependencies
+Print-Step "Installing Shared package dependencies..."
+Set-Location packages\shared
+npm install
+Print-Success "Shared dependencies installed"
+Set-Location ..\..
+
+# Step 7: Install Game Server dependencies (if Go is available)
+if ($goInstalled) {
+    Print-Step "Installing Game Server dependencies..."
+    Set-Location packages\gameserver
+    go mod download
+    Print-Success "Game Server dependencies installed"
+    Set-Location ..\..
+}
+
+# Final instructions
+Write-Host ""
+Write-Host "================================================" -ForegroundColor Cyan
+Print-Success "Setup completed successfully!"
+Write-Host "================================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Next steps:"
+Write-Host ""
+Write-Host "1. Configure your database:"
+Write-Host "   - Ensure PostgreSQL is running"
+Write-Host "   - Edit packages\api\.env with your database connection string"
+Write-Host "   - Default: postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
+Write-Host ""
+Write-Host "2. Run database migrations:"
+Write-Host "   npm run prisma:migrate"
+Write-Host ""
+Write-Host "3. Start the services (in 3 separate terminals):"
+Write-Host "   Terminal 1: npm run dev:api"
+Write-Host "   Terminal 2: npm run dev:frontend"
+Write-Host "   Terminal 3: npm run dev:gameserver"
+Write-Host ""
+Write-Host "4. Access the application:"
+Write-Host "   - Frontend: http://localhost:3000"
+Write-Host "   - API: http://localhost:4000/api"
+Write-Host "   - Game Server: ws://localhost:8080"
+Write-Host ""
+Write-Host "For more details, see README.md and SETUP.md"
+Write-Host ""
