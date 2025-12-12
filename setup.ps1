@@ -105,8 +105,7 @@ try {
                 if (Test-Path "$pgPath\psql.exe") {
                     Print-Success "Found PostgreSQL at: $pgPath"
                     # Only add to PATH if not already present (check for exact match with separators)
-                    $pathSeparator = ";"
-                    $pathEntries = $env:PATH -split $pathSeparator
+                    $pathEntries = $env:PATH -split ";"
                     $pathExists = $pathEntries | Where-Object { $_ -eq $pgPath }
                     
                     if (-not $pathExists) {
