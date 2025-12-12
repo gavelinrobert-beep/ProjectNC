@@ -72,12 +72,64 @@ try {
 }
 
 # Check PostgreSQL
+$pgInstalled = $false
 try {
     $null = psql --version
     Print-Success "PostgreSQL client found"
+    $pgInstalled = $true
 } catch {
-    Print-Warning "PostgreSQL client (psql) is not found."
-    Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
+    Print-Warning "PostgreSQL client (psql) is not found in PATH."
+    Print-Warning "Attempting to locate PostgreSQL installation..."
+    
+    # Search for PostgreSQL installations dynamically
+    $pgFound = $false
+    $searchPaths = @(
+        "C:\Program Files\PostgreSQL",
+        "C:\Program Files (x86)\PostgreSQL"
+    )
+    
+    foreach ($searchPath in $searchPaths) {
+        if (Test-Path $searchPath) {
+            # Get all version directories, sorted by version number (newest first)
+            $versionDirs = Get-ChildItem -Path $searchPath -Directory | Sort-Object { 
+                # Try to parse as numeric version for proper sorting
+                if ($_.Name -match '^\d+') {
+                    [int]$_.Name
+                } else {
+                    0
+                }
+            } -Descending
+            
+            foreach ($versionDir in $versionDirs) {
+                $pgPath = Join-Path $versionDir.FullName "bin"
+                if (Test-Path "$pgPath\psql.exe") {
+                    Print-Success "Found PostgreSQL at: $pgPath"
+                    # Only add to PATH if not already present (check for exact match with separators)
+                    $pathEntries = $env:PATH -split ";"
+                    $pathExists = $pathEntries | Where-Object { $_ -eq $pgPath }
+                    
+                    if (-not $pathExists) {
+                        $env:PATH += ";$pgPath"
+                        Print-Success "Added PostgreSQL to PATH for this session"
+                    } else {
+                        Print-Success "PostgreSQL is already in PATH"
+                    }
+                    $pgFound = $true
+                    $pgInstalled = $true
+                    break
+                }
+            }
+            if ($pgFound) { break }
+        }
+    }
+    
+    if (-not $pgFound) {
+        Print-Warning "PostgreSQL installation not found in common locations."
+        Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
+        Print-Warning "You may need to manually add PostgreSQL bin directory to your PATH:"
+        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\<VERSION>\bin"'
+        Print-Warning "  (Replace <VERSION> with your PostgreSQL version number, e.g., 15, 16)"
+    }
 }
 
 # Step 1: Install root dependencies
@@ -162,6 +214,9 @@ Write-Host "Next steps:"
 Write-Host ""
 Write-Host "1. Configure your database:"
 Write-Host "   - Ensure PostgreSQL is running"
+Write-Host "   - Create the database (if it doesn't exist):"
+Write-Host "     createdb mmorpg"
+Write-Host "     OR via psql: CREATE DATABASE mmorpg;"
 Write-Host "   - Edit packages\api\.env with your database connection string"
 Write-Host "   - Default: postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
 Write-Host ""
