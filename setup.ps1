@@ -81,32 +81,34 @@ try {
     Print-Warning "PostgreSQL client (psql) is not found in PATH."
     Print-Warning "Attempting to locate PostgreSQL installation..."
     
-    # Common PostgreSQL installation paths on Windows
-    $pgPaths = @(
-        "C:\Program Files\PostgreSQL\16\bin",
-        "C:\Program Files\PostgreSQL\15\bin",
-        "C:\Program Files\PostgreSQL\14\bin",
-        "C:\Program Files\PostgreSQL\13\bin",
-        "C:\Program Files (x86)\PostgreSQL\16\bin",
-        "C:\Program Files (x86)\PostgreSQL\15\bin",
-        "C:\Program Files (x86)\PostgreSQL\14\bin",
-        "C:\Program Files (x86)\PostgreSQL\13\bin"
+    # Search for PostgreSQL installations dynamically
+    $pgFound = $false
+    $searchPaths = @(
+        "C:\Program Files\PostgreSQL",
+        "C:\Program Files (x86)\PostgreSQL"
     )
     
-    $pgFound = $false
-    foreach ($pgPath in $pgPaths) {
-        if (Test-Path "$pgPath\psql.exe") {
-            Print-Success "Found PostgreSQL at: $pgPath"
-            # Only add to PATH if not already present
-            if ($env:PATH -notlike "*$pgPath*") {
-                $env:PATH += ";$pgPath"
-                Print-Success "Added PostgreSQL to PATH for this session"
-            } else {
-                Print-Success "PostgreSQL is already in PATH"
+    foreach ($searchPath in $searchPaths) {
+        if (Test-Path $searchPath) {
+            # Get all version directories, sorted by version number (newest first)
+            $versionDirs = Get-ChildItem -Path $searchPath -Directory | Sort-Object Name -Descending
+            foreach ($versionDir in $versionDirs) {
+                $pgPath = Join-Path $versionDir.FullName "bin"
+                if (Test-Path "$pgPath\psql.exe") {
+                    Print-Success "Found PostgreSQL at: $pgPath"
+                    # Only add to PATH if not already present
+                    if ($env:PATH -notlike "*$pgPath*") {
+                        $env:PATH += ";$pgPath"
+                        Print-Success "Added PostgreSQL to PATH for this session"
+                    } else {
+                        Print-Success "PostgreSQL is already in PATH"
+                    }
+                    $pgFound = $true
+                    $pgInstalled = $true
+                    break
+                }
             }
-            $pgFound = $true
-            $pgInstalled = $true
-            break
+            if ($pgFound) { break }
         }
     }
     
@@ -114,8 +116,8 @@ try {
         Print-Warning "PostgreSQL installation not found in common locations."
         Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
         Print-Warning "You may need to manually add PostgreSQL bin directory to your PATH:"
-        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\{version}\bin"'
-        Print-Warning "  (Replace {version} with your PostgreSQL version number, e.g., 15, 16)"
+        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\<VERSION>\bin"'
+        Print-Warning "  (Replace <VERSION> with your PostgreSQL version number, e.g., 15, 16)"
     }
 }
 
