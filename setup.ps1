@@ -72,12 +72,45 @@ try {
 }
 
 # Check PostgreSQL
+$pgInstalled = $false
 try {
     $null = psql --version
     Print-Success "PostgreSQL client found"
+    $pgInstalled = $true
 } catch {
-    Print-Warning "PostgreSQL client (psql) is not found."
-    Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
+    Print-Warning "PostgreSQL client (psql) is not found in PATH."
+    Print-Warning "Attempting to locate PostgreSQL installation..."
+    
+    # Common PostgreSQL installation paths on Windows
+    $pgPaths = @(
+        "C:\Program Files\PostgreSQL\16\bin",
+        "C:\Program Files\PostgreSQL\15\bin",
+        "C:\Program Files\PostgreSQL\14\bin",
+        "C:\Program Files\PostgreSQL\13\bin",
+        "C:\Program Files (x86)\PostgreSQL\16\bin",
+        "C:\Program Files (x86)\PostgreSQL\15\bin",
+        "C:\Program Files (x86)\PostgreSQL\14\bin",
+        "C:\Program Files (x86)\PostgreSQL\13\bin"
+    )
+    
+    $pgFound = $false
+    foreach ($pgPath in $pgPaths) {
+        if (Test-Path "$pgPath\psql.exe") {
+            Print-Success "Found PostgreSQL at: $pgPath"
+            $env:PATH += ";$pgPath"
+            Print-Success "Added PostgreSQL to PATH for this session"
+            $pgFound = $true
+            $pgInstalled = $true
+            break
+        }
+    }
+    
+    if (-not $pgFound) {
+        Print-Warning "PostgreSQL installation not found in common locations."
+        Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
+        Print-Warning "You may need to manually add PostgreSQL bin directory to your PATH:"
+        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\15\bin"'
+    }
 }
 
 # Step 1: Install root dependencies
@@ -162,6 +195,9 @@ Write-Host "Next steps:"
 Write-Host ""
 Write-Host "1. Configure your database:"
 Write-Host "   - Ensure PostgreSQL is running"
+Write-Host "   - Create the database (if it doesn't exist):"
+Write-Host "     createdb mmorpg"
+Write-Host "     OR via psql: CREATE DATABASE mmorpg;"
 Write-Host "   - Edit packages\api\.env with your database connection string"
 Write-Host "   - Default: postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
 Write-Host ""
