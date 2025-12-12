@@ -91,13 +91,25 @@ try {
     foreach ($searchPath in $searchPaths) {
         if (Test-Path $searchPath) {
             # Get all version directories, sorted by version number (newest first)
-            $versionDirs = Get-ChildItem -Path $searchPath -Directory | Sort-Object Name -Descending
+            $versionDirs = Get-ChildItem -Path $searchPath -Directory | Sort-Object { 
+                # Try to parse as numeric version for proper sorting
+                if ($_.Name -match '^\d+') {
+                    [int]$_.Name
+                } else {
+                    0
+                }
+            } -Descending
+            
             foreach ($versionDir in $versionDirs) {
                 $pgPath = Join-Path $versionDir.FullName "bin"
                 if (Test-Path "$pgPath\psql.exe") {
                     Print-Success "Found PostgreSQL at: $pgPath"
-                    # Only add to PATH if not already present
-                    if ($env:PATH -notlike "*$pgPath*") {
+                    # Only add to PATH if not already present (check for exact match with separators)
+                    $pathSeparator = ";"
+                    $pathEntries = $env:PATH -split $pathSeparator
+                    $pathExists = $pathEntries | Where-Object { $_ -eq $pgPath }
+                    
+                    if (-not $pathExists) {
                         $env:PATH += ";$pgPath"
                         Print-Success "Added PostgreSQL to PATH for this session"
                     } else {
