@@ -97,8 +97,13 @@ try {
     foreach ($pgPath in $pgPaths) {
         if (Test-Path "$pgPath\psql.exe") {
             Print-Success "Found PostgreSQL at: $pgPath"
-            $env:PATH += ";$pgPath"
-            Print-Success "Added PostgreSQL to PATH for this session"
+            # Only add to PATH if not already present
+            if ($env:PATH -notlike "*$pgPath*") {
+                $env:PATH += ";$pgPath"
+                Print-Success "Added PostgreSQL to PATH for this session"
+            } else {
+                Print-Success "PostgreSQL is already in PATH"
+            }
             $pgFound = $true
             $pgInstalled = $true
             break
@@ -109,7 +114,8 @@ try {
         Print-Warning "PostgreSQL installation not found in common locations."
         Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
         Print-Warning "You may need to manually add PostgreSQL bin directory to your PATH:"
-        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\15\bin"'
+        Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\{version}\bin"'
+        Print-Warning "  (Replace {version} with your PostgreSQL version number, e.g., 15, 16)"
     }
 }
 
