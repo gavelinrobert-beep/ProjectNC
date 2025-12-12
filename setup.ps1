@@ -128,7 +128,7 @@ try {
         Print-Warning "Please ensure PostgreSQL 15+ is installed and running."
         Print-Warning "You may need to manually add PostgreSQL bin directory to your PATH:"
         Print-Warning '  $env:PATH += ";C:\Program Files\PostgreSQL\<VERSION>\bin"'
-        Print-Warning "  (Replace <VERSION> with your PostgreSQL version number, e.g., 15, 16)"
+        Print-Warning '  (Replace <VERSION> with your PostgreSQL version number, e.g., 15, 16)'
     }
 }
 
@@ -214,7 +214,7 @@ Write-Host "Next steps:"
 Write-Host ""
 Write-Host "1. Configure your database:"
 Write-Host "   - Ensure PostgreSQL is running"
-Write-Host "   - Create the database (if it doesn't exist):"
+Write-Host "   - Create the database (if it does not exist):"
 Write-Host "     createdb mmorpg"
 Write-Host "     OR via psql: CREATE DATABASE mmorpg;"
 Write-Host "   - Edit packages\api\.env with your database connection string"
