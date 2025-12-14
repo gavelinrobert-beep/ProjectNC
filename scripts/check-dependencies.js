@@ -36,8 +36,13 @@ function checkDirectory(dirPath, packageName) {
   const localNodeModules = path.join(dirPath, 'node_modules');
   const rootNodeModules = path.join(__dirname, '..', 'node_modules');
   
-  // Check both local node_modules (traditional) and root node_modules (workspaces)
-  if (!fs.existsSync(localNodeModules) && !fs.existsSync(rootNodeModules)) {
+  // Check if either node_modules directory exists and has content
+  const hasLocalModules = fs.existsSync(localNodeModules) && 
+    fs.readdirSync(localNodeModules).length > 0;
+  const hasRootModules = fs.existsSync(rootNodeModules) && 
+    fs.readdirSync(rootNodeModules).length > 0;
+  
+  if (!hasLocalModules && !hasRootModules) {
     return { exists: false, message: `${packageName} dependencies not installed` };
   }
   return { exists: true, message: `${packageName} dependencies found` };
