@@ -33,21 +33,33 @@ function printInfo(message) {
 }
 
 function checkDirectory(dirPath, packageName) {
-  const nodeModulesPath = path.join(dirPath, 'node_modules');
-  if (!fs.existsSync(nodeModulesPath)) {
+  const localNodeModules = path.join(dirPath, 'node_modules');
+  const rootNodeModules = path.join(__dirname, '..', 'node_modules');
+  
+  // Check both local node_modules (traditional) and root node_modules (workspaces)
+  if (!fs.existsSync(localNodeModules) && !fs.existsSync(rootNodeModules)) {
     return { exists: false, message: `${packageName} dependencies not installed` };
   }
   return { exists: true, message: `${packageName} dependencies found` };
 }
 
 function checkNestCLI() {
-  const apiNodeModules = path.join(__dirname, '..', 'packages', 'api', 'node_modules');
-  const nestCliPath = path.join(apiNodeModules, '.bin', 'nest');
-  const nestCliPathWindows = path.join(apiNodeModules, '.bin', 'nest.cmd');
+  const rootDir = path.join(__dirname, '..');
   
-  if (fs.existsSync(nestCliPath) || fs.existsSync(nestCliPathWindows)) {
-    return { exists: true, message: 'NestJS CLI found' };
+  // Check for nest CLI in both package-level and root node_modules (for workspaces)
+  const locations = [
+    path.join(rootDir, 'packages', 'api', 'node_modules', '.bin', 'nest'),
+    path.join(rootDir, 'packages', 'api', 'node_modules', '.bin', 'nest.cmd'),
+    path.join(rootDir, 'node_modules', '.bin', 'nest'),
+    path.join(rootDir, 'node_modules', '.bin', 'nest.cmd'),
+  ];
+  
+  for (const location of locations) {
+    if (fs.existsSync(location)) {
+      return { exists: true, message: 'NestJS CLI found' };
+    }
   }
+  
   return { exists: false, message: 'NestJS CLI not found' };
 }
 
