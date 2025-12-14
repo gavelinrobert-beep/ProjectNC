@@ -335,6 +335,7 @@ npx prisma generate
 Having issues getting started? Check these resources:
 
 - **[QUICKSTART.md](./QUICKSTART.md)** - Fast setup guide
+- **[DOCKER.md](./DOCKER.md)** - Docker database setup guide
 - **[SETUP.md](./SETUP.md)** - Detailed setup instructions  
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common problems and solutions
 
@@ -342,6 +343,7 @@ Having issues getting started? Check these resources:
 - "Could not find Prisma Schema" → Use `npm run prisma:generate` from root
 - ".env.example not found" → File is in `packages/api/.env.example`
 - "Port already in use" → Kill existing processes on ports 3000, 4000, 8080
+- "Database connection failed" → Run `npm run docker:db:start` to start PostgreSQL
 
 ## 🛣️ Roadmap
 

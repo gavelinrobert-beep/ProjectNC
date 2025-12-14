@@ -155,6 +155,7 @@ For more troubleshooting, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 ## 📖 More Documentation
 
 - [README.md](./README.md) - Project overview and architecture
+- [DOCKER.md](./DOCKER.md) - Docker database setup guide
 - [SETUP.md](./SETUP.md) - Detailed setup instructions
 - [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
 
