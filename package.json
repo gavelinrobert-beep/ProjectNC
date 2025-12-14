@@ -21,11 +21,11 @@
     "prisma:migrate": "npm run prisma:migrate --prefix packages/api",
     "prisma:generate": "npm run prisma:generate --prefix packages/api",
     "prisma:studio": "npm run prisma:studio --prefix packages/api",
-    "docker:db:start": "docker-compose up -d postgres",
-    "docker:db:stop": "docker-compose stop postgres",
-    "docker:db:restart": "docker-compose restart postgres",
-    "docker:db:logs": "docker-compose logs -f postgres",
-    "docker:db:reset": "docker-compose down -v && docker-compose up -d postgres"
+    "docker:db:start": "docker compose up -d postgres",
+    "docker:db:stop": "docker compose stop postgres",
+    "docker:db:restart": "docker compose restart postgres",
+    "docker:db:logs": "docker compose logs -f postgres",
+    "docker:db:reset": "docker compose down -v && docker compose up -d postgres"
   },
   "keywords": [
     "mmorpg",

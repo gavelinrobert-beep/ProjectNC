@@ -328,15 +328,26 @@ docker-compose: command not found
 
 **Solution:**
 
-Docker Desktop includes Docker Compose. If using Linux and installed Docker Engine separately:
+Docker Desktop includes Docker Compose v2. The npm scripts use the newer `docker compose` command (without hyphen).
+
+If you have an older Docker installation with only `docker-compose` (with hyphen), you can either:
+
+**Option 1 (Recommended):** Update to Docker Desktop or Docker Compose v2
+- Docker Desktop: https://www.docker.com/products/docker-desktop/
+
+**Option 2:** Use `docker-compose` directly (for older Docker versions):
 ```bash
-# Install Docker Compose
+# Instead of npm run docker:db:start, use:
+docker-compose up -d postgres
+
+# Instead of npm run docker:db:stop, use:
+docker-compose stop postgres
+```
+
+**Option 3 (Linux):** Install Docker Compose plugin:
+```bash
 sudo apt-get update
 sudo apt-get install docker-compose-plugin
-
-# Or use the standalone binary
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ### Permission Denied (Linux)
