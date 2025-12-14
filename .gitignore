@@ -26,6 +26,16 @@ out/
 *.egg-info/
 .eggs/
 
+# TypeScript
+*.tsbuildinfo
+packages/shared/src/**/*.js
+packages/shared/src/**/*.d.ts
+packages/shared/src/**/*.js.map
+!packages/shared/src/**/*.spec.js
+
+# Package lockfiles (keep only root lockfile for workspaces)
+packages/*/package-lock.json
+
 # Environment
 .env
 .env.local
