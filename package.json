@@ -9,7 +9,9 @@
   "scripts": {
     "setup": "bash setup.sh",
     "setup:windows": "powershell -ExecutionPolicy Bypass -File setup.ps1",
+    "predev:api": "node scripts/check-dependencies.js api",
     "dev:api": "npm run start:dev --prefix packages/api",
+    "predev:frontend": "node scripts/check-dependencies.js frontend",
     "dev:frontend": "npm run dev --prefix packages/frontend",
     "dev:gameserver": "node scripts/run-gameserver.js",
     "build:api": "npm run build --prefix packages/api",
