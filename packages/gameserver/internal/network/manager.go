@@ -21,7 +21,7 @@ var upgrader = websocket.Upgrader{
 
 // Manager handles all network connections and message routing
 type Manager struct {
-	world         *World
+	world         *world.World
 	combatManager *combat.CombatManager
 	
 	mu      sync.RWMutex

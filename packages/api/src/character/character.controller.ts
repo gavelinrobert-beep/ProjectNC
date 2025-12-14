@@ -16,7 +16,7 @@ export class CharacterController {
    * Get all characters for the authenticated user
    */
   @Get()
-  async getCharacters(@Request() req) {
+  async getCharacters(@Request() req: any) {
     return this.characterService.getCharactersByAccount(req.user.id);
   }
 
@@ -25,7 +25,7 @@ export class CharacterController {
    * Get a specific character by ID
    */
   @Get(':id')
-  async getCharacter(@Param('id') id: string, @Request() req) {
+  async getCharacter(@Param('id') id: string, @Request() req: any) {
     return this.characterService.getCharacterById(id, req.user.id);
   }
 
@@ -34,7 +34,7 @@ export class CharacterController {
    * Create a new character
    */
   @Post()
-  async createCharacter(@Body() dto: CreateCharacterDto, @Request() req) {
+  async createCharacter(@Body() dto: CreateCharacterDto, @Request() req: any) {
     return this.characterService.createCharacter(req.user.id, dto);
   }
 
@@ -43,7 +43,7 @@ export class CharacterController {
    * Delete a character
    */
   @Delete(':id')
-  async deleteCharacter(@Param('id') id: string, @Request() req) {
+  async deleteCharacter(@Param('id') id: string, @Request() req: any) {
     return this.characterService.deleteCharacter(id, req.user.id);
   }
 }
