@@ -18,6 +18,7 @@
     "build:frontend": "npm run build --prefix packages/frontend",
     "build:gameserver": "node scripts/build-gameserver.js",
     "install:all": "npm install && npm install --prefix packages/api && npm install --prefix packages/frontend && npm install --prefix packages/shared",
+    "preprisma:migrate": "node scripts/check-database-ready.js",
     "prisma:migrate": "npm run prisma:migrate --prefix packages/api",
     "prisma:generate": "npm run prisma:generate --prefix packages/api",
     "prisma:studio": "npm run prisma:studio --prefix packages/api",

@@ -2,6 +2,24 @@
 
 Common issues and solutions for setting up and running the Fantasy MMORPG.
 
+## 🚨 Most Common Issues
+
+If you're experiencing one of these common problems, jump directly to the solution:
+
+1. **[Authentication failed against database server](#authentication-error)** - "P1000: Authentication failed"
+   - **Quick Fix**: Ensure `.env` file exists in `packages/api/` AND database is running
+   
+2. **[Database does not exist](#database-does-not-exist)** - "P1003: Database `mmorpg` does not exist"
+   - **Quick Fix**: Run `npm run docker:db:start` to start the database
+
+3. **[Can't reach database server](#connection-error-cant-reach-database-server)** - "P1001: Can't reach database server"
+   - **Quick Fix**: Start PostgreSQL with `npm run docker:db:start`
+
+4. **[Could not find Prisma Schema](#error-could-not-find-prisma-schema)** - Schema not found
+   - **Quick Fix**: Use `npm run prisma:migrate` from root directory
+
+---
+
 ## ✅ Windows Compatibility Update
 
 **Good news for Windows users!** The project npm scripts have been updated to be fully cross-platform compatible. You can now use all `npm run` commands (like `npm run dev:api`, `npm run dev:frontend`, `npm run dev:gameserver`) directly in Windows Command Prompt or PowerShell without any issues.
@@ -200,24 +218,82 @@ npm run docker:db:logs
 
 **Error Message:**
 ```
-Error: P1000: Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+Error: P1000: Authentication failed against database server at `localhost`, 
+the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
 ```
 
-**Solution:**
+**This is one of the MOST COMMON errors when setting up the project!**
 
-**If using Docker:**
-The Docker setup uses default credentials that match `.env.example`. Make sure:
-1. You copied `.env.example` to `.env` in `packages/api/`
-2. The Docker container is running: `docker ps`
-3. Restart the container if needed: `npm run docker:db:restart`
+**Root Causes:**
+1. Missing `.env` file in `packages/api/` directory
+2. Database container/service not running
+3. Incorrect database credentials (less common)
+
+**Solution Steps:**
+
+**Step 1: Check if .env file exists**
+```bash
+# Check if the file exists
+ls packages/api/.env
+
+# If not found, create it:
+cd packages/api
+cp .env.example .env
+```
+
+**Step 2: Start the database**
+
+**If using Docker (recommended):**
+```bash
+# Start the PostgreSQL container
+npm run docker:db:start
+
+# Verify it's running
+docker ps
+
+# You should see "mmorpg-postgres" in the output
+# Wait 5-10 seconds for the database to fully initialize
+```
 
 **If using local PostgreSQL:**
-Check your PostgreSQL credentials in `packages/api/.env`:
-```
-DATABASE_URL="postgresql://USERNAME:PASSWORD@localhost:5432/mmorpg?schema=public"
+```bash
+# Check if PostgreSQL is running
+pg_isready -h localhost -p 5432
+
+# If not running:
+# macOS: brew services start postgresql
+# Linux: sudo systemctl start postgresql
+# Windows: Check Services app for "postgresql" service
 ```
 
-Replace `USERNAME` and `PASSWORD` with your actual PostgreSQL credentials.
+**Step 3: Verify the setup**
+```bash
+# Now try running migrations again
+npm run prisma:migrate
+```
+
+**Alternative: Use the automated setup**
+```bash
+# Linux/Mac
+npm run setup
+npm run docker:db:start
+npm run prisma:migrate
+
+# Windows
+npm run setup:windows
+npm run docker:db:start
+npm run prisma:migrate
+```
+
+**If using local PostgreSQL with different credentials:**
+Edit `packages/api/.env` and update the DATABASE_URL:
+```
+DATABASE_URL="postgresql://YOUR_USERNAME:YOUR_PASSWORD@localhost:5432/mmorpg?schema=public"
+```
+
+Replace `YOUR_USERNAME` and `YOUR_PASSWORD` with your actual PostgreSQL credentials.
 
 ### Database Does Not Exist
 

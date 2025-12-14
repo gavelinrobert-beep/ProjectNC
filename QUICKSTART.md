@@ -20,13 +20,15 @@ Ensure you have these installed:
 git clone <repository-url>
 cd ProjectNC
 
-# 2. Run automated setup
+# 2. Run automated setup (installs dependencies and creates .env file)
 npm run setup
 
 # 3. Start PostgreSQL in Docker
 npm run docker:db:start
 
-# 4. Run migrations
+# ⏰ IMPORTANT: Wait 5-10 seconds for database to initialize
+
+# 4. Run migrations (creates database tables)
 npm run prisma:migrate
 
 # 5. Start services (in 3 separate terminals)
@@ -35,6 +37,8 @@ npm run dev:gameserver # Terminal 2
 npm run dev:frontend   # Terminal 3
 ```
 
+**⚠️ Common Mistake:** Running `npm run prisma:migrate` before starting the database will cause authentication errors. Always start the database first!
+
 ### Windows
 
 ```powershell
@@ -42,13 +46,15 @@ npm run dev:frontend   # Terminal 3
 git clone <repository-url>
 cd ProjectNC
 
-# 2. Run automated setup
+# 2. Run automated setup (installs dependencies and creates .env file)
 npm run setup:windows
 
 # 3. Start PostgreSQL in Docker
 npm run docker:db:start
 
-# 4. Run migrations
+# ⏰ IMPORTANT: Wait 5-10 seconds for database to initialize
+
+# 4. Run migrations (creates database tables)
 npm run prisma:migrate
 
 # 5. Start services (in 3 separate PowerShell windows)
@@ -56,6 +62,8 @@ npm run dev:api       # Terminal 1
 npm run dev:gameserver # Terminal 2
 npm run dev:frontend   # Terminal 3
 ```
+
+**⚠️ Common Mistake:** Running `npm run prisma:migrate` before starting the database will cause authentication errors. Always start the database first!
 
 ## 🎮 Access the Application
 
@@ -123,14 +131,51 @@ netstat -ano | findstr :4000
 taskkill /PID <PID> /F
 ```
 
-### "Database does not exist" or "Can't reach database server"
+### "Authentication failed" (P1000)
+
+**Error:**
+```
+Error: P1000: Authentication failed against database server at `localhost`
+```
+
+**This is THE most common setup error!**
+
+**Solution:** Two things must be in place:
+
+1. **The .env file must exist:**
+```bash
+# Check if it exists
+ls packages/api/.env
+
+# If not, create it
+cd packages/api
+cp .env.example .env
+```
+
+2. **The database must be running:**
+```bash
+# Start the database
+npm run docker:db:start
+
+# Wait 5-10 seconds, then verify
+docker ps
+```
+
+Then try migrations again:
+```bash
+npm run prisma:migrate
+```
+
+### "Database does not exist" (P1003) or "Can't reach database server" (P1001)
 
 **Solution:** Start the PostgreSQL Docker container:
 ```bash
 npm run docker:db:start
 
-# Wait a few seconds, then check if it's running
+# Wait 5-10 seconds for initialization, then check if it's running
 docker ps
+
+# You should see "mmorpg-postgres" in the output
 
 # Run migrations
 npm run prisma:migrate
