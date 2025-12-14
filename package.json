@@ -9,16 +9,16 @@
   "scripts": {
     "setup": "bash setup.sh",
     "setup:windows": "powershell -ExecutionPolicy Bypass -File setup.ps1",
-    "dev:api": "cd packages/api && npm run start:dev",
-    "dev:frontend": "cd packages/frontend && npm run dev",
-    "dev:gameserver": "cd packages/gameserver && go run cmd/server/main.go",
-    "build:api": "cd packages/api && npm run build",
-    "build:frontend": "cd packages/frontend && npm run build",
-    "build:gameserver": "cd packages/gameserver && go build -o gameserver cmd/server/main.go",
-    "install:all": "npm install && cd packages/api && npm install && cd ../frontend && npm install && cd ../shared && npm install",
-    "prisma:migrate": "cd packages/api && npx prisma migrate dev",
-    "prisma:generate": "cd packages/api && npx prisma generate",
-    "prisma:studio": "cd packages/api && npx prisma studio"
+    "dev:api": "npm run start:dev --prefix packages/api",
+    "dev:frontend": "npm run dev --prefix packages/frontend",
+    "dev:gameserver": "node scripts/run-gameserver.js",
+    "build:api": "npm run build --prefix packages/api",
+    "build:frontend": "npm run build --prefix packages/frontend",
+    "build:gameserver": "node scripts/build-gameserver.js",
+    "install:all": "npm install && npm install --prefix packages/api && npm install --prefix packages/frontend && npm install --prefix packages/shared",
+    "prisma:migrate": "npm run prisma:migrate --prefix packages/api",
+    "prisma:generate": "npm run prisma:generate --prefix packages/api",
+    "prisma:studio": "npm run prisma:studio --prefix packages/api"
   },
   "keywords": [
     "mmorpg",

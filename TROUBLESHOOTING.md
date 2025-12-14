@@ -2,6 +2,16 @@
 
 Common issues and solutions for setting up and running the Fantasy MMORPG.
 
+## ✅ Windows Compatibility Update
+
+**Good news for Windows users!** The project npm scripts have been updated to be fully cross-platform compatible. You can now use all `npm run` commands (like `npm run dev:api`, `npm run dev:frontend`, `npm run dev:gameserver`) directly in Windows Command Prompt or PowerShell without any issues.
+
+If you previously encountered errors with commands not working on Windows, those should now be resolved. Simply use:
+- `npm run setup:windows` - Initial setup
+- `npm run dev:api` - Start API server
+- `npm run dev:frontend` - Start frontend
+- `npm run dev:gameserver` - Start game server
+
 ## Table of Contents
 - [Setup Issues](#setup-issues)
 - [Database Issues](#database-issues)
