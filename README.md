@@ -56,10 +56,12 @@ This project uses a **monorepo structure** with multiple specialized services:
 npm run setup
 ```
 
-**For Windows:**
+**For Windows (PowerShell or Command Prompt):**
 ```powershell
 npm run setup:windows
 ```
+
+> **💡 Windows Note:** All npm commands are now fully cross-platform compatible! You can use `npm run dev:api`, `npm run dev:frontend`, and `npm run dev:gameserver` directly in Windows without any issues.
 
 This will:
 - Install all dependencies for all packages
