@@ -243,6 +243,48 @@ npm run prisma:generate
 
 ## Development Server Issues
 
+### Error: "Cannot find module" or "nest: not found"
+
+**Error Message:**
+```
+Error: Cannot find module 'C:\...\packages\api\dist\main'
+```
+
+or
+
+```
+sh: nest: not found
+```
+
+**Cause:** Dependencies are not installed.
+
+**Solution:**
+
+The project now includes automatic dependency checking before running dev commands. If you see this error, it means you need to install dependencies first:
+
+**Option 1 (Recommended):** Run the automated setup:
+```bash
+# Linux/Mac
+npm run setup
+
+# Windows
+npm run setup:windows
+```
+
+**Option 2:** Install dependencies manually:
+```bash
+npm run install:all
+```
+
+After installing dependencies, try running the dev command again:
+```bash
+npm run dev:api       # Start API server
+npm run dev:frontend  # Start frontend
+npm run dev:gameserver # Start game server
+```
+
+**Note:** Starting with this update, the `npm run dev:api` and `npm run dev:frontend` commands will automatically check if dependencies are installed and provide helpful error messages if they're missing.
+
 ### Port Already in Use
 
 **Error Message:**

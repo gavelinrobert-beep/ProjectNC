@@ -26,6 +26,13 @@ out/
 *.egg-info/
 .eggs/
 
+# TypeScript
+*.tsbuildinfo
+packages/shared/src/**/*.js
+packages/shared/src/**/*.d.ts
+packages/shared/src/**/*.js.map
+!packages/shared/src/**/*.spec.js
+
 # Environment
 .env
 .env.local

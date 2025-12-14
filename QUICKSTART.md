@@ -85,6 +85,19 @@ Replace:
 
 ## ❓ Common Issues
 
+### "Cannot find module" or "Dependencies not installed"
+
+**Solution:** Run the setup script first to install all dependencies:
+```bash
+# Linux/Mac
+npm run setup
+
+# Windows
+npm run setup:windows
+```
+
+**Note:** The dev commands (`npm run dev:api`, `npm run dev:frontend`) now automatically check if dependencies are installed and will provide clear error messages if they're missing.
+
 ### "Could not find Prisma Schema"
 
 **Solution:** Always run Prisma commands from `packages/api` or use npm scripts from root:
