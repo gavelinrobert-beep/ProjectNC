@@ -63,9 +63,10 @@ function checkEnvFile() {
     };
   }
   
-  // Check if DATABASE_URL exists in .env
+  // Check if DATABASE_URL exists in .env (as an uncommented line)
   const envContent = fs.readFileSync(envPath, 'utf8');
-  if (!envContent.includes('DATABASE_URL')) {
+  const databaseUrlRegex = /^DATABASE_URL\s*=\s*.+$/m;
+  if (!databaseUrlRegex.test(envContent)) {
     return {
       success: false,
       message: 'DATABASE_URL not found in packages/api/.env',
@@ -82,8 +83,8 @@ function checkEnvFile() {
 
 function checkDockerRunning() {
   try {
-    // Try to run docker ps
-    execSync('docker ps', { stdio: 'pipe' });
+    // Try to run docker ps with a 5 second timeout
+    execSync('docker ps', { stdio: 'pipe', timeout: 5000 });
     return { success: true, available: true };
   } catch (error) {
     return { success: false, available: false };
@@ -94,7 +95,8 @@ function checkPostgresContainer() {
   try {
     const output = execSync('docker ps --filter "name=mmorpg-postgres" --format "{{.Names}}"', { 
       stdio: 'pipe',
-      encoding: 'utf8'
+      encoding: 'utf8',
+      timeout: 5000
     }).trim();
     
     if (output.includes('mmorpg-postgres')) {
@@ -130,8 +132,8 @@ function checkPostgresContainer() {
 
 function checkLocalPostgres() {
   try {
-    // Try to check if PostgreSQL is running locally
-    execSync('pg_isready -h localhost -p 5432', { stdio: 'pipe' });
+    // Try to check if PostgreSQL is running locally with a 5 second timeout
+    execSync('pg_isready -h localhost -p 5432', { stdio: 'pipe', timeout: 5000 });
     return { success: true, message: 'Local PostgreSQL is running' };
   } catch (error) {
     return { success: false };
