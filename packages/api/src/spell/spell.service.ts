@@ -97,7 +97,7 @@ export class SpellService {
    */
   knowsSpell(characterId: string, spellId: string): boolean {
     const book = this.getSpellBook(characterId);
-    return book.spells.some((s) => s.spellId === spellId);
+    return book.spells.some((s: LearnedSpell) => s.spellId === spellId);
   }
 
   /**
@@ -105,7 +105,7 @@ export class SpellService {
    */
   getLearnedSpell(characterId: string, spellId: string): LearnedSpell | undefined {
     const book = this.getSpellBook(characterId);
-    return book.spells.find((s) => s.spellId === spellId);
+    return book.spells.find((s: LearnedSpell) => s.spellId === spellId);
   }
 
   /**
@@ -145,7 +145,7 @@ export class SpellService {
     }
 
     const book = this.getSpellBook(characterId);
-    const existingSpell = book.spells.find((s) => s.spellId === spellId);
+    const existingSpell = book.spells.find((s: LearnedSpell) => s.spellId === spellId);
     const currentRank = existingSpell?.maxRankLearned ?? 0;
 
     // Find next available rank

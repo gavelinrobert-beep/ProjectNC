@@ -73,7 +73,7 @@ export class TalentService {
    */
   getTalentNode(treeId: string, nodeId: string): TalentNode | undefined {
     const tree = this.getTalentTree(treeId);
-    return tree?.nodes.find((n) => n.id === nodeId);
+    return tree?.nodes.find((n: TalentNode) => n.id === nodeId);
   }
 
   /**
@@ -123,7 +123,7 @@ export class TalentService {
       return { success: false, error: 'Talent tree not found' };
     }
 
-    const node = tree.nodes.find((n) => n.id === nodeId);
+    const node = tree.nodes.find((n: TalentNode) => n.id === nodeId);
     if (!node) {
       return { success: false, error: 'Talent node not found' };
     }
@@ -177,7 +177,7 @@ export class TalentService {
       return { success: false, error: 'Talent tree not found' };
     }
 
-    const node = tree.nodes.find((n) => n.id === nodeId);
+    const node = tree.nodes.find((n: TalentNode) => n.id === nodeId);
     if (!node) {
       return { success: false, error: 'Talent node not found' };
     }
@@ -280,8 +280,8 @@ export class TalentService {
     let primarySpec: string | undefined;
 
     for (const [specId, points] of Object.entries(allocation.specTotals)) {
-      if (points > maxPoints) {
-        maxPoints = points;
+      if ((points as number) > maxPoints) {
+        maxPoints = points as number;
         primarySpec = specId;
       }
     }
@@ -314,17 +314,17 @@ export class TalentService {
       if (tree) {
         summary.specs[specId] = {
           name: tree.name,
-          points,
+          points: points as number,
           talents: [],
         };
 
         for (const [nodeId, nodePoints] of Object.entries(allocation.allocations)) {
-          const node = tree.nodes.find((n) => n.id === nodeId);
-          if (node && nodePoints > 0) {
+          const node = tree.nodes.find((n: TalentNode) => n.id === nodeId);
+          if (node && (nodePoints as number) > 0) {
             summary.specs[specId].talents.push({
               nodeId,
               name: node.name,
-              points: nodePoints,
+              points: nodePoints as number,
               maxPoints: node.maxPoints,
             });
           }

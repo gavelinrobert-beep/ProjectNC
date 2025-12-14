@@ -2,6 +2,7 @@ import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request } from '
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/character.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthenticatedRequest } from '../types/request.types';
 
 /**
  * CharacterController - Character management endpoints
@@ -16,7 +17,7 @@ export class CharacterController {
    * Get all characters for the authenticated user
    */
   @Get()
-  async getCharacters(@Request() req) {
+  async getCharacters(@Request() req: AuthenticatedRequest) {
     return this.characterService.getCharactersByAccount(req.user.id);
   }
 
@@ -25,7 +26,7 @@ export class CharacterController {
    * Get a specific character by ID
    */
   @Get(':id')
-  async getCharacter(@Param('id') id: string, @Request() req) {
+  async getCharacter(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.characterService.getCharacterById(id, req.user.id);
   }
 
@@ -34,7 +35,7 @@ export class CharacterController {
    * Create a new character
    */
   @Post()
-  async createCharacter(@Body() dto: CreateCharacterDto, @Request() req) {
+  async createCharacter(@Body() dto: CreateCharacterDto, @Request() req: AuthenticatedRequest) {
     return this.characterService.createCharacter(req.user.id, dto);
   }
 
@@ -43,7 +44,7 @@ export class CharacterController {
    * Delete a character
    */
   @Delete(':id')
-  async deleteCharacter(@Param('id') id: string, @Request() req) {
+  async deleteCharacter(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.characterService.deleteCharacter(id, req.user.id);
   }
 }
