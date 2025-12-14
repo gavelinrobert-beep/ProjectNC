@@ -6,7 +6,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
 const colors = {
   red: '\x1b[31m',
@@ -36,11 +35,17 @@ function checkDirectory(dirPath, packageName) {
   const localNodeModules = path.join(dirPath, 'node_modules');
   const rootNodeModules = path.join(__dirname, '..', 'node_modules');
   
-  // Check if either node_modules directory exists and has content
-  const hasLocalModules = fs.existsSync(localNodeModules) && 
-    fs.readdirSync(localNodeModules).length > 0;
-  const hasRootModules = fs.existsSync(rootNodeModules) && 
-    fs.readdirSync(rootNodeModules).length > 0;
+  // Helper to safely check if directory exists and has content
+  const hasContent = (dir) => {
+    try {
+      return fs.existsSync(dir) && fs.readdirSync(dir).length > 0;
+    } catch (err) {
+      return false;
+    }
+  };
+  
+  const hasLocalModules = hasContent(localNodeModules);
+  const hasRootModules = hasContent(rootNodeModules);
   
   if (!hasLocalModules && !hasRootModules) {
     return { exists: false, message: `${packageName} dependencies not installed` };
