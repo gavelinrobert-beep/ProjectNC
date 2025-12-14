@@ -86,8 +86,12 @@ This is the easiest option, especially on Windows where PostgreSQL setup can be 
 # Start PostgreSQL in Docker
 npm run docker:db:start
 
-# Wait a few seconds for the database to be ready, then run migrations
+# Wait 5-10 seconds for the database to be ready, then run migrations
 npm run prisma:migrate
+
+# NOTE: The prisma:migrate command now includes automatic prerequisite checking.
+# If you haven't created the .env file or started the database, you'll get
+# a clear error message with instructions on how to fix it.
 ```
 
 The Docker database will be available at `localhost:5432` with the following credentials (already configured in `.env.example`):
