@@ -46,8 +46,8 @@ This project uses a **monorepo structure** with multiple specialized services:
 ### Prerequisites
 - Node.js 18+ and npm
 - Go 1.21+
-- PostgreSQL 15+
-- Docker (optional, for containerized deployment)
+- Docker and Docker Compose (for running PostgreSQL)
+- **OR** PostgreSQL 15+ (if not using Docker)
 
 ### Automated Setup (Recommended)
 
@@ -70,9 +70,54 @@ This will:
 - Provide next steps for database configuration
 
 After running setup, you need to:
-1. **Configure the database** - Edit `packages/api/.env` with your PostgreSQL connection string
+1. **Start the database** - See "Database Setup" section below
 2. **Run migrations** - `npm run prisma:migrate`
 3. **Start services** - See "Starting the Services" section below
+
+### Database Setup
+
+You have two options for running PostgreSQL:
+
+#### Option 1: Docker (Recommended for Development)
+
+This is the easiest option, especially on Windows where PostgreSQL setup can be tricky.
+
+```bash
+# Start PostgreSQL in Docker
+npm run docker:db:start
+
+# Wait a few seconds for the database to be ready, then run migrations
+npm run prisma:migrate
+```
+
+The Docker database will be available at `localhost:5432` with the following credentials (already configured in `.env.example`):
+- Username: `postgres`
+- Password: `password` (⚠️ **for local development only!**)
+- Database: `mmorpg`
+
+> **Security Note:** The Docker setup uses a default password for convenience in local development. This is fine for localhost, but never use these credentials in production or any publicly accessible environment. See [DOCKER.md](./DOCKER.md) for more details.
+
+**Docker Database Management Commands:**
+- `npm run docker:db:start` - Start the database
+- `npm run docker:db:stop` - Stop the database
+- `npm run docker:db:restart` - Restart the database
+- `npm run docker:db:logs` - View database logs
+- `npm run docker:db:reset` - Reset the database (⚠️ **deletes all data!**)
+
+#### Option 2: Local PostgreSQL Installation
+
+If you prefer to install PostgreSQL locally:
+
+1. Install PostgreSQL 15+ for your operating system
+2. Create the database:
+   ```bash
+   createdb -U postgres mmorpg
+   ```
+3. Update `packages/api/.env` if your credentials differ from the defaults
+4. Run migrations:
+   ```bash
+   npm run prisma:migrate
+   ```
 
 ### Manual Installation
 
@@ -96,14 +141,18 @@ cd ../gameserver && go mod download
 cd packages/api
 cp .env.example .env
 
-# Edit .env with your PostgreSQL connection string
+# Edit .env with your PostgreSQL connection string (if not using Docker defaults)
 # Example: DATABASE_URL="postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
 
 # Generate Prisma client
 npx prisma generate
 
-# Run Prisma migrations (ensure PostgreSQL is running)
-npx prisma migrate dev
+# Start PostgreSQL (using Docker)
+cd ../..
+npm run docker:db:start
+
+# Run Prisma migrations
+npm run prisma:migrate
 ```
 
 **Important:** All Prisma commands must be run from the `packages/api` directory, or use the npm scripts from the root:
@@ -288,6 +337,7 @@ npx prisma generate
 Having issues getting started? Check these resources:
 
 - **[QUICKSTART.md](./QUICKSTART.md)** - Fast setup guide
+- **[DOCKER.md](./DOCKER.md)** - Docker database setup guide
 - **[SETUP.md](./SETUP.md)** - Detailed setup instructions  
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common problems and solutions
 
@@ -295,6 +345,7 @@ Having issues getting started? Check these resources:
 - "Could not find Prisma Schema" → Use `npm run prisma:generate` from root
 - ".env.example not found" → File is in `packages/api/.env.example`
 - "Port already in use" → Kill existing processes on ports 3000, 4000, 8080
+- "Database connection failed" → Run `npm run docker:db:start` to start PostgreSQL
 
 ## 🛣️ Roadmap
 

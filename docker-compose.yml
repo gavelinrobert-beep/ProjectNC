@@ -1,0 +1,26 @@
+services:
+  # PostgreSQL Database
+  # WARNING: This configuration is for LOCAL DEVELOPMENT ONLY!
+  # For production, use a managed database service or proper security configuration.
+  postgres:
+    image: postgres:15-alpine
+    container_name: mmorpg-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      # SECURITY WARNING: Default password for development only. Change for any non-local environment!
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mmorpg
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
