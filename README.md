@@ -92,8 +92,10 @@ npm run prisma:migrate
 
 The Docker database will be available at `localhost:5432` with the following credentials (already configured in `.env.example`):
 - Username: `postgres`
-- Password: `password`
+- Password: `password` (⚠️ **for local development only!**)
 - Database: `mmorpg`
+
+> **Security Note:** The Docker setup uses a default password for convenience in local development. This is fine for localhost, but never use these credentials in production or any publicly accessible environment. See [DOCKER.md](./DOCKER.md) for more details.
 
 **Docker Database Management Commands:**
 - `npm run docker:db:start` - Start the database

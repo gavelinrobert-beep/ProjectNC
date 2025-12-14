@@ -101,15 +101,16 @@ DATABASE_URL="postgresql://postgres:password@localhost:5432/mmorpg?schema=public
 
 ## Data Persistence
 
-Database data is stored in a Docker volume named `projectnc_postgres_data`. This means:
+Database data is stored in a Docker volume. The volume is defined as `postgres_data` in docker-compose.yml, but Docker Compose automatically prefixes it with the project directory name (e.g., `projectnc_postgres_data`).
 
+This means:
 - ✅ Data persists when you stop/restart the container
 - ✅ Data persists across system reboots
 - ⚠️ Data is deleted when you run `npm run docker:db:reset` or `docker compose down -v`
 
 To view Docker volumes:
 ```bash
-docker volume ls
+docker volume ls | grep postgres
 ```
 
 ## Troubleshooting
@@ -218,14 +219,31 @@ You can connect with any PostgreSQL client:
 
 ## Production Considerations
 
-⚠️ **This Docker setup is for development only!**
+⚠️ **This Docker setup is for LOCAL DEVELOPMENT ONLY!**
 
-For production:
-- Use a managed database service (AWS RDS, Azure Database, etc.)
-- Or set up PostgreSQL with proper security, backups, and monitoring
-- Never use default passwords like "password"
-- Enable SSL/TLS for connections
-- Configure firewall rules
+### Security Warnings
+
+The default configuration uses:
+- Username: `postgres` (common default)
+- Password: `password` (⚠️ **INSECURE - for development only!**)
+- No SSL/TLS encryption
+- No access restrictions
+- Port exposed to localhost
+
+**Never use this configuration in production or any publicly accessible environment!**
+
+### For Production
+
+Instead of this Docker setup, use:
+- **Managed database services** (recommended): AWS RDS, Azure Database for PostgreSQL, Google Cloud SQL, etc.
+- **Or**, properly configure PostgreSQL with:
+  - Strong, unique passwords (use a password manager)
+  - SSL/TLS encryption for all connections
+  - Firewall rules restricting access
+  - Regular automated backups
+  - Monitoring and alerting
+  - Security updates and patches
+  - Least privilege access controls
 
 ## Alternative: Local PostgreSQL Installation
 
