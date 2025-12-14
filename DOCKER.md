@@ -101,17 +101,19 @@ DATABASE_URL="postgresql://postgres:password@localhost:5432/mmorpg?schema=public
 
 ## Data Persistence
 
-Database data is stored in a Docker volume. The volume is defined as `postgres_data` in docker-compose.yml, but Docker Compose automatically prefixes it with the project directory name (e.g., `projectnc_postgres_data`).
+Database data is stored in a Docker volume. The volume is defined as `postgres_data` in docker-compose.yml, but Docker Compose automatically prefixes it with the project directory name. For example, if your project directory is named `ProjectNC`, the volume will be named `projectnc_postgres_data`.
 
 This means:
 - ✅ Data persists when you stop/restart the container
 - ✅ Data persists across system reboots
 - ⚠️ Data is deleted when you run `npm run docker:db:reset` or `docker compose down -v`
 
-To view Docker volumes:
+To find the actual volume name:
 ```bash
 docker volume ls | grep postgres
 ```
+
+You should see something like `projectnc_postgres_data` (where `projectnc` is your project directory name).
 
 ## Troubleshooting
 
