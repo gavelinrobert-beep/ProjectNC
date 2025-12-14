@@ -229,7 +229,10 @@ Please make sure to provide valid database credentials for the database server a
 **Root Causes:**
 1. Missing `.env` file in `packages/api/` directory
 2. Database container/service not running
-3. Incorrect database credentials (less common)
+3. Incorrect or conflicting `.env` file in root directory (now fixed)
+4. Incorrect database credentials (less common)
+
+**Note:** As of the latest update, the Prisma commands have been improved to explicitly load environment variables from `packages/api/.env`, which prevents conflicts with root-level `.env` files.
 
 **Solution Steps:**
 
@@ -268,7 +271,17 @@ pg_isready -h localhost -p 5432
 # Windows: Check Services app for "postgresql" service
 ```
 
-**Step 3: Verify the setup**
+**Step 3: Check for conflicting root .env file**
+```bash
+# Check if a .env file exists in the root directory
+ls .env
+
+# If it exists and you're not sure why, you can remove it
+# (The correct .env file should be in packages/api/.env)
+rm .env
+```
+
+**Step 4: Verify the setup**
 ```bash
 # Now try running migrations again
 npm run prisma:migrate
