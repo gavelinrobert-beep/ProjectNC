@@ -55,6 +55,7 @@ lerna-debug.log*
 
 # Go
 packages/gameserver/gameserver
+packages/gameserver/main
 *.exe
 *.exe~
 *.dll
