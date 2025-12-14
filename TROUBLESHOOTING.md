@@ -103,6 +103,45 @@ npm run setup:windows
 
 ## Database Issues
 
+### PostgreSQL Not Installed or Command Not Found
+
+**Error Message:**
+```
+createdb : The term 'createdb' is not recognized as the name of a cmdlet, function, script file, or operable program.
+```
+
+**Solution (Recommended): Use Docker**
+
+Instead of installing PostgreSQL locally, use Docker to run the database:
+
+```bash
+# Start PostgreSQL in Docker
+npm run docker:db:start
+
+# Verify it's running
+docker ps
+
+# You should see a container named "mmorpg-postgres"
+```
+
+Then run migrations:
+```bash
+npm run prisma:migrate
+```
+
+The Docker setup:
+- Automatically creates the database
+- Uses default credentials (already configured in `.env.example`)
+- Works consistently across all operating systems
+- Doesn't require PostgreSQL installation
+
+**Alternative: Install PostgreSQL Locally**
+
+If you prefer not to use Docker:
+- **Windows**: Download from https://www.postgresql.org/download/windows/
+- **macOS**: `brew install postgresql@15`
+- **Linux**: Use your package manager (e.g., `apt install postgresql-15`)
+
 ### Connection Error: "Can't reach database server"
 
 **Error Message:**
@@ -113,6 +152,20 @@ Error: P1001: Can't reach database server at `localhost:5432`
 **Cause:** PostgreSQL is not running or is running on a different port.
 
 **Solution:**
+
+**If using Docker (recommended):**
+```bash
+# Check if the container is running
+docker ps
+
+# If not running, start it
+npm run docker:db:start
+
+# Check logs for any issues
+npm run docker:db:logs
+```
+
+**If using local PostgreSQL:**
 
 1. **Check if PostgreSQL is running:**
 
@@ -147,11 +200,18 @@ Error: P1001: Can't reach database server at `localhost:5432`
 
 **Error Message:**
 ```
-Error: P1001: Authentication failed against database server
+Error: P1000: Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
 ```
 
 **Solution:**
 
+**If using Docker:**
+The Docker setup uses default credentials that match `.env.example`. Make sure:
+1. You copied `.env.example` to `.env` in `packages/api/`
+2. The Docker container is running: `docker ps`
+3. Restart the container if needed: `npm run docker:db:restart`
+
+**If using local PostgreSQL:**
 Check your PostgreSQL credentials in `packages/api/.env`:
 ```
 DATABASE_URL="postgresql://USERNAME:PASSWORD@localhost:5432/mmorpg?schema=public"
@@ -167,6 +227,21 @@ Error: P1003: Database `mmorpg` does not exist
 ```
 
 **Solution:**
+
+**If using Docker (recommended):**
+The database is automatically created when you start the container:
+```bash
+npm run docker:db:start
+```
+
+Wait a few seconds for the container to initialize, then check the logs:
+```bash
+npm run docker:db:logs
+```
+
+You should see: `database system is ready to accept connections`
+
+**If using local PostgreSQL:**
 
 Create the database:
 
@@ -186,6 +261,100 @@ createdb -U postgres mmorpg
 ```cmd
 "C:\Program Files\PostgreSQL\15\bin\createdb.exe" -U postgres mmorpg
 ```
+
+---
+
+## Docker Issues
+
+### Docker Not Installed
+
+**Error Message:**
+```
+docker: command not found
+```
+or
+```
+'docker' is not recognized as an internal or external command
+```
+
+**Solution:**
+
+Install Docker Desktop:
+- **Windows**: Download from https://www.docker.com/products/docker-desktop/
+- **macOS**: Download from https://www.docker.com/products/docker-desktop/
+- **Linux**: Follow instructions at https://docs.docker.com/engine/install/
+
+After installation, restart your terminal and verify:
+```bash
+docker --version
+docker-compose --version
+```
+
+### Docker Container Won't Start
+
+**Error:** Container fails to start or exits immediately.
+
+**Solution:**
+
+1. **Check if port 5432 is already in use:**
+   ```bash
+   # Linux/Mac
+   lsof -i :5432
+   
+   # Windows
+   netstat -ano | findstr :5432
+   ```
+   
+   If another PostgreSQL instance is running, either:
+   - Stop the local PostgreSQL service
+   - Or change the port in `docker-compose.yml` (e.g., `5433:5432`)
+
+2. **Check Docker logs:**
+   ```bash
+   npm run docker:db:logs
+   ```
+
+3. **Reset the container:**
+   ```bash
+   npm run docker:db:reset
+   ```
+
+### Docker Compose Not Found
+
+**Error Message:**
+```
+docker-compose: command not found
+```
+
+**Solution:**
+
+Docker Desktop includes Docker Compose. If using Linux and installed Docker Engine separately:
+```bash
+# Install Docker Compose
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+
+# Or use the standalone binary
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### Permission Denied (Linux)
+
+**Error Message:**
+```
+permission denied while trying to connect to the Docker daemon socket
+```
+
+**Solution:**
+
+Add your user to the docker group:
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Log out and back in for changes to take effect.
 
 ---
 

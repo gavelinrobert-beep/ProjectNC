@@ -6,8 +6,10 @@ Get the Fantasy MMORPG running in minutes!
 
 Ensure you have these installed:
 - **Node.js 18+** and npm
-- **PostgreSQL 15+**
+- **Docker and Docker Compose** (for running PostgreSQL)
 - **Go 1.21+** (optional, for game server)
+
+> **Note:** Docker is the recommended way to run PostgreSQL for development. It works consistently across all platforms and doesn't require a separate PostgreSQL installation.
 
 ## 🚀 Automated Setup (Recommended)
 
@@ -21,16 +23,13 @@ cd ProjectNC
 # 2. Run automated setup
 npm run setup
 
-# 3. Configure database (edit packages/api/.env)
-# Change the DATABASE_URL to match your PostgreSQL setup
+# 3. Start PostgreSQL in Docker
+npm run docker:db:start
 
-# 4. Create database
-createdb mmorpg
-
-# 5. Run migrations
+# 4. Run migrations
 npm run prisma:migrate
 
-# 6. Start services (in 3 separate terminals)
+# 5. Start services (in 3 separate terminals)
 npm run dev:api       # Terminal 1
 npm run dev:gameserver # Terminal 2  
 npm run dev:frontend   # Terminal 3
@@ -46,16 +45,13 @@ cd ProjectNC
 # 2. Run automated setup
 npm run setup:windows
 
-# 3. Configure database (edit packages\api\.env)
-# Change the DATABASE_URL to match your PostgreSQL setup
+# 3. Start PostgreSQL in Docker
+npm run docker:db:start
 
-# 4. Create database (in psql or pgAdmin)
-# CREATE DATABASE mmorpg;
-
-# 5. Run migrations
+# 4. Run migrations
 npm run prisma:migrate
 
-# 6. Start services (in 3 separate PowerShell windows)
+# 5. Start services (in 3 separate PowerShell windows)
 npm run dev:api       # Terminal 1
 npm run dev:gameserver # Terminal 2
 npm run dev:frontend   # Terminal 3
@@ -69,19 +65,20 @@ Once all services are running:
 - **API Backend**: http://localhost:4000/api
 - **Game Server**: ws://localhost:8080
 
-## 📝 Default Database Configuration
+## 📝 Database Configuration
 
-Edit `packages/api/.env` to configure your database:
+The Docker setup uses default credentials that are already configured in `packages/api/.env.example`:
 
 ```env
 DATABASE_URL="postgresql://postgres:password@localhost:5432/mmorpg?schema=public"
 ```
 
-Replace:
-- `postgres` - with your PostgreSQL username
-- `password` - with your PostgreSQL password
-- `localhost` - with your database host (if remote)
-- `5432` - with your PostgreSQL port (if different)
+**No configuration needed if using Docker!** Just copy the .env.example to .env (the setup script does this automatically).
+
+If you prefer to use a local PostgreSQL installation instead of Docker:
+1. Install PostgreSQL 15+
+2. Create the database: `createdb mmorpg`
+3. Update `packages/api/.env` with your credentials if they differ from the defaults
 
 ## ❓ Common Issues
 
@@ -126,9 +123,20 @@ netstat -ano | findstr :4000
 taskkill /PID <PID> /F
 ```
 
-### "Database does not exist"
+### "Database does not exist" or "Can't reach database server"
 
-**Solution:** Create the database first:
+**Solution:** Start the PostgreSQL Docker container:
+```bash
+npm run docker:db:start
+
+# Wait a few seconds, then check if it's running
+docker ps
+
+# Run migrations
+npm run prisma:migrate
+```
+
+If not using Docker, create the database manually:
 ```bash
 createdb mmorpg
 ```

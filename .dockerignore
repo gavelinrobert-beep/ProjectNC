@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+packages/*/node_modules
+packages/gameserver/vendor
+
+# Build outputs
+dist
+.next
+packages/*/dist
+packages/*/.next
+
+# Development files
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
