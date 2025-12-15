@@ -178,6 +178,7 @@ namespace MMORPG.UI
         
         /// <summary>
         /// Create default target indicator (ring shape).
+        /// NOTE: This is a simple placeholder. For production, use a custom mesh or sprite.
         /// </summary>
         private GameObject CreateDefaultIndicator()
         {
@@ -191,9 +192,14 @@ namespace MMORPG.UI
             // Flatten to ring shape
             indicator.transform.localScale = new Vector3(indicatorScale, 0.02f, indicatorScale);
             
-            // Create material
+            // Create transparent material for MVP
+            // FUTURE: Replace with custom shader or sprite-based ring
             Material mat = new Material(Shader.Find("Standard"));
-            mat.SetFloat("_Mode", 3); // Transparent
+            
+            // Configure for transparency (Standard shader in Fade mode)
+            // Using string property names as this is MVP placeholder code
+            // Production would use custom shader with cached property IDs
+            mat.SetFloat("_Mode", 3); // Fade mode
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             mat.SetInt("_ZWrite", 0);

@@ -22,7 +22,7 @@ namespace MMORPG.Systems
         #region Configuration
         
         [Header("Interpolation Settings")]
-        [Tooltip("Base interpolation delay in seconds (network buffer)")]
+        [Tooltip("Base interpolation delay in seconds (network buffer). Default 0.1f (100ms) balances smoothness vs responsiveness - lower values feel more responsive but may cause jitter on poor connections, higher values are smoother but feel laggy.")]
         [SerializeField] private float baseInterpolationDelay = 0.1f;
         
         [Tooltip("Maximum extrapolation time beyond last known state")]
