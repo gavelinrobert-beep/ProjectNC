@@ -305,17 +305,17 @@ namespace MMORPG.Systems
         /// <summary>Check if mouse is over a UI element.</summary>
         public bool IsPointerOverUI()
         {
-            return EventSystems.EventSystem.current != null && 
-                   EventSystems.EventSystem.current.IsPointerOverGameObject();
+            return EventSystem.current != null && 
+                   EventSystem.current.IsPointerOverGameObject();
         }
         
         /// <summary>Update UI focus state based on active UI elements.</summary>
         private void UpdateUIFocusState()
         {
             // Check if any input field is focused
-            if (EventSystems.EventSystem.current != null)
+            if (EventSystem.current != null)
             {
-                GameObject selected = EventSystems.EventSystem.current.currentSelectedGameObject;
+                GameObject selected = EventSystem.current.currentSelectedGameObject;
                 if (selected != null)
                 {
                     UnityEngine.UI.InputField inputField = selected.GetComponent<UnityEngine.UI.InputField>();

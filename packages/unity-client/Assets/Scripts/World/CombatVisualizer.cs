@@ -307,7 +307,8 @@ namespace MMORPG.World
         /// </summary>
         private void ShakeCamera(float intensity, float duration)
         {
-            if (Systems.CameraController cam = FindObjectOfType<Systems.CameraController>())
+            Systems.CameraController cam = FindObjectOfType<Systems.CameraController>();
+            if (cam != null)
             {
                 cam.Shake(intensity, duration);
             }
