@@ -2,7 +2,7 @@
   "name": "fantasy-mmorpg-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "A 3D desktop fantasy MMORPG built with Unity, Node.js API, and Go game server",
+  "description": "A 3D desktop massively multiplayer online role-playing game (MMORPG) built with Unity, Node.js API, and Go game server",
   "workspaces": [
     "packages/*"
   ],

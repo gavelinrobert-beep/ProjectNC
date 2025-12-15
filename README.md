@@ -8,11 +8,11 @@ This project uses a **monorepo structure** with multiple specialized services:
 
 ```
 /packages
-├── /unity-client - Unity 3D desktop game client (PRIMARY CLIENT) ⭐
-├── /api          - NestJS REST API (Authentication, Characters, World)
-├── /frontend     - Next.js web interface (Account management, Character select)
-├── /gameserver   - Go authoritative game server (Real-time gameplay)
-└── /shared       - Shared TypeScript interfaces and protocol definitions
+├── /packages/unity-client - Unity 3D desktop game client (PRIMARY CLIENT) ⭐
+├── /packages/api          - NestJS REST API (Authentication, Characters, World)
+├── /packages/frontend     - Next.js web interface (Account management, Character select)
+├── /packages/gameserver   - Go authoritative game server (Real-time gameplay)
+└── /packages/shared       - Shared TypeScript interfaces and protocol definitions
 ```
 
 ### Service Communication Flow

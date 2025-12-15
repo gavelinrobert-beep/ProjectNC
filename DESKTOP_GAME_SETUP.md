@@ -52,7 +52,7 @@ go version     # Should be 1.21+
 ```bash
 # Clone the repository (if not already done)
 git clone <repository-url>
-cd ProjectNC
+cd fantasy-mmorpg-monorepo
 
 # Install all dependencies
 npm run setup
