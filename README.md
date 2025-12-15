@@ -1,6 +1,6 @@
-# Fantasy MMORPG - Scalable Game Architecture
+# Fantasy MMORPG - 3D Desktop Game
 
-A production-ready, scalable fantasy MMORPG inspired by World of Warcraft, built with modern technologies and clean architecture principles.
+A production-ready, scalable fantasy MMORPG inspired by World of Warcraft, built with modern technologies and clean architecture principles. **This is a 3D desktop game built with Unity**.
 
 ## 🏗️ Architecture Overview
 
@@ -8,8 +8,9 @@ This project uses a **monorepo structure** with multiple specialized services:
 
 ```
 /packages
+├── /unity-client - Unity 3D desktop game client (PRIMARY CLIENT) ⭐
 ├── /api          - NestJS REST API (Authentication, Characters, World)
-├── /frontend     - Next.js React client (Login, Character Select, Game UI)
+├── /frontend     - Next.js web interface (Account management, Character select)
 ├── /gameserver   - Go authoritative game server (Real-time gameplay)
 └── /shared       - Shared TypeScript interfaces and protocol definitions
 ```
@@ -18,10 +19,9 @@ This project uses a **monorepo structure** with multiple specialized services:
 
 ```
 ┌─────────────┐     HTTP/REST      ┌──────────────┐
-│   Frontend  │ ◄─────────────────► │   API        │
-│  (Next.js)  │                     │  (NestJS)    │
+│Unity Client │ ◄─────────────────► │   API        │
+│   (3D Game) │                     │  (NestJS)    │
 └─────────────┘                     └──────────────┘
-       │                                   │
        │                                   │
        │ WebSocket                         │ PostgreSQL
        │ (Game Events)                     │
@@ -31,12 +31,18 @@ This project uses a **monorepo structure** with multiple specialized services:
 │ Game Server │                     │  Database    │
 │    (Go)     │ ◄───────────────────┤ (PostgreSQL) │
 └─────────────┘     Query Players   └──────────────┘
+
+┌─────────────┐     HTTP/REST      
+│   Web UI    │ ◄─────────────────► (Optional: Account/Character management)
+│  (Next.js)  │                     
+└─────────────┘                     
 ```
 
 **Key Design Principles:**
+- **Unity 3D Client**: Desktop game with full 3D rendering, WASD movement, third-person camera ⭐
 - **API Backend**: Handles authentication, character management, and persistent data
 - **Game Server**: Authoritative server for real-time gameplay (movement, combat, NPCs)
-- **Frontend**: Thin client that sends input commands and renders game state
+- **Web Frontend**: Optional web interface for account and character management
 - **Shared**: Common interfaces ensure type safety across services
 
 ## 🚀 Quick Start
@@ -44,8 +50,9 @@ This project uses a **monorepo structure** with multiple specialized services:
 > **💡 New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for the fastest way to get up and running!
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Go 1.21+
+- **Unity 2022.3 LTS or newer** (for the 3D game client) ⭐
+- Node.js 18+ and npm (for backend services)
+- Go 1.21+ (for game server)
 - Docker and Docker Compose (for running PostgreSQL)
 - **OR** PostgreSQL 15+ (if not using Docker)
 
@@ -166,7 +173,7 @@ npm run prisma:migrate
 
 ### Starting the Services
 
-You need **3 terminal windows** (one for each service):
+You need **2 terminal windows** for backend services, then Unity Editor for the game client:
 
 **Terminal 1 - API Backend:**
 ```bash
@@ -180,18 +187,47 @@ npm run dev:gameserver
 # Runs on ws://localhost:8080
 ```
 
-**Terminal 3 - Frontend:**
+**Unity 3D Game Client:**
+1. Open Unity Hub
+2. Add project: `packages/unity-client`
+3. Open the project in Unity 2022.3 LTS or newer
+4. Open `LoginScene` and press Play
+5. See [packages/unity-client/UNITY_SETUP.md](./packages/unity-client/UNITY_SETUP.md) for detailed setup
+
+**Optional - Web Frontend (for account/character management):**
 ```bash
 npm run dev:frontend
 # Runs on http://localhost:3000
 ```
 
 ### Access the Application
-- Frontend: http://localhost:3000
+- **Unity Game Client**: Desktop application (primary way to play) ⭐
+- Web Frontend: http://localhost:3000 (optional)
 - API Docs: http://localhost:4000/api
 - Game Server: ws://localhost:8080
 
 ## 📦 Package Details
+
+### `/packages/unity-client` - Unity 3D Game Client ⭐
+
+**Purpose**: Desktop 3D game client for players (PRIMARY CLIENT)
+
+**Key Systems:**
+- **Network Layer**: WebSocket connection with reconnection
+- **World Rendering**: 3D terrain, zones, entities
+- **Character Control**: WASD movement, third-person camera
+- **Combat System**: Visual effects, floating damage text, targeting
+- **UI Framework**: HUD, action bars, chat, nameplates
+- **Entity Management**: Spawning/despawning, interpolation
+- **Animation System**: Character state machine for movement and combat
+
+**Tech Stack:**
+- Unity 2022.3 LTS
+- C# (22 scripts, ~8000 lines of code)
+- NativeWebSocket package
+- Server-authoritative architecture
+
+**See**: [packages/unity-client/README.md](./packages/unity-client/README.md) for complete documentation
 
 ### `/packages/api` - NestJS Backend
 
@@ -217,29 +253,22 @@ npm run dev:frontend
 - `POST /characters` - Create new character
 - `GET /world/zones` - Get zone metadata
 
-### `/packages/frontend` - Next.js Client
+### `/packages/frontend` - Next.js Web Interface (Optional)
 
-**Purpose**: Game client UI for players
+**Purpose**: Optional web interface for account and character management
 
 **Key Pages:**
 - `/login` - Authentication
 - `/character-select` - Choose or create character
-- `/game` - Main game interface
+- `/game` - Placeholder game view (directs to Unity client)
 
-**Key Components:**
-- `HUD` - Health, mana, experience bars
-- `ChatWindow` - In-game chat
-- `ActionBar` - Ability hotkeys
-- `MovementControls` - WASD/Click-to-move overlay
-- `Inventory` - Equipment and bag slots
-- `QuestLog` - Active quests and objectives
+**Note**: This is a secondary interface. The primary way to play is through the Unity 3D desktop client.
 
 **Tech Stack:**
 - Next.js 14+ (App Router)
 - React 18+
 - TypeScript
 - TailwindCSS
-- WebSocket client for game server
 
 ### `/packages/gameserver` - Go Game Server
 

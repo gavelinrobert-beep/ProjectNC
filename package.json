@@ -2,7 +2,7 @@
   "name": "fantasy-mmorpg-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "A scalable fantasy MMORPG with Node.js API, Next.js frontend, and Go game server",
+  "description": "A 3D desktop fantasy MMORPG built with Unity, Node.js API, and Go game server",
   "workspaces": [
     "packages/*"
   ],
@@ -31,8 +31,10 @@
   "keywords": [
     "mmorpg",
     "game",
+    "unity",
+    "3d",
+    "desktop-game",
     "nestjs",
-    "nextjs",
     "golang",
     "websocket",
     "prisma"

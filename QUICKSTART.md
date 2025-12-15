@@ -1,13 +1,16 @@
-# Quick Start Guide
+# Quick Start Guide - 3D Desktop Game
 
-Get the Fantasy MMORPG running in minutes!
+Get the Fantasy MMORPG 3D desktop game running in minutes!
+
+> **🎮 This is a 3D Desktop Game**: This project uses Unity for a full 3D desktop gaming experience with WASD movement, third-person camera, and immersive 3D graphics. See [DESKTOP_GAME_SETUP.md](./DESKTOP_GAME_SETUP.md) for complete Unity setup.
 
 ## Prerequisites
 
 Ensure you have these installed:
-- **Node.js 18+** and npm
+- **Unity 2022.3 LTS or newer** (for the 3D game client) ⭐
+- **Node.js 18+** and npm (for backend services)
 - **Docker and Docker Compose** (for running PostgreSQL)
-- **Go 1.21+** (optional, for game server)
+- **Go 1.21+** (for game server)
 
 > **Note:** Docker is the recommended way to run PostgreSQL for development. It works consistently across all platforms and doesn't require a separate PostgreSQL installation.
 
@@ -31,10 +34,16 @@ npm run docker:db:start
 # 4. Run migrations (creates database tables)
 npm run prisma:migrate
 
-# 5. Start services (in 3 separate terminals)
+# 5. Start backend services (in 2 separate terminals)
 npm run dev:api       # Terminal 1
-npm run dev:gameserver # Terminal 2  
-npm run dev:frontend   # Terminal 3
+npm run dev:gameserver # Terminal 2
+
+# 6. Open Unity game client
+# - Open Unity Hub
+# - Add project: packages/unity-client
+# - Open in Unity 2022.3 LTS or newer
+# - Press Play in Unity Editor
+# - See DESKTOP_GAME_SETUP.md for detailed Unity setup
 ```
 
 **⚠️ Common Mistake:** Running `npm run prisma:migrate` before starting the database will cause authentication errors. Always start the database first!
@@ -57,10 +66,16 @@ npm run docker:db:start
 # 4. Run migrations (creates database tables)
 npm run prisma:migrate
 
-# 5. Start services (in 3 separate PowerShell windows)
+# 5. Start backend services (in 2 separate PowerShell windows)
 npm run dev:api       # Terminal 1
 npm run dev:gameserver # Terminal 2
-npm run dev:frontend   # Terminal 3
+
+# 6. Open Unity game client
+# - Open Unity Hub
+# - Add project: packages/unity-client
+# - Open in Unity 2022.3 LTS or newer
+# - Press Play in Unity Editor
+# - See DESKTOP_GAME_SETUP.md for detailed Unity setup
 ```
 
 **⚠️ Common Mistake:** Running `npm run prisma:migrate` before starting the database will cause authentication errors. Always start the database first!
@@ -69,9 +84,12 @@ npm run dev:frontend   # Terminal 3
 
 Once all services are running:
 
-- **Frontend (Game UI)**: http://localhost:3000
+- **Unity 3D Game Client**: Desktop application (open in Unity Editor and press Play) ⭐
 - **API Backend**: http://localhost:4000/api
 - **Game Server**: ws://localhost:8080
+- **Web Frontend** (optional): http://localhost:3000
+
+> **Primary Way to Play**: Use the Unity 3D desktop client for the full 3D gaming experience. The web frontend is optional and mainly for account/character management.
 
 ## 📝 Database Configuration
 
