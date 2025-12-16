@@ -370,6 +370,7 @@ npx prisma generate
 Having issues getting started? Check these resources:
 
 - **[QUICKSTART.md](./QUICKSTART.md)** - Fast setup guide
+- **[FEATURES.md](./FEATURES.md)** - New features guide (Quest, Inventory, First Zone)
 - **[DOCKER.md](./DOCKER.md)** - Docker database setup guide
 - **[SETUP.md](./SETUP.md)** - Detailed setup instructions  
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common problems and solutions
@@ -382,16 +383,16 @@ Having issues getting started? Check these resources:
 
 ## 🛣️ Roadmap
 
-### Current Phase: MVP (v0.1)
+### Current Phase: MVP (v0.1) ✅ COMPLETE
 - [x] Monorepo structure
 - [x] NestJS API with authentication
 - [x] Character creation and management
 - [x] Next.js frontend with basic UI
 - [x] Go game server with entity system
 - [x] Basic combat system
-- [ ] Quest system implementation
-- [ ] Inventory and equipment system
-- [ ] First playable zone
+- [x] Quest system implementation
+- [x] Inventory and equipment system
+- [x] First playable zone (Elwynn Forest)
 
 ### Phase 2: Core Gameplay (v0.2)
 - [ ] Multiple zones and seamless transitions
