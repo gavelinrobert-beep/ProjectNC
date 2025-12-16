@@ -83,3 +83,94 @@ type CombatEventMessage struct {
 	TargetMaxHealth int    `json:"targetMaxHealth,omitempty"`
 	Timestamp       int64  `json:"timestamp"`
 }
+
+// InteractMessage - Client interacts with NPC or object
+type InteractMessage struct {
+	TargetEntityID  string `json:"targetEntityId"`
+	InteractionType string `json:"interactionType"` // TALK, LOOT, USE
+}
+
+// Quest-related messages
+
+// AcceptQuestMessage - Client accepts a quest
+type AcceptQuestMessage struct {
+	QuestID string `json:"questId"`
+}
+
+// CompleteQuestMessage - Client completes a quest
+type CompleteQuestMessage struct {
+	QuestID string `json:"questId"`
+}
+
+// AbandonQuestMessage - Client abandons a quest
+type AbandonQuestMessage struct {
+	QuestID string `json:"questId"`
+}
+
+// QuestProgressMessage - Server sends quest progress update
+type QuestProgressMessage struct {
+	QuestID    string                   `json:"questId"`
+	Objectives []QuestObjectiveProgress `json:"objectives"`
+	Status     string                   `json:"status"` // IN_PROGRESS, COMPLETED
+}
+
+// QuestObjectiveProgress represents progress on a single quest objective
+type QuestObjectiveProgress struct {
+	ID          string `json:"id"`
+	Description string `json:"description"`
+	Current     int    `json:"current"`
+	Required    int    `json:"required"`
+	Completed   bool   `json:"completed"`
+}
+
+// QuestCompletedMessage - Server notifies quest completion
+type QuestCompletedMessage struct {
+	QuestID   string       `json:"questId"`
+	QuestName string       `json:"questName"`
+	Rewards   QuestRewards `json:"rewards"`
+}
+
+// QuestRewards represents rewards from a quest
+type QuestRewards struct {
+	Experience int      `json:"experience"`
+	Gold       int      `json:"gold"`
+	Items      []string `json:"items,omitempty"`
+}
+
+// Inventory-related messages
+
+// UseItemMessage - Client uses an item
+type UseItemMessage struct {
+	InventoryItemID string `json:"inventoryItemId"`
+}
+
+// EquipItemMessage - Client equips an item
+type EquipItemMessage struct {
+	InventoryItemID string `json:"inventoryItemId"`
+	Slot            int    `json:"slot"`
+}
+
+// MoveItemMessage - Client moves an item in inventory
+type MoveItemMessage struct {
+	InventoryItemID string `json:"inventoryItemId"`
+	NewSlot         int    `json:"newSlot"`
+}
+
+// InventoryUpdateMessage - Server sends inventory update
+type InventoryUpdateMessage struct {
+	Items []InventoryItemData `json:"items"`
+}
+
+// InventoryItemData represents an item in inventory
+type InventoryItemData struct {
+	ID               string `json:"id"`
+	ItemDefinitionID string `json:"itemDefinitionId"`
+	Quantity         int    `json:"quantity"`
+	Slot             int    `json:"slot"`
+}
+
+// ItemLootedMessage - Server notifies item looted
+type ItemLootedMessage struct {
+	ItemDefinitionID string `json:"itemDefinitionId"`
+	Quantity         int    `json:"quantity"`
+}
