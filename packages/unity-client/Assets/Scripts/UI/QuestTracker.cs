@@ -16,7 +16,9 @@ public class QuestTracker : MonoBehaviour
     private Dictionary<string, QuestTrackerEntry> trackedQuests = new Dictionary<string, QuestTrackerEntry>();
 
     /// <summary>
-    /// Track a quest on the HUD
+    /// Track a quest on the HUD.
+    /// If the quest is already tracked, this updates its objectives.
+    /// If the tracker is full (maxTrackedQuests reached), new quests cannot be added.
     /// </summary>
     public void TrackQuest(string questId, string questName, List<QuestObjective> objectives)
     {

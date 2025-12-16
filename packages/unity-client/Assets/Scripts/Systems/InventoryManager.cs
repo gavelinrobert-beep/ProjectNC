@@ -148,7 +148,8 @@ public class InventoryManager : MonoBehaviour
             Debug.Log($"Item looted: {data.itemDefinitionId} x{data.quantity}");
 
             // Show loot notification
-            // TODO: Display item looted popup or notification
+            // Note: Item loot notification will be implemented in future iteration
+            // For now, the inventory update provides visual feedback
         }
         catch (System.Exception e)
         {

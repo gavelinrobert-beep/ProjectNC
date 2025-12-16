@@ -198,15 +198,16 @@ export class QuestService {
 
     const quest = questProgress.quest;
 
-    // Calculate new experience
+    // Calculate new experience and gold
     const newExperience = character.experience + quest.experienceReward;
+    const newGold = character.gold + quest.goldReward;
 
     // Update character with rewards
     await this.prisma.character.update({
       where: { id: characterId },
       data: {
         experience: newExperience,
-        // Note: Gold system not yet implemented, will add when inventory is ready
+        gold: newGold,
       },
     });
 
