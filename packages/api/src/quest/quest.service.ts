@@ -1,6 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { QuestStatus } from '@fantasy-mmorpg/shared';
+
+enum QuestStatus {
+  AVAILABLE = 'AVAILABLE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  TURNED_IN = 'TURNED_IN',
+}
 
 interface AcceptQuestDto {
   characterId: string;

@@ -36,7 +36,7 @@ export class InventoryService {
   /**
    * Add an item to character's inventory
    */
-  async addItem(dto: AddItemDto) {
+  async addItem(dto: AddItemDto): Promise<any> {
     const { characterId, itemDefinitionId, quantity } = dto;
 
     // Verify character exists
@@ -96,7 +96,7 @@ export class InventoryService {
       select: { slot: true },
     });
 
-    const usedSlotNumbers = new Set(usedSlots.map((item) => item.slot));
+    const usedSlotNumbers = new Set(usedSlots.map((item: any) => item.slot));
     let availableSlot = -1;
 
     for (let i = 0; i < 40; i++) {
@@ -253,7 +253,7 @@ export class InventoryService {
       select: { slot: true },
     });
 
-    const usedSlotNumbers = new Set(usedSlots.map((i) => i.slot));
+    const usedSlotNumbers = new Set(usedSlots.map((i: any) => i.slot));
     let availableSlot = -1;
 
     for (let i = 0; i < 40; i++) {
