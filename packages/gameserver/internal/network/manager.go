@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/mmorpg/gameserver/internal/combat"
 	"github.com/mmorpg/gameserver/internal/entity"
+	"github.com/mmorpg/gameserver/internal/inventory"
+	"github.com/mmorpg/gameserver/internal/quest"
 	"github.com/mmorpg/gameserver/internal/world"
 	"github.com/mmorpg/gameserver/pkg/protocol"
 )
@@ -21,8 +23,10 @@ var upgrader = websocket.Upgrader{
 
 // Manager handles all network connections and message routing
 type Manager struct {
-	world         *world.World
-	combatManager *combat.CombatManager
+	world            *world.World
+	combatManager    *combat.CombatManager
+	questManager     *quest.QuestManager
+	inventoryManager *inventory.InventoryManager
 	
 	mu      sync.RWMutex
 	clients map[string]*Client // player ID -> client
@@ -38,11 +42,20 @@ type Client struct {
 
 // NewManager creates a new network manager
 func NewManager(w *world.World) *Manager {
-	return &Manager{
-		world:         w,
-		combatManager: combat.NewCombatManager(),
-		clients:       make(map[string]*Client),
+	m := &Manager{
+		world:            w,
+		combatManager:    combat.NewCombatManager(),
+		questManager:     quest.NewQuestManager(),
+		inventoryManager: inventory.NewInventoryManager(),
+		clients:          make(map[string]*Client),
 	}
+	
+	// Register quest callback for broadcasting progress updates
+	m.questManager.RegisterCallback("broadcast", func(playerID string, questID string, completed bool) {
+		m.broadcastQuestProgress(playerID, questID, completed)
+	})
+	
+	return m
 }
 
 // HandleConnection handles a new WebSocket connection
@@ -112,6 +125,20 @@ func (m *Manager) handleMessage(c *Client, msg *protocol.GameMessage) {
 		m.handleAttackRequest(c, msg)
 	case "CHAT":
 		m.handleChat(c, msg)
+	case "ACCEPT_QUEST":
+		m.handleAcceptQuest(c, msg)
+	case "COMPLETE_QUEST":
+		m.handleCompleteQuest(c, msg)
+	case "ABANDON_QUEST":
+		m.handleAbandonQuest(c, msg)
+	case "USE_ITEM":
+		m.handleUseItem(c, msg)
+	case "EQUIP_ITEM":
+		m.handleEquipItem(c, msg)
+	case "MOVE_ITEM":
+		m.handleMoveItem(c, msg)
+	case "INTERACT":
+		m.handleInteract(c, msg)
 	default:
 		log.Println("Unknown message type:", msg.Type)
 	}
@@ -203,6 +230,11 @@ func (m *Manager) handleAttackRequest(c *Client, msg *protocol.GameMessage) {
 		return // Ability failed (cooldown, range, etc.)
 	}
 
+	// Check if target died and notify quest system
+	if event.IsDead && target.Type != entity.TypePlayer {
+		m.questManager.OnEntityKilled(c.playerID, data.TargetEntityID)
+	}
+
 	// Broadcast combat event to nearby players
 	m.broadcastCombatEvent(event, c.entity.Position)
 }
@@ -292,6 +324,158 @@ func (m *Manager) GetPlayerCount() int {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	return len(m.clients)
+}
+
+// handleAcceptQuest handles accepting a quest
+func (m *Manager) handleAcceptQuest(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.AcceptQuestMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	// Quest progress should be loaded from API, but for now create a simple one
+	// In production, this would call the API to accept the quest and get objectives
+	log.Printf("Player %s accepting quest %s", c.playerID, data.QuestID)
+}
+
+// handleCompleteQuest handles completing a quest
+func (m *Manager) handleCompleteQuest(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.CompleteQuestMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	questProgress := m.questManager.GetPlayerQuest(c.playerID, data.QuestID)
+	if questProgress != nil && questProgress.Status == quest.StatusCompleted {
+		// Quest is ready to turn in
+		// In production, call API to give rewards
+		log.Printf("Player %s completing quest %s", c.playerID, data.QuestID)
+	}
+}
+
+// handleAbandonQuest handles abandoning a quest
+func (m *Manager) handleAbandonQuest(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.AbandonQuestMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	m.questManager.RemovePlayerQuest(c.playerID, data.QuestID)
+	log.Printf("Player %s abandoned quest %s", c.playerID, data.QuestID)
+}
+
+// handleUseItem handles using a consumable item
+func (m *Manager) handleUseItem(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.UseItemMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	// Item usage logic would go here
+	log.Printf("Player %s using item %s", c.playerID, data.InventoryItemID)
+}
+
+// handleEquipItem handles equipping an item
+func (m *Manager) handleEquipItem(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.EquipItemMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	// Equipment logic would go here
+	log.Printf("Player %s equipping item %s to slot %d", c.playerID, data.InventoryItemID, data.Slot)
+}
+
+// handleMoveItem handles moving an item in inventory
+func (m *Manager) handleMoveItem(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.MoveItemMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	// Move item logic would go here
+	log.Printf("Player %s moving item %s to slot %d", c.playerID, data.InventoryItemID, data.NewSlot)
+}
+
+// handleInteract handles interacting with NPCs or objects
+func (m *Manager) handleInteract(c *Client, msg *protocol.GameMessage) {
+	if c.entity == nil {
+		return
+	}
+
+	var data protocol.InteractMessage
+	if err := mapToStruct(msg.Payload, &data); err != nil {
+		return
+	}
+
+	// Notify quest system of interaction
+	m.questManager.OnEntityInteracted(c.playerID, data.TargetEntityID)
+
+	log.Printf("Player %s interacting with %s", c.playerID, data.TargetEntityID)
+}
+
+// broadcastQuestProgress broadcasts quest progress update to a player
+func (m *Manager) broadcastQuestProgress(playerID string, questID string, completed bool) {
+	m.mu.RLock()
+	client := m.clients[playerID]
+	m.mu.RUnlock()
+
+	if client == nil {
+		return
+	}
+
+	questProgress := m.questManager.GetPlayerQuest(playerID, questID)
+	if questProgress == nil {
+		return
+	}
+
+	objectives := make([]protocol.QuestObjectiveProgress, len(questProgress.Objectives))
+	for i, obj := range questProgress.Objectives {
+		objectives[i] = protocol.QuestObjectiveProgress{
+			ID:          obj.ID,
+			Description: obj.Description,
+			Current:     obj.Current,
+			Required:    obj.Required,
+			Completed:   obj.Completed,
+		}
+	}
+
+	status := "IN_PROGRESS"
+	if completed {
+		status = "COMPLETED"
+	}
+
+	msg := protocol.QuestProgressMessage{
+		QuestID:    questID,
+		Objectives: objectives,
+		Status:     status,
+	}
+
+	client.sendMessage("QUEST_PROGRESS", msg)
 }
 
 // Helper function to convert map to struct
