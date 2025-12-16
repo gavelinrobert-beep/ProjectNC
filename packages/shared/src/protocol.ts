@@ -71,6 +71,38 @@ export interface InteractMessage {
   interactionType: 'TALK' | 'LOOT' | 'USE';
 }
 
+// Player accepts a quest
+export interface AcceptQuestMessage {
+  questId: string;
+}
+
+// Player completes a quest
+export interface CompleteQuestMessage {
+  questId: string;
+}
+
+// Player abandons a quest
+export interface AbandonQuestMessage {
+  questId: string;
+}
+
+// Player uses an item
+export interface UseItemMessage {
+  inventoryItemId: string;
+}
+
+// Player equips an item
+export interface EquipItemMessage {
+  inventoryItemId: string;
+  slot: number;
+}
+
+// Player moves an item in inventory
+export interface MoveItemMessage {
+  inventoryItemId: string;
+  newSlot: number;
+}
+
 /**
  * SERVER -> CLIENT Messages
  */
@@ -145,6 +177,50 @@ export interface ErrorMessage {
   timestamp: number;
 }
 
+// Quest progress update
+export interface QuestProgressMessage {
+  questId: string;
+  objectives: QuestObjectiveProgress[];
+  status: 'IN_PROGRESS' | 'COMPLETED';
+}
+
+export interface QuestObjectiveProgress {
+  id: string;
+  description: string;
+  current: number;
+  required: number;
+  completed: boolean;
+}
+
+// Quest completion notification
+export interface QuestCompletedMessage {
+  questId: string;
+  questName: string;
+  rewards: {
+    experience: number;
+    gold: number;
+    items?: string[];
+  };
+}
+
+// Inventory update
+export interface InventoryUpdateMessage {
+  items: InventoryItemData[];
+}
+
+export interface InventoryItemData {
+  id: string;
+  itemDefinitionId: string;
+  quantity: number;
+  slot: number;
+}
+
+// Item looted notification
+export interface ItemLootedMessage {
+  itemDefinitionId: string;
+  quantity: number;
+}
+
 /**
  * Message Type Constants
  * Used to identify message types in the protocol
@@ -156,6 +232,12 @@ export const MessageType = {
   ATTACK_REQUEST: 'ATTACK_REQUEST',
   CHAT: 'CHAT',
   INTERACT: 'INTERACT',
+  ACCEPT_QUEST: 'ACCEPT_QUEST',
+  COMPLETE_QUEST: 'COMPLETE_QUEST',
+  ABANDON_QUEST: 'ABANDON_QUEST',
+  USE_ITEM: 'USE_ITEM',
+  EQUIP_ITEM: 'EQUIP_ITEM',
+  MOVE_ITEM: 'MOVE_ITEM',
   
   // Server -> Client
   WELCOME: 'WELCOME',
@@ -163,6 +245,10 @@ export const MessageType = {
   COMBAT_EVENT: 'COMBAT_EVENT',
   ENTITY_SPAWN: 'ENTITY_SPAWN',
   ENTITY_DESPAWN: 'ENTITY_DESPAWN',
+  QUEST_PROGRESS: 'QUEST_PROGRESS',
+  QUEST_COMPLETED: 'QUEST_COMPLETED',
+  INVENTORY_UPDATE: 'INVENTORY_UPDATE',
+  ITEM_LOOTED: 'ITEM_LOOTED',
   ERROR: 'ERROR',
 } as const;
 
