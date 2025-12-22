@@ -53,6 +53,23 @@ async function main() {
     },
   });
 
+  await prisma.zone.upsert({
+    where: { id: 'sylvaen_capital' },
+    update: {},
+    create: {
+      id: 'sylvaen_capital',
+      name: 'Sylvaen Capital',
+      description: 'Ancient heart of the Sylvaen, reached after completing the Thornveil Enclave journey.',
+      minLevel: 10,
+      maxLevel: 60,
+      width: 1600,
+      height: 1600,
+      safeZonesJson: JSON.stringify([
+        { name: 'Grand Plaza Arrival', type: 'spawn', x: 75, y: 0, z: 45, radius: 35 },
+      ]),
+    },
+  });
+
   // Seed Item Definitions
   const items = [
     // Weapons
