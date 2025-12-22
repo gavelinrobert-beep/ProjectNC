@@ -174,9 +174,9 @@ A complete starter zone has been implemented with all necessary data.
 
 - **Level Range**: 1-10
 - **Size**: 1200x1200 units
-- **Spawn Areas**: Brambleheart Spawn (150, 0, 240, r=30), Moonwell Clearing Spawn (-180, 0, 80, r=30)
-- **Safe Town Area**: Thornveil Refuge (40, 0, -60, r=45)
-- **Progression Exit**: Gate to Sylvaen Capital at (500, 0, -320) leading to Sylvaen Capital entry (75, 0, -45)
+- **Spawn Areas**: Brambleheart Spawn (320, 0, 280, r=30), Moonwell Clearing Spawn (640, 0, 360, r=30)
+- **Safe Town Area**: Thornveil Refuge (520, 0, 520, r=45)
+- **Progression Exit**: Gate to Sylvaen Capital at (1120, 0, 1040) leading to Sylvaen Capital entry (75, 0, 45)
 
 ### Class Abilities
 
