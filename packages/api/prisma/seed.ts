@@ -18,8 +18,8 @@ async function main() {
       width: 1000,
       height: 1000,
       safeZonesJson: JSON.stringify([
-        { x: 500, y: 0, z: 500 },
-        { x: 300, y: 0, z: 300 },
+        { name: 'Northshire Abbey Spawn', type: 'spawn', x: 500, y: 0, z: 500, radius: 25 },
+        { name: 'Eastvale Logging Camp Spawn', type: 'spawn', x: 300, y: 0, z: 300, radius: 25 },
       ]),
     },
   });
