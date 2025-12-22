@@ -170,6 +170,14 @@ A complete starter zone has been implemented with all necessary data.
    - Drops: Kobold Candle (25% chance)
    - Location: (400, 0, 600)
 
+## New Starter Zone: Thornveil Enclave
+
+- **Level Range**: 1-10
+- **Size**: 1200x1200 units
+- **Spawn Areas**: Brambleheart Spawn (150, 0, 240, r=30), Moonwell Clearing Spawn (-180, 0, 80, r=30)
+- **Safe Town Area**: Thornveil Refuge (40, 0, -60, r=45)
+- **Progression Exit**: Gate to Sylvaen Capital at (500, 0, -320) leading to Sylvaen Capital entry (75, 0, -45)
+
 ### Class Abilities
 
 Each class has a starter ability:

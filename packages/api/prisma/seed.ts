@@ -24,6 +24,35 @@ async function main() {
     },
   });
 
+  await prisma.zone.upsert({
+    where: { id: 'thornveil_enclave' },
+    update: {},
+    create: {
+      id: 'thornveil_enclave',
+      name: 'Thornveil Enclave',
+      description: 'Sylvan outpost nestled within towering briar groves, serving as the elven starting grounds.',
+      minLevel: 1,
+      maxLevel: 10,
+      width: 1200,
+      height: 1200,
+      safeZonesJson: JSON.stringify([
+        { name: 'Brambleheart Spawn', type: 'spawn', x: 150, y: 0, z: 240, radius: 30 },
+        { name: 'Moonwell Clearing Spawn', type: 'spawn', x: -180, y: 0, z: 80, radius: 30 },
+        { name: 'Thornveil Refuge', type: 'town', x: 40, y: 0, z: -60, radius: 45 },
+        {
+          name: 'Gate to Sylvaen Capital',
+          type: 'exit',
+          x: 500,
+          y: 0,
+          z: -320,
+          radius: 15,
+          targetZoneId: 'sylvaen_capital',
+          entry: { x: 75, y: 0, z: -45 },
+        },
+      ]),
+    },
+  });
+
   // Seed Item Definitions
   const items = [
     // Weapons
