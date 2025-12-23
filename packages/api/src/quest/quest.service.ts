@@ -122,6 +122,7 @@ export class QuestService {
       status: QuestStatus.IN_PROGRESS,
       progressJson: JSON.stringify(initialProgress),
       startedAt: new Date(),
+      completedAt: null,
     };
 
     if (existing) {
