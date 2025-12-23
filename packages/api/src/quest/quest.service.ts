@@ -103,12 +103,11 @@ export class QuestService {
     });
 
     const isRepeatable = REPEATABLE_QUEST_IDS.has(questId);
-    if (!existing) {
-      // Fresh acceptance
-    } else if (isRepeatable && existing.status === QuestStatus.TURNED_IN) {
-      // Allowed to re-accept
-    } else if (existing.status !== QuestStatus.AVAILABLE) {
-      throw new Error(`Quest already ${existing.status}`);
+    if (existing) {
+      const canRestartRepeatable = isRepeatable && existing.status === QuestStatus.TURNED_IN;
+      if (!canRestartRepeatable) {
+        throw new Error(`Quest already ${existing.status}`);
+      }
     }
 
     // Parse objectives and initialize progress
@@ -118,11 +117,10 @@ export class QuestService {
       current: 0,
       completed: false,
     }));
-    const questProgressData = {
+    const questProgressBase = {
       status: QuestStatus.IN_PROGRESS,
       progressJson: JSON.stringify(initialProgress),
       startedAt: new Date(),
-      completedAt: null,
     };
 
     if (existing) {
@@ -130,7 +128,10 @@ export class QuestService {
         where: {
           characterId_questId: { characterId, questId },
         },
-        data: questProgressData,
+        data: {
+          ...questProgressBase,
+          completedAt: null,
+        },
         include: { quest: true },
       });
     }
@@ -139,7 +140,7 @@ export class QuestService {
       data: {
         characterId,
         questId,
-        ...questProgressData,
+        ...questProgressBase,
       },
       include: { quest: true },
     });
