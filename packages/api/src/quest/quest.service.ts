@@ -98,11 +98,10 @@ export class QuestService {
     });
 
     const isRepeatable = REPEATABLE_QUEST_IDS.has(questId);
-    if (existing) {
-      const canRepeat = isRepeatable && existing.status === QuestStatus.TURNED_IN;
-      if (!canRepeat && existing.status !== QuestStatus.AVAILABLE) {
-        throw new Error(`Quest already ${existing.status}`);
-      }
+    if (existing && isRepeatable && existing.status === QuestStatus.TURNED_IN) {
+      // Allowed to re-accept
+    } else if (existing && existing.status !== QuestStatus.AVAILABLE) {
+      throw new Error(`Quest already ${existing.status}`);
     }
 
     // Parse objectives and initialize progress
