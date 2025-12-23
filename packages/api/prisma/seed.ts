@@ -390,6 +390,7 @@ async function main() {
       ]),
       experienceReward: 70,
       goldReward: 0,
+      itemRewardsJson: JSON.stringify([]),
     },
   ];
 
