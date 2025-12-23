@@ -5,8 +5,8 @@ package templates
 import (
 	"math/rand"
 
-	bt "github.com/mmorpg/gameserver/internal/ai/behaviortree"
 	"github.com/mmorpg/gameserver/internal/ai/actions"
+	bt "github.com/mmorpg/gameserver/internal/ai/behaviortree"
 	"github.com/mmorpg/gameserver/internal/ai/conditions"
 	"github.com/mmorpg/gameserver/internal/ai/perception"
 )
@@ -15,12 +15,12 @@ import (
 type NPCType string
 
 const (
-	NPCTypePassive     NPCType = "PASSIVE"     // Passive animals (deer, rabbit)
-	NPCTypeNeutral     NPCType = "NEUTRAL"     // Neutral humanoids (merchants, civilians)
-	NPCTypeAggressive  NPCType = "AGGRESSIVE"  // Aggressive monsters
-	NPCTypeElite       NPCType = "ELITE"       // Elite monsters with special abilities
-	NPCTypeBoss        NPCType = "BOSS"        // Boss monsters
-	NPCTypeGuard       NPCType = "GUARD"       // Guards that protect areas
+	NPCTypePassive    NPCType = "PASSIVE"    // Passive animals (deer, rabbit)
+	NPCTypeNeutral    NPCType = "NEUTRAL"    // Neutral humanoids (merchants, civilians)
+	NPCTypeAggressive NPCType = "AGGRESSIVE" // Aggressive monsters
+	NPCTypeElite      NPCType = "ELITE"      // Elite monsters with special abilities
+	NPCTypeBoss       NPCType = "BOSS"       // Boss monsters
+	NPCTypeGuard      NPCType = "GUARD"      // Guards that protect areas
 )
 
 // NPCTemplate defines the complete configuration for an NPC type.
@@ -127,7 +127,7 @@ func PassiveAnimalTemplate(name string, level int) *NPCTemplate {
 		},
 
 		CombatConfig: CombatConfig{
-			AttackRange:    0,   // No attacks
+			AttackRange:    0, // No attacks
 			Abilities:      nil,
 			DefaultAbility: "",
 		},
@@ -236,6 +236,56 @@ func AggressiveMonsterTemplate(name string, level int) *NPCTemplate {
 	}
 }
 
+// ThornlingSkirmisherTemplate creates a low-health melee thornling for early-game zones.
+func ThornlingSkirmisherTemplate(level int) *NPCTemplate {
+	return &NPCTemplate{
+		Type:        NPCTypeAggressive,
+		Name:        "Thornling Skirmisher",
+		Description: "A quick thornling scout that relies on darting melee strikes",
+		Faction:     perception.FactionHostile,
+
+		BaseStats: NPCStats{
+			Level:         level,
+			Health:        70 + level*15, // Low health for level 1-2 players
+			Mana:          0,
+			Strength:      10 + level*2,
+			Agility:       12 + level*2,
+			Intellect:     4 + level,
+			Stamina:       8 + level*2,
+			Spirit:        6 + level,
+			MovementSpeed: 6.2,
+			AttackSpeed:   1800,
+		},
+
+		PerceptionConfig: perception.PerceptionConfig{
+			VisionRange:       22.0,
+			VisionAngle:       160.0,
+			AggroRadius:       12.0, // Aggros nearby players
+			LeashRadius:       25.0,
+			IgnoreLineOfSight: false,
+			DetectionDelay:    0,
+			StealthDetection:  0.8,
+		},
+
+		BehaviorConfig: BehaviorConfig{
+			WanderRadius:     6.0,
+			WanderMinWait:    1500,
+			WanderMaxWait:    4000,
+			ChaseMaxDistance: 18.0,
+			ChaseMaxTime:     8000,
+			LeashRadius:      25.0,
+			CallForHelp:      false,
+			FleeAtHealth:     0, // Fights to the end despite low HP
+		},
+
+		CombatConfig: CombatConfig{
+			AttackRange:    2.2, // Melee reach
+			Abilities:      []string{"basic_attack"},
+			DefaultAbility: "basic_attack",
+		},
+	}
+}
+
 // EliteMonsterTemplate creates a template for elite monsters with special abilities.
 func EliteMonsterTemplate(name string, level int) *NPCTemplate {
 	return &NPCTemplate{
@@ -319,7 +369,7 @@ func BossMonsterTemplate(name string, level int) *NPCTemplate {
 		},
 
 		BehaviorConfig: BehaviorConfig{
-			WanderRadius:     0,   // Bosses don't wander
+			WanderRadius:     0, // Bosses don't wander
 			WanderMinWait:    0,
 			WanderMaxWait:    0,
 			ChaseMaxDistance: 55.0,
