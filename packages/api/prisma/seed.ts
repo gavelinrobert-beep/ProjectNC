@@ -18,8 +18,54 @@ async function main() {
       width: 1000,
       height: 1000,
       safeZonesJson: JSON.stringify([
-        { x: 500, y: 0, z: 500 },
-        { x: 300, y: 0, z: 300 },
+        { name: 'Northshire Abbey Spawn', type: 'spawn', x: 500, y: 0, z: 500, radius: 25 },
+        { name: 'Eastvale Logging Camp Spawn', type: 'spawn', x: 300, y: 0, z: 300, radius: 25 },
+      ]),
+    },
+  });
+
+  await prisma.zone.upsert({
+    where: { id: 'thornveil_enclave' },
+    update: {},
+    create: {
+      id: 'thornveil_enclave',
+      name: 'Thornveil Enclave',
+      description: 'Sylvan outpost nestled within towering briar groves, serving as the elven starting grounds.',
+      minLevel: 1,
+      maxLevel: 10,
+      width: 1200,
+      height: 1200,
+      safeZonesJson: JSON.stringify([
+        { name: 'Brambleheart Spawn', type: 'spawn', x: 320, y: 0, z: 280, radius: 30 },
+        { name: 'Moonwell Clearing Spawn', type: 'spawn', x: 640, y: 0, z: 360, radius: 30 },
+        { name: 'Thornveil Refuge', type: 'town', x: 520, y: 0, z: 520, radius: 45 },
+        {
+          name: 'Gate to Sylvaen Capital',
+          type: 'exit',
+          x: 1120,
+          y: 0,
+          z: 1040,
+          radius: 15,
+          targetZoneId: 'sylvaen_capital',
+          entry: { x: 75, y: 0, z: 45 },
+        },
+      ]),
+    },
+  });
+
+  await prisma.zone.upsert({
+    where: { id: 'sylvaen_capital' },
+    update: {},
+    create: {
+      id: 'sylvaen_capital',
+      name: 'Sylvaen Capital',
+      description: 'Ancient heart of the Sylvaen, reached after completing the Thornveil Enclave journey.',
+      minLevel: 10,
+      maxLevel: 60,
+      width: 1600,
+      height: 1600,
+      safeZonesJson: JSON.stringify([
+        { name: 'Grand Plaza Arrival', type: 'spawn', x: 75, y: 0, z: 45, radius: 35 },
       ]),
     },
   });
