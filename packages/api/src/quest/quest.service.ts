@@ -8,6 +8,8 @@ enum QuestStatus {
   TURNED_IN = 'TURNED_IN',
 }
 
+const REPEATABLE_QUEST_IDS = new Set(['first_roots']);
+
 interface AcceptQuestDto {
   characterId: string;
   questId: string;
@@ -95,8 +97,12 @@ export class QuestService {
       },
     });
 
-    if (existing && existing.status !== QuestStatus.AVAILABLE) {
-      throw new Error(`Quest already ${existing.status}`);
+    const isRepeatable = REPEATABLE_QUEST_IDS.has(questId);
+    if (existing) {
+      const canRepeat = isRepeatable && existing.status === QuestStatus.TURNED_IN;
+      if (!canRepeat && existing.status !== QuestStatus.AVAILABLE) {
+        throw new Error(`Quest already ${existing.status}`);
+      }
     }
 
     // Parse objectives and initialize progress
