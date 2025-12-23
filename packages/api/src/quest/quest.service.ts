@@ -118,23 +118,27 @@ export class QuestService {
       current: 0,
       completed: false,
     }));
+    const questProgressData = {
+      status: QuestStatus.IN_PROGRESS,
+      progressJson: JSON.stringify(initialProgress),
+      startedAt: new Date(),
+    };
 
-    // Create or update quest progress
-    return this.prisma.questProgress.upsert({
-      where: {
-        characterId_questId: { characterId, questId },
-      },
-      create: {
+    if (existing) {
+      return this.prisma.questProgress.update({
+        where: {
+          characterId_questId: { characterId, questId },
+        },
+        data: questProgressData,
+        include: { quest: true },
+      });
+    }
+
+    return this.prisma.questProgress.create({
+      data: {
         characterId,
         questId,
-        status: QuestStatus.IN_PROGRESS,
-        progressJson: JSON.stringify(initialProgress),
-        startedAt: new Date(),
-      },
-      update: {
-        status: QuestStatus.IN_PROGRESS,
-        progressJson: JSON.stringify(initialProgress),
-        startedAt: new Date(),
+        ...questProgressData,
       },
       include: { quest: true },
     });
