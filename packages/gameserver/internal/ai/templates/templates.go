@@ -286,6 +286,56 @@ func ThornlingSkirmisherTemplate(level int) *NPCTemplate {
 	}
 }
 
+// GroveStalkerTemplate creates a light ranged enemy that engages from afar but has low survivability.
+func GroveStalkerTemplate(level int) *NPCTemplate {
+	return &NPCTemplate{
+		Type:        NPCTypeAggressive,
+		Name:        "Grove Stalker",
+		Description: "A nimble ranged hunter that opens from a distance but cannot withstand sustained damage",
+		Faction:     perception.FactionHostile,
+
+		BaseStats: NPCStats{
+			Level:         level,
+			Health:        60 + level*12, // Low health to emphasize fragility
+			Mana:          80 + level*12, // Enough mana for repeated ranged shots
+			Strength:      6 + level,
+			Agility:       11 + level*2,
+			Intellect:     12 + level*2,
+			Stamina:       7 + level,
+			Spirit:        9 + level,
+			MovementSpeed: 6.0,
+			AttackSpeed:   2200,
+		},
+
+		PerceptionConfig: perception.PerceptionConfig{
+			VisionRange:       32.0,
+			VisionAngle:       170.0,
+			AggroRadius:       22.0, // Opens combat before players close the gap
+			LeashRadius:       32.0,
+			IgnoreLineOfSight: false,
+			DetectionDelay:    0,
+			StealthDetection:  1.0,
+		},
+
+		BehaviorConfig: BehaviorConfig{
+			WanderRadius:     7.0,
+			WanderMinWait:    2000,
+			WanderMaxWait:    5000,
+			ChaseMaxDistance: 26.0,
+			ChaseMaxTime:     12000,
+			LeashRadius:      32.0,
+			CallForHelp:      false,
+			FleeAtHealth:     0.25, // Will attempt to disengage when low due to low survivability
+		},
+
+		CombatConfig: CombatConfig{
+			AttackRange:    18.0,
+			Abilities:      []string{"firebolt"},
+			DefaultAbility: "firebolt",
+		},
+	}
+}
+
 // EliteMonsterTemplate creates a template for elite monsters with special abilities.
 func EliteMonsterTemplate(name string, level int) *NPCTemplate {
 	return &NPCTemplate{
