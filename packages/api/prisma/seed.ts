@@ -302,6 +302,7 @@ async function main() {
       health: 85,
       minDamage: 4,
       maxDamage: 9,
+      lootTableJson: JSON.stringify([]),
     },
   ];
 
