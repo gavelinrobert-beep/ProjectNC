@@ -8,6 +8,13 @@ enum QuestStatus {
   TURNED_IN = 'TURNED_IN',
 }
 
+const REPEATABLE_QUEST_IDS = new Set(
+  (process.env.REPEATABLE_QUEST_IDS || 'first_roots')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean),
+);
+
 interface AcceptQuestDto {
   characterId: string;
   questId: string;
@@ -95,8 +102,12 @@ export class QuestService {
       },
     });
 
-    if (existing && existing.status !== QuestStatus.AVAILABLE) {
-      throw new Error(`Quest already ${existing.status}`);
+    const isRepeatable = REPEATABLE_QUEST_IDS.has(questId);
+    if (existing) {
+      const canRestartRepeatable = isRepeatable && existing.status === QuestStatus.TURNED_IN;
+      if (!canRestartRepeatable) {
+        throw new Error(`Quest already ${existing.status}`);
+      }
     }
 
     // Parse objectives and initialize progress
@@ -106,23 +117,30 @@ export class QuestService {
       current: 0,
       completed: false,
     }));
+    const questProgressBase = {
+      status: QuestStatus.IN_PROGRESS,
+      progressJson: JSON.stringify(initialProgress),
+      startedAt: new Date(),
+    };
 
-    // Create or update quest progress
-    return this.prisma.questProgress.upsert({
-      where: {
-        characterId_questId: { characterId, questId },
-      },
-      create: {
+    if (existing) {
+      return this.prisma.questProgress.update({
+        where: {
+          characterId_questId: { characterId, questId },
+        },
+        data: {
+          ...questProgressBase,
+          completedAt: null,
+        },
+        include: { quest: true },
+      });
+    }
+
+    return this.prisma.questProgress.create({
+      data: {
         characterId,
         questId,
-        status: QuestStatus.IN_PROGRESS,
-        progressJson: JSON.stringify(initialProgress),
-        startedAt: new Date(),
-      },
-      update: {
-        status: QuestStatus.IN_PROGRESS,
-        progressJson: JSON.stringify(initialProgress),
-        startedAt: new Date(),
+        ...questProgressBase,
       },
       include: { quest: true },
     });

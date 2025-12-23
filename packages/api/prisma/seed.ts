@@ -274,6 +274,36 @@ async function main() {
         { itemId: 'kobold_candle', chance: 0.25 },
       ]),
     },
+    {
+      id: 'keeper_elowen',
+      name: 'Keeper Elowen',
+      level: 12,
+      type: 'NPC',
+      zoneId: 'thornveil_enclave',
+      x: 528,
+      y: 0,
+      z: 514,
+      isQuestGiver: true,
+      isVendor: false,
+      isHostile: false,
+    },
+    {
+      id: 'thornling_skirmisher',
+      name: 'Thornling Skirmisher',
+      level: 2,
+      type: 'MONSTER',
+      zoneId: 'thornveil_enclave',
+      x: 460,
+      y: 0,
+      z: 540,
+      isQuestGiver: false,
+      isVendor: false,
+      isHostile: true,
+      health: 85,
+      minDamage: 4,
+      maxDamage: 9,
+      lootTableJson: JSON.stringify([]),
+    },
   ];
 
   for (const npc of npcs) {
@@ -341,6 +371,26 @@ async function main() {
       ]),
       experienceReward: 25,
       goldReward: 5,
+    },
+    {
+      id: 'first_roots',
+      name: 'First Roots',
+      description:
+        'Keeper Elowen asks you to thin the Thornling Skirmishers threatening Thornveil Enclave and report back to her.',
+      level: 1,
+      requiredLevel: 1,
+      objectivesJson: JSON.stringify([
+        {
+          id: 'slay_thornlings',
+          description: 'Slay Thornling Skirmishers',
+          type: 'KILL',
+          targetId: 'thornling_skirmisher',
+          required: 5,
+        },
+      ]),
+      experienceReward: 70,
+      goldReward: 0,
+      itemRewardsJson: JSON.stringify([]),
     },
   ];
 
